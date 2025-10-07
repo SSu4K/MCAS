@@ -2,54 +2,84 @@ cmake_minimum_required(VERSION 3.16)
 
 project(MCAS VERSION 0.1 LANGUAGES CXX)
 
-# Enable automatic Qt processing
-set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find Qt 6 modules
-find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
-find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
-# Include the source directory
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
-
-# Translation files (optional)
-file(GLOB TS_FILES translations/*.ts)
-
-# Source files
-file(GLOB_RECURSE CPP_FILES source/*.cpp)
-file(GLOB_RECURSE HEADER_FILES source/*.h)
-file(GLOB_RECURSE UI_FILES source/*.ui)
-file(GLOB_RECURSE QRC_FILES source/*.qrc)
+set(TS_FILES MCAS_en_US.ts)
 
 set(PROJECT_SOURCES
-    ${CPP_FILES}
-    ${HEADER_FILES}
-    ${UI_FILES}
-    ${QRC_FILES}
+        main.cpp
+        mainwindow.cpp
+        mainwindow.h
+        mainwindow.ui
+        ${TS_FILES}
 )
 
-# Add executable
-qt_add_executable(MCAS
-    MANUAL_FINALIZATION
-    ${PROJECT_SOURCES}
-    source/MicrocodeEditor/microcodeeditordelegate.cpp source/MicrocodeEditor/microcodeeditordelegate.h
-    source/zoommainwindow.h source/zoommainwindow.cpp
-    source/mainwindow.h source/mainwindow.cpp
-)
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(MCAS
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
+        icon.qrc
+        microcode.h
+        microcode.h
+        microcode.h
+        microcodemodel.h
+        microcodemodel.cpp
+        microcodedelegate.h microcodedelegate.cpp
+        microcode.cpp
+        enumdelegate.h enumdelegate.cpp
+        microcodeeditorwidget.h microcodeeditorwidget.cpp
+        hexintdelegate.h hexintdelegate.cpp
+        hexint.h
+        hexint.cpp
+        microcodeeditorwindow.h microcodeeditorwindow.cpp
 
-# Link Qt libraries
-target_link_libraries(MCAS PRIVATE Qt6::Widgets)
+    )
+# Define target properties for Android with Qt 6 as:
+#    set_property(TARGET MCAS APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
+# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 
-# Create translations if they exist
-if(TS_FILES)
     qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+else()
+    if(ANDROID)
+        add_library(MCAS SHARED
+            ${PROJECT_SOURCES}
+        )
+# Define properties for Android with Qt 5 after find_package() calls as:
+#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+    else()
+        add_executable(MCAS
+            ${PROJECT_SOURCES}
+        )
+    endif()
+
+    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-# Install target
+target_link_libraries(MCAS PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+
+# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# If you are developing for iOS or macOS you should consider setting an
+# explicit, fixed bundle identifier manually though.
+if(${QT_VERSION} VERSION_LESS 6.1.0)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.MCAS)
+endif()
+set_target_properties(MCAS PROPERTIES
+    ${BUNDLE_ID_OPTION}
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE TRUE
+    WIN32_EXECUTABLE TRUE
+)
+
 include(GNUInstallDirs)
 install(TARGETS MCAS
     BUNDLE DESTINATION .
@@ -57,5 +87,6 @@ install(TARGETS MCAS
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Finalize executable
-qt_finalize_executable(MCAS)
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(MCAS)
+endif()
