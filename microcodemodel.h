@@ -6,12 +6,15 @@
 
 using namespace MicrocodeEditor;
 
+const QChar MICROCODE_FILE_DELIMITER = '|';
+
 class MicrocodeModel : public QAbstractTableModel {
     Q_OBJECT
 public:
     explicit MicrocodeModel(QObject* parent = nullptr);
 
     void setMicrocode(Microcode* code);
+    void setInstructions(const QList<Instruction> &instructions);
     Microcode* microcode() { return &m_microcode; }
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -22,6 +25,9 @@ public:
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     bool insertInstruction(int row, const Instruction& instr = Instruction{});
     void clear();
+
+    bool saveToTextFile(const QString& filePath, QChar delimiter = MICROCODE_FILE_DELIMITER) const;
+    bool loadFromTextFile(const QString& filePath, QChar delimiter = MICROCODE_FILE_DELIMITER);
 
 private:
     Microcode m_microcode;
