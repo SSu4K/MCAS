@@ -45,9 +45,52 @@ const bool Instruction::isValidStringValue(const size_t field, const QString &st
     return validStrings.contains(string, cs);
 }
 
+const QString Instruction::matchValidFieldValue(const size_t field, const QString &string, bool * okptr){
+    QString trimmed = string.trimmed();
+
+    if(field == InstructionField::label || field == InstructionField::adr){
+        *okptr = true;
+        return trimmed;
+    }
+
+    if(field == InstructionField::address){
+        // need to validate hex str
+        const quint16 value = HexInt::hexStringToInt(trimmed, okptr);
+
+        if(*okptr == false){
+            return "";
+        }
+
+        return HexInt::intToString(value, false);
+    }
+
+    if(field == InstructionField::constant){
+        if(trimmed.isEmpty()){
+            *okptr = true;
+            return "";
+        }
+        const quint16 value = HexInt::hexStringToInt(trimmed, okptr);
+
+        if(*okptr == false){
+            return "";
+        }
+
+        return HexInt::intToString(value, false, 1);
+    }
+
+    qsizetype index = validStringValues[field].indexOf(trimmed, 0, Qt::CaseInsensitive);
+    if(index == -1){
+        if(okptr) *okptr = false;
+        return "";
+    }
+
+    if(okptr) *okptr = true;
+    return validStringValues[field][index];
+}
+
 Instruction::Instruction(){
-    address = HexInt::intToString(0);
-    constant = HexInt::intToString(0);
+    address = HexInt::intToString(0, false);
+    constant = "";
 }
 
 QVariant Instruction::getFieldValue(const size_t field) const{
@@ -71,21 +114,26 @@ QVariant Instruction::getFieldValue(const size_t field) const{
 }
 
 bool Instruction::setFieldValue(const size_t field, const QVariant &value){
+
+    bool ok = false;
+    QString string = matchValidFieldValue(field, value.toString(), &ok);
+    if(!ok) return false;
+
     switch(field){
-        case InstructionField::address:     address = value.toString(); break;
-        case InstructionField::label:       label = value.toString(); break;
-        case InstructionField::alu:         alu = value.toString(); break;
-        case InstructionField::s1:          s1 = value.toString(); break;
-        case InstructionField::s2:          s2 = value.toString(); break;
-        case InstructionField::dest:        dest = value.toString(); break;
-        case InstructionField::jcond:       jcond = value.toString(); break;
-        case InstructionField::adr:         adr = value.toString(); break;
-        case InstructionField::constant:    constant = value.toString(); break;
-        case InstructionField::extir:       extir = value.toString(); break;
-        case InstructionField::mem:         mem = value.toString(); break;
-        case InstructionField::madr:        madr = value.toString(); break;
-        case InstructionField::mdest:       mdest = value.toString(); break;
-        case InstructionField::regs:        regs = value.toString(); break;
+        case InstructionField::address:     address = string; break;
+        case InstructionField::label:       label = string; break;
+        case InstructionField::alu:         alu = string; break;
+        case InstructionField::s1:          s1 = string; break;
+        case InstructionField::s2:          s2 = string; break;
+        case InstructionField::dest:        dest = string; break;
+        case InstructionField::jcond:       jcond = string; break;
+        case InstructionField::adr:         adr = string; break;
+        case InstructionField::constant:    constant = string; break;
+        case InstructionField::extir:       extir = string; break;
+        case InstructionField::mem:         mem = string; break;
+        case InstructionField::madr:        madr = string; break;
+        case InstructionField::mdest:       mdest = string; break;
+        case InstructionField::regs:        regs = string; break;
         default:                            return false;
     }
     return true;

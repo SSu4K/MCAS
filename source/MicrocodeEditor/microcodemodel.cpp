@@ -95,7 +95,11 @@ bool MicrocodeModel::insertInstruction(int row, const Instruction& instr) {
 }
 
 void MicrocodeModel::clear(){
+    beginResetModel();
     m_microcode.instructions = {};
+    Instruction instr;
+    m_microcode.instructions.append(instr);
+    endResetModel();
 }
 
 bool MicrocodeModel::saveToTextFile(const QString& filePath, QChar delimiter) const
@@ -161,20 +165,9 @@ bool MicrocodeModel::loadFromTextFile(const QString& filePath, QChar delimiter)
         }
 
         Instruction instr;
-        instr.address  = parts.value(0);
-        instr.label    = parts.value(1);
-        instr.alu      = parts.value(2);
-        instr.s1       = parts.value(3);
-        instr.s2       = parts.value(4);
-        instr.dest     = parts.value(5);
-        instr.extir    = parts.value(6);
-        instr.constant = parts.value(7);
-        instr.jcond    = parts.value(8);
-        instr.adr      = parts.value(9);
-        instr.mem      = parts.value(10);
-        instr.madr     = parts.value(11);
-        instr.mdest    = parts.value(12);
-        instr.regs     = parts.value(13);
+        for(qsizetype field = InstructionField::address; field < InstructionField::fieldCount; field++){
+            instr.setFieldValue(field, parts[field]);
+        }
         instructions.append(instr);
 
         qDebug("Instruction read!");
