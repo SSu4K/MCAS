@@ -1,7 +1,5 @@
 #include "MicrocodeEditor/microcodeeditorwindow.h"
 
-#include "mainwindow.h"
-
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
@@ -46,7 +44,7 @@ int main(int argc, char *argv[])
             break;
         }
     }
-    MainWindow window;
+    MicrocodeEditor::MicrocodeEditorWindow window;
     window.show();
     return app.exec();
 }

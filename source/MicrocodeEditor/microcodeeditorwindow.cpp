@@ -1,19 +1,35 @@
 #include "microcodeeditorwindow.h"
+
+#include "microcodeeditorwindow.h"
+#include "microcodeeditorwidget.h"
+#include "microcodemodel.h"
+
+#include <QMenuBar>
+#include <QMenu>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QCloseEvent>
+#include <QFile>
+#include <QTextStream>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include "microcodeeditorwindow.h"
 #include "microcodeeditorwidget.h"
 #include "microcodemodel.h"
 
 #include <QMenuBar>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QTextStream>
 
 using namespace MicrocodeEditor;
 
 MicrocodeEditorWindow::MicrocodeEditorWindow(QWidget* parent)
-    : ZoomMainWindow(parent)
+    : QMainWindow(parent)
 {
     m_editorWidget = new MicrocodeEditorWidget(this);
     setCentralWidget(m_editorWidget);
-
-    registerZoomableWidget(m_editorWidget);
 
     createMenus();
     setWindowTitle("Microcode Editor");
@@ -24,6 +40,7 @@ void MicrocodeEditorWindow::createMenus()
 {
     QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
 
+    // Modern, non-deprecated addAction() syntax
     fileMenu->addAction(tr("&New"), QKeySequence::New, this, &MicrocodeEditorWindow::newFile);
     fileMenu->addAction(tr("&Open..."), QKeySequence::Open, this, &MicrocodeEditorWindow::openFile);
 
@@ -92,6 +109,7 @@ void MicrocodeEditorWindow::exitApp()
         close();
 }
 
+// ====================== SAVE / LOAD ======================
 bool MicrocodeEditorWindow::maybeSave()
 {
     return true; // simplify for now

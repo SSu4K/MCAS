@@ -51,25 +51,25 @@ MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
     // Initial microcode
     Microcode code;
     Instruction instr;
+    // instr.address = "0x0";
+    // instr.label   = "START";
+    // instr.alu     = "ADD";
+    // instr.s1      = "A";
+    // instr.s2      = "B";
+    // instr.dest    = "C";
+    // instr.constant= "0x0";
+    // instr.jcond   = "TRUE";
     code.instructions.append(instr);
 
     m_model->setMicrocode(&code);
 
     // Adjust column widths
     resizeColumnsToFit();
-
-    connect(m_model, &QAbstractItemModel::dataChanged,
-            this, &MicrocodeEditorWidget::resizeColumnsToFit);
-    connect(m_model, &QAbstractItemModel::layoutChanged,
-            this, &MicrocodeEditorWidget::resizeColumnsToFit);
-    connect(m_model, &QAbstractItemModel::modelReset,
-            this, &MicrocodeEditorWidget::resizeColumnsToFit);
 }
 
 
 void MicrocodeEditorWidget::resizeColumnsToFit() {
     auto* hHeader = m_tableView->horizontalHeader();
-    hHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+    hHeader->setSectionResizeMode(QHeaderView::Stretch);
     m_tableView->resizeColumnsToContents();
-    //hHeader->setStretchLastSection(true);
 }

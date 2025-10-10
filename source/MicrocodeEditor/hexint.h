@@ -4,8 +4,7 @@
 #include <QString>
 
 namespace HexInt{
-    QString intToString(const quint16 value, const bool prefix = true, const qsizetype precision = 4);
-    quint16 hexStringToInt(const QString &string, bool* okptr);
+    QString intToString(const quint16 value);
     quint16 stringToInt(const QString &string, bool* okptr);
 };
 
