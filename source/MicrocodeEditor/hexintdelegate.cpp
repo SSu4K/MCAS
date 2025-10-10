@@ -40,6 +40,11 @@ void HexIntDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 
     QString text = line->text().trimmed();
 
+    if(text.isEmpty()){
+        model->setData(index, "", Qt::EditRole);
+        return;
+    }
+
     bool ok = false;
     int value = text.toInt(&ok, 10);
     if(!ok){
