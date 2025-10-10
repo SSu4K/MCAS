@@ -5,6 +5,8 @@
 #include <QTextStream>
 #include <QDebug>
 
+using namespace MicrocodeEditor;
+
 MicrocodeModel::MicrocodeModel(QObject* parent)
     : QAbstractTableModel(parent)
 {}

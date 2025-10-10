@@ -23,6 +23,8 @@
 #include <QMessageBox>
 #include <QTextStream>
 
+using namespace MicrocodeEditor;
+
 MicrocodeEditorWindow::MicrocodeEditorWindow(QWidget* parent)
     : QMainWindow(parent)
 {

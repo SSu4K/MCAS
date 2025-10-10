@@ -1,9 +1,10 @@
 #include "microcodeeditorwidget.h"
 #include "microcode.h"
-#include "microcodedelegate.h"
+#include "microcodeeditordelegate.h"
 #include <QHeaderView>
 #include <QVBoxLayout>
 
+using namespace MicrocodeEditor;
 
 MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
     : QWidget(parent)
@@ -30,7 +31,7 @@ MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
     m_tableView->setModel(m_model);
 
     // Delegate for non-enum columns
-    m_delegate = new MicrocodeDelegate(this);
+    m_delegate = new MicrocodeEditorDelegate(this);
     m_tableView->setItemDelegate(m_delegate);
 
     // Header setup

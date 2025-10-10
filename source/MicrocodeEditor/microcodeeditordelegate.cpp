@@ -1,4 +1,5 @@
-#include "microcodedelegate.h"
+#include "microcodeeditordelegate.h"
+#include "MicrocodeEditor/enumdelegate.h"
 #include "microcodeeditorwidget.h"
 #include "hexintdelegate.h"
 #include <QLineEdit>
@@ -15,7 +16,9 @@
 #include <QtLogging>
 #include <qtimer.h>
 
-QWidget* MicrocodeDelegate::createEditor(QWidget* parent,
+using namespace MicrocodeEditor;
+
+QWidget* MicrocodeEditorDelegate::createEditor(QWidget* parent,
                                          const QStyleOptionViewItem& option,
                                          const QModelIndex& index) const
 {
@@ -23,7 +26,7 @@ QWidget* MicrocodeDelegate::createEditor(QWidget* parent,
     QWidget* editor = nullptr;
 
     if (Instruction::validStringValues.contains(col)) {
-        auto* enumDelegate = new EnumDelegate(const_cast<MicrocodeDelegate*>(this));
+        auto* enumDelegate = new EnumDelegate(const_cast<MicrocodeEditorDelegate*>(this));
         enumDelegate->setItems(Instruction::validStringValues.value(col));
         editor = enumDelegate->createEditor(parent, option, index);
     }
@@ -39,11 +42,11 @@ QWidget* MicrocodeDelegate::createEditor(QWidget* parent,
     m_currentEditor = editor;
 
     // Install event filter on editor and its line edit if applicable
-    editor->installEventFilter(const_cast<MicrocodeDelegate*>(this));
+    editor->installEventFilter(const_cast<MicrocodeEditorDelegate*>(this));
 
     if (auto* combo = qobject_cast<QComboBox*>(editor)) {
         if (auto* line = combo->lineEdit()) {
-            line->installEventFilter(const_cast<MicrocodeDelegate*>(this));
+            line->installEventFilter(const_cast<MicrocodeEditorDelegate*>(this));
             QTimer::singleShot(0, line, [line]{ line->selectAll(); });
         }
     } else if (auto* line = qobject_cast<QLineEdit*>(editor)) {
@@ -53,7 +56,7 @@ QWidget* MicrocodeDelegate::createEditor(QWidget* parent,
     return editor;
 }
 
-bool MicrocodeDelegate::eventFilter(QObject* watched, QEvent* event)
+bool MicrocodeEditorDelegate::eventFilter(QObject* watched, QEvent* event)
 {
     if (event->type() != QEvent::KeyPress)
         return QStyledItemDelegate::eventFilter(watched, event);
@@ -125,19 +128,19 @@ bool MicrocodeDelegate::eventFilter(QObject* watched, QEvent* event)
 }
 
 
-void MicrocodeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const {
+void MicrocodeEditorDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const {
     const QVariant value = index.data(Qt::EditRole);
     const int col = index.column();
 
     if (Instruction::validStringValues.contains(col)) {
         // Use EnumDelegate for dropdown string fields
-        EnumDelegate enumDel(const_cast<MicrocodeDelegate*>(this));
+        EnumDelegate enumDel(const_cast<MicrocodeEditorDelegate*>(this));
         enumDel.setItems(Instruction::validStringValues[col]);
         enumDel.setEditorData(editor, index);
     }
     else if (col == InstructionField::address || col == InstructionField::constant) {
         // Use HexIntDelegate for integer/hex fields
-        HexIntDelegate hexDel(const_cast<MicrocodeDelegate*>(this));
+        HexIntDelegate hexDel(const_cast<MicrocodeEditorDelegate*>(this));
         hexDel.setEditorData(editor, index);
     }
     else if (auto* line = qobject_cast<QLineEdit*>(editor)) {
@@ -146,17 +149,17 @@ void MicrocodeDelegate::setEditorData(QWidget* editor, const QModelIndex& index)
     }
 }
 
-void MicrocodeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
+void MicrocodeEditorDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
                                      const QModelIndex& index) const {
     const int col = index.column();
 
     if (Instruction::validStringValues.contains(col)) {
-        EnumDelegate enumDel(const_cast<MicrocodeDelegate*>(this));
+        EnumDelegate enumDel(const_cast<MicrocodeEditorDelegate*>(this));
         enumDel.setItems(Instruction::validStringValues[col]);
         enumDel.setModelData(editor, model, index);
     }
     else if (col == InstructionField::address || col == InstructionField::constant) {
-        HexIntDelegate hexDel(const_cast<MicrocodeDelegate*>(this));
+        HexIntDelegate hexDel(const_cast<MicrocodeEditorDelegate*>(this));
         hexDel.setModelData(editor, model, index);
     }
     else if (auto* line = qobject_cast<QLineEdit*>(editor)) {
@@ -166,7 +169,7 @@ void MicrocodeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
     m_currentEditor = nullptr;
 }
 
-void MicrocodeDelegate::updateEditorGeometry(QWidget* editor,
+void MicrocodeEditorDelegate::updateEditorGeometry(QWidget* editor,
                           const QStyleOptionViewItem& option,
                           const QModelIndex&) const {
     editor->setGeometry(option.rect);
