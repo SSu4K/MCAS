@@ -3,10 +3,11 @@
 
 #include <QMainWindow>
 #include "microcodeeditorwidget.h"
+#include "zoommainwindow.h"
 
 namespace MicrocodeEditor{
 
-    class MicrocodeEditorWindow : public QMainWindow
+    class MicrocodeEditorWindow : public ZoomMainWindow
     {
         Q_OBJECT
     public:

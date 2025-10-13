@@ -37,6 +37,7 @@ qt_add_executable(MCAS
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     source/MicrocodeEditor/microcodeeditordelegate.cpp source/MicrocodeEditor/microcodeeditordelegate.h
+    source/zoommainwindow.h source/zoommainwindow.cpp
 )
 
 # Link Qt libraries
