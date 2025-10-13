@@ -3,7 +3,6 @@
 
 #include <QFile>
 #include <QTextStream>
-#include <QDebug>
 
 using namespace MicrocodeEditor;
 
@@ -146,7 +145,6 @@ bool MicrocodeModel::loadFromTextFile(const QString& filePath, QChar delimiter)
 
     while (!in.atEnd()) {
         QString line = in.readLine().trimmed();
-        qDebug("Reading line!");
         if (line.isEmpty())
             continue;
 
@@ -157,10 +155,7 @@ bool MicrocodeModel::loadFromTextFile(const QString& filePath, QChar delimiter)
         for (QString& s : parts)
             s = s.trimmed();
 
-        qDebug("Reading instruction!");
-
         if (parts.size() < columnCount()){
-            qDebug("Not enough columns!");
             continue;
         }
 
@@ -169,8 +164,6 @@ bool MicrocodeModel::loadFromTextFile(const QString& filePath, QChar delimiter)
             instr.setFieldValue(field, parts[field]);
         }
         instructions.append(instr);
-
-        qDebug("Instruction read!");
     }
 
     setInstructions(instructions);

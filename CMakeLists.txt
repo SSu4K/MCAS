@@ -38,6 +38,7 @@ qt_add_executable(MCAS
     ${PROJECT_SOURCES}
     source/MicrocodeEditor/microcodeeditordelegate.cpp source/MicrocodeEditor/microcodeeditordelegate.h
     source/zoommainwindow.h source/zoommainwindow.cpp
+    source/mainwindow.h source/mainwindow.cpp
 )
 
 # Link Qt libraries
