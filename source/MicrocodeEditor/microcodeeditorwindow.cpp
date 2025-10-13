@@ -8,16 +8,16 @@
 using namespace MicrocodeEditor;
 
 MicrocodeEditorWindow::MicrocodeEditorWindow(QWidget* parent)
-    : ZoomMainWindow(parent)
+    : QMainWindow(parent)
 {
     m_editorWidget = new MicrocodeEditorWidget(this);
+    m_editorWidget->resetZoom();
     setCentralWidget(m_editorWidget);
 
-    registerZoomableWidget(m_editorWidget);
 
     createMenus();
     setWindowTitle("Microcode Editor");
-    resize(1000, 600);
+    resize(m_editorWidget->sizeHint());
 }
 
 void MicrocodeEditorWindow::createMenus()

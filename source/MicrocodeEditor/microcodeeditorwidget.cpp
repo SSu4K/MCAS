@@ -3,11 +3,12 @@
 #include "microcodeeditordelegate.h"
 #include <QHeaderView>
 #include <QVBoxLayout>
+#include <QTimer>
 
 using namespace MicrocodeEditor;
 
 MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
-    : QWidget(parent)
+    : ZoomWidget(parent)
 {
     m_tableView = new QTableView(this);
     m_tableView->setAlternatingRowColors(true);
@@ -64,12 +65,44 @@ MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
             this, &MicrocodeEditorWidget::resizeColumnsToFit);
     connect(m_model, &QAbstractItemModel::modelReset,
             this, &MicrocodeEditorWidget::resizeColumnsToFit);
+
+    QTimer::singleShot(0, this, [this]() {
+        m_tableView->resizeColumnsToContents();
+    });
 }
 
 
-void MicrocodeEditorWidget::resizeColumnsToFit() {
-    auto* hHeader = m_tableView->horizontalHeader();
-    hHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+void MicrocodeEditorWidget::resizeColumnsToFit()
+{
+    auto *hHeader = m_tableView->horizontalHeader();
+    const int columnCount = m_model->columnCount();
+
+    for (int i = 0; i < columnCount; ++i) {
+        if (i == columnCount - 1)
+            hHeader->setSectionResizeMode(i, QHeaderView::Stretch);
+        else
+            hHeader->setSectionResizeMode(i, QHeaderView::ResizeToContents);
+    }
+
+    m_tableView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
     m_tableView->resizeColumnsToContents();
-    //hHeader->setStretchLastSection(true);
+    m_tableView->resizeRowsToContents();
 }
+
+
+void MicrocodeEditorWidget::onZoomChanged(double factor)
+{
+    QFont font = m_tableView->font();
+    font.setPointSizeF(baseFontSize * factor);
+
+    m_tableView->setFont(font);
+    m_tableView->horizontalHeader()->setFont(font);
+    m_tableView->verticalHeader()->setFont(font);
+
+    QTimer::singleShot(0, this, [this, factor]() {
+        m_tableView->horizontalHeader()->setMinimumSectionSize(int(10 * factor));
+        resizeColumnsToFit();
+        m_tableView->updateGeometry();
+    });
+}
+
