@@ -1,54 +1,92 @@
 [Microcode]
-;uAR | Label | ALU | S1 | S2 | Dest | ExtIR | Const | JCond | Adr | Mem | MAdr | MDest | Regs
-0000 | Fetch |  |  |  |  |  |  | MBusy | Fetch | RW | PC |  | 
-0001 |  | ADD | PC | Const | PC |  | 4 | Jump1 |  |  |  |  | RR
-0002 | ST | S2 |  | B | MDR |  |  |  |  |  |  |  | 
-0003 | LD | ADD | A | IR | MAR | Word |  | Jump2 |  |  |  |  | 
-0004 | LDB |  |  |  |  |  |  | MBusy | LDB | RB | MAR |  | 
-0005 |  | S1 | MDR |  | C |  |  |  |  |  |  |  | 
-0006 | WF2 |  |  |  |  |  |  | True | Fetch |  |  |  | WF2
-0007 | LDH |  |  |  |  |  |  | MBusy | LDH | RH | MAR |  | 
-0008 |  | S1 | MDR |  | C |  |  | True | WF2 |  |  |  | 
-0009 | LDW |  |  |  |  |  |  | MBusy | LDW | RW | MAR |  | 
-000A |  | S1 | MDR |  | C |  |  | True | WF2 |  |  |  | 
-000B | STB |  |  |  |  |  |  | MBusy | STB | WB | MAR |  | 
-000C |  |  |  |  |  |  |  | True | Fetch |  |  |  | 
-000D | STH |  |  |  |  |  |  | MBusy | STH | WH | MAR |  | 
-000E |  |  |  |  |  |  |  | True | Fetch |  |  |  | 
-000F | STW |  |  |  |  |  |  | MBusy | STW | WW | MAR |  | 
-0010 |  |  |  |  |  |  |  | True | Fetch |  |  |  | 
-0011 | ADD | ADD | A | B | C |  |  |  |  |  |  |  | 
-0012 | WF3 |  |  |  |  |  |  | True | Fetch |  |  |  | WF3
-0013 | SUB | SUB | A | B | C |  |  | True | WF3 |  |  |  | 
-0014 | MUL | MUL | A | B | C |  |  | True | WF3 |  |  |  | 
-0015 | DIV | DIV | A | B | C |  |  | True | WF3 |  |  |  | 
-0016 | AND | AND | A | B | C |  |  | True | WF3 |  |  |  | 
-0017 | OR | OR | A | B | C |  |  | True | WF3 |  |  |  | 
-0018 | XOR | XOR | A | B | C |  |  | True | WF3 |  |  |  | 
-0019 | SLL |  | A | B | C |  |  | True | WF3 |  |  |  | 
-001A | SRL |  | A | B | C |  |  | True | WF3 |  |  |  | 
-001B | SRA | SRA | A | B | C |  |  | True | WF3 |  |  |  | 
-001C | ADDI | ADD | A | IR | C | Word |  | True | WF2 |  |  |  | 
-001D | SUBI | SUB | A | IR | C | Word |  | True | WF2 |  |  |  | 
-001E | MULI | MUL | A | IR | C | Word |  | True | WF2 |  |  |  | 
-001F | DIVI | DIV | A | IR | C | Word |  | True | WF2 |  |  |  | 
-0020 | ANDI | AND | A | IR | C | Word |  | True | WF2 |  |  |  | 
-0021 | ORI | OR | A | IR | C | Word |  | True | WF2 |  |  |  | 
-0022 | XORI | XOR | A | IR | C | Word |  | True | WF2 |  |  |  | 
-0023 | SLLI |  | A | IR | C | Word |  | True | WF2 |  |  |  | 
-0024 | SRLI |  | A | IR | C | Word |  | True | WF2 |  |  |  | 
-0025 | SRAI | SRA | A | IR | C | Word |  | True | WF2 |  |  |  | 
-0026 | LIH | S2S1 | A | IR | C | Half |  |  |  |  |  |  | 
-0027 | WF1 |  |  |  |  |  |  | True | Fetch |  |  |  | WF1
-0028 | BRZ | S2 |  | B |  |  |  | NE | Fetch |  |  |  | 
-0029 |  | ADD | PC | IR | PC | Word |  | True | Fetch |  |  |  | 
-002A | BRNZ | S2 |  | B |  |  |  | EQ | Fetch |  |  |  | 
-002B |  | ADD | PC | IR | PC | Word |  | True | Fetch |  |  |  | 
-002C | BRGT | S2 |  | B |  |  |  | LE | Fetch |  |  |  | 
-002D |  | ADD | PC | IR | PC | Word |  | True | Fetch |  |  |  | 
-002E | BRGE | S2 |  | B |  |  |  | LT | Fetch |  |  |  | 
-002F |  | ADD | PC | IR | PC | Word |  | True | Fetch |  |  |  | 
-0030 | BRLT | S2 |  | B |  |  |  | GE | Fetch |  |  |  | 
-0031 |  | ADD | PC | IR | PC | Word |  | True | Fetch |  |  |  | 
-0032 | BRLE | S2 |  | B |  |  |  | GT | Fetch |  |  |  | 
-0033 |  | ADD | PC | IR | PC | Word |  | True | Fetch |  |  |  | 
+;uAR |Label |ALU   |S1    |S2    |Dest  |ExtIR |Const |JCond |Adr   |Mem   |MAdr  |MDest |Regs
+0000 |Fetch |      |      |      |      |      |      |Mbusy |Fetch |RW    |PC    |IR    |
+0001 |      |ADD   |PC    |Const |PC    |      |4     |Jump1 |      |      |      |      |RR
+0002 |ST    |S2    |      |B     |MDR   |      |      |      |      |      |      |      |
+0003 |LD    |ADD   |A     |IR    |MAR   |Word  |      |Jump2 |      |      |      |      |
+0004 |LDB   |      |      |      |      |      |      |Mbusy |LDB   |RB    |MAR   |MDR   |
+0005 |      |S1    |MDR   |      |C     |      |      |      |      |      |      |      |
+0006 |WF2   |      |      |      |      |      |      |True  |Fetch |      |      |      |WF2
+0007 |LDH   |      |      |      |      |      |      |Mbusy |LDH   |RH    |MAR   |MDR   |
+0008 |      |S1    |MDR   |      |C     |      |      |True  |WF2   |      |      |      |
+0009 |LDW   |      |      |      |      |      |      |Mbusy |LDW   |RW    |MAR   |MDR   |
+000A |      |S1    |MDR   |      |C     |      |      |True  |WF2   |      |      |      |
+000B |STB   |      |      |      |      |      |      |Mbusy |STB   |WB    |MAR   |      |
+000C |      |      |      |      |      |      |      |True  |Fetch |      |      |      |
+000D |STH   |      |      |      |      |      |      |Mbusy |STH   |WH    |MAR   |      |
+000E |      |      |      |      |      |      |      |True  |Fetch |      |      |      |
+000F |STW   |      |      |      |      |      |      |Mbusy |STW   |WW    |MAR   |      |
+0010 |      |      |      |      |      |      |      |True  |Fetch |      |      |      |
+0011 |ADD   |ADD   |A     |B     |C     |      |      |      |      |      |      |      |
+0012 |WF3   |      |      |      |      |      |      |True  |Fetch |      |      |      |WF3
+0013 |SUB   |SUB   |A     |B     |C     |      |      |True  |WF3   |      |      |      |
+0014 |MUL   |MUL   |A     |B     |C     |      |      |True  |WF3   |      |      |      |
+0015 |DIV   |DIV   |A     |B     |C     |      |      |True  |WF3   |      |      |      |
+0016 |AND   |AND   |A     |B     |C     |      |      |True  |WF3   |      |      |      |
+0017 |OR    |OR    |A     |B     |C     |      |      |True  |WF3   |      |      |      |
+0018 |XOR   |XOR   |A     |B     |C     |      |      |True  |WF3   |      |      |      |
+0019 |SLL   |SLL   |A     |B     |C     |      |      |True  |WF3   |      |      |      |
+001A |SRL   |SRL   |A     |B     |C     |      |      |True  |WF3   |      |      |      |
+001B |SRA   |SRA   |A     |B     |C     |      |      |True  |WF3   |      |      |      |
+001C |ADDI  |ADD   |A     |IR    |C     |Word  |      |True  |WF2   |      |      |      |
+001D |SUBI  |SUB   |A     |IR    |C     |Word  |      |True  |WF2   |      |      |      |
+001E |MULI  |MUL   |A     |IR    |C     |Word  |      |True  |WF2   |      |      |      |
+001F |DIVI  |DIV   |A     |IR    |C     |Word  |      |True  |WF2   |      |      |      |
+0020 |ANDI  |AND   |A     |IR    |C     |Word  |      |True  |WF2   |      |      |      |
+0021 |ORI   |OR    |A     |IR    |C     |Word  |      |True  |WF2   |      |      |      |
+0022 |XORI  |XOR   |A     |IR    |C     |Word  |      |True  |WF2   |      |      |      |
+0023 |SLLI  |SLL   |A     |IR    |C     |Word  |      |True  |WF2   |      |      |      |
+0024 |SRLI  |SRL   |A     |IR    |C     |Word  |      |True  |WF2   |      |      |      |
+0025 |SRAI  |SRA   |A     |IR    |C     |Word  |      |True  |WF2   |      |      |      |
+0026 |LIH   |S2S1  |A     |IR    |C     |Half  |      |      |      |      |      |      |
+0027 |WF1   |      |      |      |      |      |      |True  |Fetch |      |      |      |WF1
+0028 |BRZ   |S2    |      |B     |      |      |      |NE    |Fetch |      |      |      |
+0029 |      |ADD   |PC    |IR    |PC    |Word  |      |True  |Fetch |      |      |      |
+002A |BRNZ  |S2    |      |B     |      |      |      |EQ    |Fetch |      |      |      |
+002B |      |ADD   |PC    |IR    |PC    |Word  |      |True  |Fetch |      |      |      |
+002C |BRGT  |S2    |      |B     |      |      |      |LE    |Fetch |      |      |      |
+002D |      |ADD   |PC    |IR    |PC    |Word  |      |True  |Fetch |      |      |      |
+002E |BRGE  |S2    |      |B     |      |      |      |LT    |Fetch |      |      |      |
+002F |      |ADD   |PC    |IR    |PC    |Word  |      |True  |Fetch |      |      |      |
+0030 |BRLT  |S2    |      |B     |      |      |      |GE    |Fetch |      |      |      |
+0031 |      |ADD   |PC    |IR    |PC    |Word  |      |True  |Fetch |      |      |      |
+0032 |BRLE  |S2    |      |B     |      |      |      |GT    |Fetch |      |      |      |
+0033 |      |ADD   |PC    |IR    |PC    |Word  |      |True  |Fetch |      |      |      |
+
+[Jump Tables]
+;Opcode  |Jump Table 1 |Jump Table 2
+NOP      |Fetch        |
+LDB      |LD           |LDB
+LDH      |LD           |LDH
+LDW      |LD           |LDW
+STB      |ST           |STB
+STH      |ST           |STH
+STW      |ST           |STW
+ADD      |ADD          |
+SUB      |SUB          |
+MUL      |MUL          |
+DIV      |DIV          |
+AND      |AND          |
+OR       |OR           |
+XOR      |XOR          |
+SLL      |SLL          |
+SRL      |SRL          |
+SRA      |SRA          |
+ADDI     |ADDI         |
+SUBI     |SUBI         |
+MULI     |MULI         |
+DIVI     |DIVI         |
+ANDI     |ANDI         |
+ORI      |ORI          |
+XORI     |XORI         |
+SLLI     |SLLI         |
+SRLI     |SRLI         |
+SRAI     |SRAI         |
+LIH      |LIH          |
+BRZ      |BRZ          |
+BRNZ     |BRNZ         |
+BRGT     |BRGT         |
+BRGE     |BRGE         |
+BRLT     |BRLT         |
+BRLE     |BRLE         |
+

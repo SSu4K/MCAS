@@ -39,6 +39,11 @@ qt_add_executable(MCAS
     source/MicrocodeEditor/microcodeeditordelegate.cpp source/MicrocodeEditor/microcodeeditordelegate.h
     source/zoomwidget.h source/zoomwidget.cpp
     source/mainwindow.h source/mainwindow.cpp
+    source/MicrocodeEditor/jumptable.h source/MicrocodeEditor/jumptable.cpp
+    source/MicrocodeEditor/jumptable.h source/MicrocodeEditor/jumptable.cpp
+    source/MicrocodeEditor/jumptablemodel.h source/MicrocodeEditor/jumptablemodel.cpp
+    source/MicrocodeEditor/jumptableeditorwidget.h source/MicrocodeEditor/jumptableeditorwidget.cpp
+
 )
 
 # Link Qt libraries

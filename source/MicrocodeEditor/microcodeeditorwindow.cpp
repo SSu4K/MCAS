@@ -10,14 +10,19 @@ using namespace MicrocodeEditor;
 MicrocodeEditorWindow::MicrocodeEditorWindow(QWidget* parent)
     : QMainWindow(parent)
 {
-    m_editorWidget = new MicrocodeEditorWidget(this);
-    m_editorWidget->resetZoom();
-    setCentralWidget(m_editorWidget);
+    m_tabWidget = new QTabWidget(this);
 
+    m_microcodeEditor = new MicrocodeEditorWidget(this);
+    m_jumpTableEditor = new JumpTableEditorWidget(this);
+
+    m_tabWidget->addTab(m_microcodeEditor, tr("Microcode"));
+    m_tabWidget->addTab(m_jumpTableEditor, tr("Jump Tables"));
+
+    setCentralWidget(m_tabWidget);
 
     createMenus();
     setWindowTitle("Microcode Editor");
-    resize(m_editorWidget->sizeHint());
+    resize(m_microcodeEditor->sizeHint());
 }
 
 void MicrocodeEditorWindow::createMenus()
@@ -42,7 +47,7 @@ void MicrocodeEditorWindow::newFile()
     if (!maybeSave())
         return;
 
-    m_editorWidget->m_model->clear();
+    m_microcodeEditor->m_model->clear();
     m_currentFilePath.clear();
     setWindowTitle("Microcode Editor - [New]");
 }
@@ -57,7 +62,7 @@ void MicrocodeEditorWindow::openFile()
     if (filePath.isEmpty())
         return;
 
-    if (m_editorWidget->m_model->loadFromTextFile(filePath)) {
+    if (m_microcodeEditor->m_model->loadFromTextFile(filePath)) {
         m_currentFilePath = filePath;
         setWindowTitle(QString("Microcode Editor - [%1]").arg(QFileInfo(filePath).fileName()));
     }
@@ -69,7 +74,7 @@ void MicrocodeEditorWindow::saveFile()
         saveFileAs();
         return;
     }
-    m_editorWidget->m_model->saveToTextFile(m_currentFilePath);
+    m_microcodeEditor->m_model->saveToTextFile(m_currentFilePath);
 }
 
 void MicrocodeEditorWindow::saveFileAs()
@@ -80,7 +85,7 @@ void MicrocodeEditorWindow::saveFileAs()
     if (filePath.isEmpty())
         return;
 
-    if (m_editorWidget->m_model->saveToTextFile(filePath)) {
+    if (m_microcodeEditor->m_model->saveToTextFile(filePath)) {
         m_currentFilePath = filePath;
         setWindowTitle(QString("Microcode Editor - [%1]").arg(QFileInfo(filePath).fileName()));
     }

@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "microcodeeditorwidget.h"
-
+#include "jumptableeditorwidget.h"
 
 namespace MicrocodeEditor{
 
@@ -26,7 +26,10 @@ namespace MicrocodeEditor{
         bool saveToFile(const QString& filePath);
         bool loadFromFile(const QString& filePath);
 
-        MicrocodeEditorWidget* m_editorWidget = nullptr;
+        QTabWidget* m_tabWidget;
+        MicrocodeEditorWidget* m_microcodeEditor;
+        JumpTableEditorWidget* m_jumpTableEditor;
+
         QString m_currentFilePath;
         bool m_isModified = false;
     };

@@ -4,6 +4,8 @@
 #include <QFile>
 #include <QTextStream>
 
+const static QString microcodeHeader = "[Microcode]";
+
 using namespace MicrocodeEditor;
 
 MicrocodeModel::MicrocodeModel(QObject* parent)
@@ -108,7 +110,7 @@ bool MicrocodeModel::saveToTextFile(const QString& filePath, QChar delimiter) co
         return false;
 
     QTextStream out(&file);
-    out << "[Microcode]\n";
+    out << microcodeHeader << "\n";
 
     // Write header (optional)
     out << ";";
@@ -141,15 +143,23 @@ bool MicrocodeModel::loadFromTextFile(const QString& filePath, QChar delimiter)
 
     QTextStream in(&file);
     QList<Instruction> instructions;
-    bool started = false;
+
+    // Skip all lines until the header
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        if(line == microcodeHeader) break;
+    }
 
     while (!in.atEnd()) {
         QString line = in.readLine().trimmed();
         if (line.isEmpty())
             continue;
 
-        if (line.startsWith(';') || line.startsWith('['))
-            continue; // skip header/comment
+        if (line.startsWith(';'))
+            continue;
+
+        if (line.startsWith('['))
+            break; // found next header
 
         QStringList parts = line.split(delimiter, Qt::KeepEmptyParts);
         for (QString& s : parts)
