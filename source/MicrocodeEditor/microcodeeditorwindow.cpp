@@ -62,7 +62,7 @@ void MicrocodeEditorWindow::openFile()
     if (filePath.isEmpty())
         return;
 
-    if (m_microcodeEditor->m_model->loadFromTextFile(filePath)) {
+    if (m_microcodeEditor->m_model->loadFromTextFile(filePath) && m_jumpTableEditor->model()->loadFromTextFile(filePath)) {
         m_currentFilePath = filePath;
         setWindowTitle(QString("Microcode Editor - [%1]").arg(QFileInfo(filePath).fileName()));
     }

@@ -23,6 +23,8 @@ namespace MicrocodeEditor{
         void setEntries(const QVector<JumpTableEntry>& entries, const QStringList& headers);
         QVector<JumpTableEntry> entries() const;
         QStringList headers() const;
+        void clear();
+        bool loadFromTextFile(const QString& filePath, QChar delimiter = '|');
 
     private:
         JumpTable m_jumptable;

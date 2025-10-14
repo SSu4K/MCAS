@@ -1,4 +1,10 @@
 #include "jumptablemodel.h"
+#include "MicrocodeEditor/microcode.h"
+
+#include <QFile>
+#include <QTextStream>
+
+const static QString jumpTablesHeader = "[Jump Tables]";
 
 using namespace MicrocodeEditor;
 
@@ -71,4 +77,61 @@ QVector<JumpTableEntry> JumpTableModel::entries() const {
 
 QStringList JumpTableModel::headers() const {
     return m_headers;
+}
+
+void JumpTableModel::clear(){
+    beginResetModel();
+    m_jumptable.entries = {};
+    endResetModel();
+}
+
+bool JumpTableModel::loadFromTextFile(const QString& filePath, QChar delimiter)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return false;
+
+    QTextStream in(&file);
+    QList<Instruction> instructions;
+
+    // Skip all lines until the header
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        if(line == jumpTablesHeader) break;
+    }
+
+    clear();
+
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        if (line.isEmpty())
+            continue;
+
+        if (line.startsWith(';'))
+            continue;
+
+        if (line.startsWith('['))
+            break; // found next header
+
+        QStringList parts = line.split(delimiter, Qt::KeepEmptyParts);
+        for (QString& s : parts)
+            s = s.trimmed();
+
+        if (parts.size() < columnCount()){
+            continue;
+        }
+
+        JumpTableEntry entry;
+        for(qsizetype i = 0; i < columnCount(); i++){
+            if(i==0){
+                entry.opcode = parts[i];
+            }
+            else{
+                entry.targets.append(parts[i]);
+            }
+        }
+        m_jumptable.entries.append(entry);
+    }
+
+    return true;
 }
