@@ -103,55 +103,77 @@ void MicrocodeModel::clear(){
     endResetModel();
 }
 
-bool MicrocodeModel::saveToTextFile(const QString& filePath, QChar delimiter) const
-{
-    QFile file(filePath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return false;
-
-    QTextStream out(&file);
-    out << microcodeHeader << "\n";
-
-    // Write header (optional)
-    out << ";";
-    for (int col = 0; col < columnCount(); ++col) {
-        out << headerData(col, Qt::Horizontal, Qt::DisplayRole).toString();
-        if (col < columnCount() - 1)
-            out << " " << delimiter << " ";
+// This refers to width in characters, nothing related to graphics
+QList<qsizetype> MicrocodeModel::computeColumnWidths() const{
+    QList<qsizetype> result = {};
+    for (int col = 0; col < columnCount(); col++) {
+        qsizetype currentMax = headerData(col, Qt::Horizontal, Qt::DisplayRole).toString().size();
+        for (int row = 0; row < rowCount(); row++) {
+            qsizetype cellSize = data(index(row, col), Qt::DisplayRole).toString().size();
+            if(cellSize>currentMax){
+                currentMax = cellSize;
+            }
+        }
+        result.append(currentMax);
     }
-    out << "\n";
 
-    // Write each instruction row
+    return result;
+}
+
+bool MicrocodeModel::saveToTextStream(QTextStream& stream, QChar delimiter) const{
+    QList<qsizetype> columnWidths = computeColumnWidths();
+    stream << microcodeHeader << "\n";
+    qsizetype width = 0;
+    for (int col = 0; col < columnCount(); ++col) {
+        auto columnName = headerData(col, Qt::Horizontal, Qt::DisplayRole).toString();
+        if(col == 0){
+            columnName = ";" + columnName;
+        }
+        stream << columnName;
+
+        if (col < columnCount() - 1){
+            width = columnWidths[col] - columnName.size() + 2;
+            stream << qSetFieldWidth(width) << delimiter << qSetFieldWidth(0);
+        }
+    }
+    stream << "\n";
     for (int row = 0; row < rowCount(); ++row) {
         for (int col = 0; col < columnCount(); ++col) {
             QString cell = data(index(row, col), Qt::DisplayRole).toString();
-            out << cell;
-            if (col < columnCount() - 1)
-                out << " " << delimiter << " ";
+            stream << cell;
+            if (col < columnCount() - 1){
+                width = columnWidths[col] - cell.size() + 2;
+                stream << qSetFieldWidth(width) << delimiter << qSetFieldWidth(0);
+            }
         }
-        out << "\n";
+        stream << "\n";
     }
 
     return true;
 }
-
-bool MicrocodeModel::loadFromTextFile(const QString& filePath, QChar delimiter)
-{
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return false;
-
-    QTextStream in(&file);
+bool MicrocodeModel::loadFromTextStream(QTextStream& stream, QChar delimiter){
     QList<Instruction> instructions;
 
     // Skip all lines until the header
-    while (!in.atEnd()) {
-        QString line = in.readLine().trimmed();
-        if(line == microcodeHeader) break;
+    bool inHeader = false;
+    while (!stream.atEnd()) {
+        QString line = stream.readLine().trimmed();
+        qDebug("Microcode line: %s", line.toStdString().data());
+        if(line == microcodeHeader){
+            inHeader = true;
+            break;
+        }
     }
 
-    while (!in.atEnd()) {
-        QString line = in.readLine().trimmed();
+    if(!inHeader){
+        qDebug("Microcode header not found!");
+        return false;
+    }
+
+    qDebug("Microcode header found!");
+
+    while (!stream.atEnd()) {
+        QString line = stream.readLine().trimmed();
         if (line.isEmpty())
             continue;
 
@@ -177,7 +199,27 @@ bool MicrocodeModel::loadFromTextFile(const QString& filePath, QChar delimiter)
     }
 
     setInstructions(instructions);
-
+    qDebug("Loaded %d microcode lines.", (int)instructions.size());
     return true;
+}
+
+bool MicrocodeModel::saveToTextFile(const QString& filePath, QChar delimiter) const
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return false;
+
+    QTextStream out(&file);
+    return saveToTextStream(out, delimiter);
+}
+
+bool MicrocodeModel::loadFromTextFile(const QString& filePath, QChar delimiter)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return false;
+
+    QTextStream in(&file);
+    return loadFromTextStream(in, delimiter);
 }
 

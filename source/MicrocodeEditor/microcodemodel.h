@@ -26,11 +26,17 @@ const QChar MICROCODE_FILE_DELIMITER = '|';
         bool insertInstruction(int row, const Instruction& instr = Instruction{});
         void clear();
 
+        bool saveToTextStream(QTextStream& stream, QChar delimiter = MICROCODE_FILE_DELIMITER) const;
+        bool loadFromTextStream(QTextStream& stream, QChar delimiter = MICROCODE_FILE_DELIMITER);
+
         bool saveToTextFile(const QString& filePath, QChar delimiter = MICROCODE_FILE_DELIMITER) const;
         bool loadFromTextFile(const QString& filePath, QChar delimiter = MICROCODE_FILE_DELIMITER);
 
     private:
         Microcode m_microcode;
+
+        // This refers to width in characters, nothing related to graphics
+        QList<qsizetype> computeColumnWidths() const;
     };
 
 }

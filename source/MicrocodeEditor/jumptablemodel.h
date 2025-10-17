@@ -24,11 +24,18 @@ namespace MicrocodeEditor{
         QVector<JumpTableEntry> entries() const;
         QStringList headers() const;
         void clear();
+
+        bool loadFromTextStream(QTextStream& stream, QChar delimiter = '|');
+        bool saveToTextStream(QTextStream& stream, QChar delimiter = '|');
+
         bool loadFromTextFile(const QString& filePath, QChar delimiter = '|');
+        bool saveToTextFile(const QString& filePath, QChar delimiter = '|');
 
     private:
         JumpTable m_jumptable;
         QStringList m_headers = {"Opcode", "Jump Table 1", "Jump Table 2"};
+        // This refers to width in characters, nothing related to graphics
+        QList<qsizetype> computeColumnWidths() const;
     };
 }
 

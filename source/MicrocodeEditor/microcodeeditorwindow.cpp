@@ -59,10 +59,27 @@ void MicrocodeEditorWindow::openFile()
 
     QString filePath = QFileDialog::getOpenFileName(this, tr("Open Microcode File"),
                                                     "", tr("Microcode Files (*.txt *.mc *.tsv)"));
-    if (filePath.isEmpty())
+    if (filePath.isEmpty()){
+        qDebug("Empty path!");
         return;
+    }
 
-    if (m_microcodeEditor->m_model->loadFromTextFile(filePath) && m_jumpTableEditor->model()->loadFromTextFile(filePath)) {
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        qDebug("Failed to open!");
+        return;
+    }
+
+    bool success = true;
+    QTextStream in1(&file);
+    success &= m_microcodeEditor->m_model->loadFromTextStream(in1);
+    file.seek(0);
+    QTextStream in2(&file);
+    success &= m_jumpTableEditor->model()->loadFromTextStream(in2);
+
+    qDebug("Success: %d", success);
+
+    if (success) {
         m_currentFilePath = filePath;
         setWindowTitle(QString("Microcode Editor - [%1]").arg(QFileInfo(filePath).fileName()));
     }
@@ -74,7 +91,16 @@ void MicrocodeEditorWindow::saveFile()
         saveFileAs();
         return;
     }
-    m_microcodeEditor->m_model->saveToTextFile(m_currentFilePath);
+
+    QFile file(m_currentFilePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        return;
+    }
+
+    bool success = true;
+    QTextStream in(&file);
+    m_microcodeEditor->m_model->saveToTextStream(in);
+    m_jumpTableEditor->model()->saveToTextStream(in);
 }
 
 void MicrocodeEditorWindow::saveFileAs()
@@ -85,7 +111,17 @@ void MicrocodeEditorWindow::saveFileAs()
     if (filePath.isEmpty())
         return;
 
-    if (m_microcodeEditor->m_model->saveToTextFile(filePath)) {
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        return;
+    }
+
+    bool success = true;
+    QTextStream in(&file);
+    success &= m_microcodeEditor->m_model->saveToTextStream(in);
+    success &= m_jumpTableEditor->model()->saveToTextStream(in);
+
+    if (success) {
         m_currentFilePath = filePath;
         setWindowTitle(QString("Microcode Editor - [%1]").arg(QFileInfo(filePath).fileName()));
     }

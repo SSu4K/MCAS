@@ -1,5 +1,6 @@
 #include "jumptableeditorwidget.h"
 #include <qheaderview.h>
+#include <QTimer>
 
 using namespace MicrocodeEditor;
 
@@ -19,5 +20,27 @@ JumpTableEditorWidget::JumpTableEditorWidget(QWidget* parent)
     layout->addWidget(m_table);
     layout->setContentsMargins(4, 4, 4, 4);
     setLayout(layout);
+
+    QTimer::singleShot(0, this, [this]() {
+        resizeColumnsToFit();
+        m_table->updateGeometry();
+    });
+}
+
+void JumpTableEditorWidget::resizeColumnsToFit()
+{
+    auto *hHeader = m_table->horizontalHeader();
+    const int columnCount = m_model->columnCount();
+
+    for (int i = 0; i < columnCount; ++i) {
+        if (i == columnCount - 1)
+            hHeader->setSectionResizeMode(i, QHeaderView::Stretch);
+        else
+            hHeader->setSectionResizeMode(i, QHeaderView::ResizeToContents);
+    }
+
+    m_table->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+    m_table->resizeColumnsToContents();
+    m_table->resizeRowsToContents();
 }
 

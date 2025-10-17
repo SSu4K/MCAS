@@ -85,25 +85,29 @@ void JumpTableModel::clear(){
     endResetModel();
 }
 
-bool JumpTableModel::loadFromTextFile(const QString& filePath, QChar delimiter)
-{
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return false;
+bool JumpTableModel::loadFromTextStream(QTextStream& stream, QChar delimiter){
 
-    QTextStream in(&file);
-    QList<Instruction> instructions;
-
-    // Skip all lines until the header
-    while (!in.atEnd()) {
-        QString line = in.readLine().trimmed();
-        if(line == jumpTablesHeader) break;
+    bool inHeader = false;
+    while (!stream.atEnd()) {
+        QString line = stream.readLine().trimmed();
+        qDebug("Jump Tables line: %s", line.toStdString().data());
+        if(line == jumpTablesHeader){
+            inHeader = true;
+            break;
+        }
     }
+
+    if(!inHeader){
+        qDebug("Jump Tables header not found!");
+        return false;
+    }
+
+    qDebug("Jump Tables header found!");
 
     clear();
 
-    while (!in.atEnd()) {
-        QString line = in.readLine().trimmed();
+    while (!stream.atEnd()) {
+        QString line = stream.readLine().trimmed();
         if (line.isEmpty())
             continue;
 
@@ -132,6 +136,64 @@ bool JumpTableModel::loadFromTextFile(const QString& filePath, QChar delimiter)
         }
         m_jumptable.entries.append(entry);
     }
+    return true;
+}
+
+// This refers to width in characters, nothing related to graphics
+QList<qsizetype> JumpTableModel::computeColumnWidths() const{
+    QList<qsizetype> result = {};
+    for (int col = 0; col < columnCount(); col++) {
+        qsizetype currentMax = headerData(col, Qt::Horizontal, Qt::DisplayRole).toString().size();
+        for (int row = 0; row < rowCount(); row++) {
+            qsizetype cellSize = data(index(row, col), Qt::DisplayRole).toString().size();
+            if(cellSize>currentMax){
+                currentMax = cellSize;
+            }
+        }
+        result.append(currentMax);
+    }
+
+    return result;
+}
+
+bool JumpTableModel::saveToTextStream(QTextStream& stream, QChar delimiter){
+    auto columnWidths = computeColumnWidths();
+    stream << jumpTablesHeader << "\n";
+    qsizetype width = 0;
+    for (int col = 0; col < columnCount(); ++col) {
+        auto columnName = headerData(col, Qt::Horizontal, Qt::DisplayRole).toString();
+        if(col == 0){
+            columnName = ";" + columnName;
+        }
+        stream << columnName;
+
+        if (col < columnCount() - 1){
+            width = columnWidths[col] - columnName.size() + 2;
+            stream << qSetFieldWidth(width) << delimiter << qSetFieldWidth(0);
+        }
+    }
+    stream << "\n";
+    for (int row = 0; row < rowCount(); ++row) {
+        for (int col = 0; col < columnCount(); ++col) {
+            QString cell = data(index(row, col), Qt::DisplayRole).toString();
+            stream << cell;
+            if (col < columnCount() - 1){
+                width = columnWidths[col] - cell.size() + 2;
+                stream << qSetFieldWidth(width) << delimiter << qSetFieldWidth(0);
+            }
+        }
+        stream << "\n";
+    }
 
     return true;
+}
+
+bool JumpTableModel::loadFromTextFile(const QString& filePath, QChar delimiter)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return false;
+
+    QTextStream in(&file);
+    return loadFromTextStream(in, delimiter);
 }

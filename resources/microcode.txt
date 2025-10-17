@@ -1,3 +1,0 @@
-[Microcode]
-;uAR | Label | ALU | S1 | S2 | Dest | ExtIR | Const | JCond | Adr | Mem | MAdr | MDest | Regs
-0000 |  |  |  |  |  |  |  |  |  |  |  |  | 

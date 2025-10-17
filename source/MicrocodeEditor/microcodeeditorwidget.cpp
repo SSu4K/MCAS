@@ -67,7 +67,7 @@ MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
             this, &MicrocodeEditorWidget::resizeColumnsToFit);
 
     QTimer::singleShot(0, this, [this]() {
-        m_tableView->resizeColumnsToContents();
+        onZoomChanged(1);
     });
 }
 

@@ -15,6 +15,7 @@ namespace MicrocodeEditor {
         explicit JumpTableEditorWidget(QWidget* parent = nullptr);
 
         JumpTableModel* model() const { return m_model; }
+        void resizeColumnsToFit();
 
     private:
         QTableView* m_table;
