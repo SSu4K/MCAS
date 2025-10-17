@@ -3,12 +3,13 @@
 
 #include <QAbstractTableModel>
 #include "microcode.h"
+#include "texttablemodel.h"
 
 namespace MicrocodeEditor{
 
 const QChar MICROCODE_FILE_DELIMITER = '|';
 
-    class MicrocodeModel : public QAbstractTableModel {
+class MicrocodeModel : public TextTableModel {
         Q_OBJECT
     public:
         explicit MicrocodeModel(QObject* parent = nullptr);
@@ -26,17 +27,10 @@ const QChar MICROCODE_FILE_DELIMITER = '|';
         bool insertInstruction(int row, const Instruction& instr = Instruction{});
         void clear();
 
-        bool saveToTextStream(QTextStream& stream, QChar delimiter = MICROCODE_FILE_DELIMITER) const;
-        bool loadFromTextStream(QTextStream& stream, QChar delimiter = MICROCODE_FILE_DELIMITER);
-
-        bool saveToTextFile(const QString& filePath, QChar delimiter = MICROCODE_FILE_DELIMITER) const;
-        bool loadFromTextFile(const QString& filePath, QChar delimiter = MICROCODE_FILE_DELIMITER);
 
     private:
         Microcode m_microcode;
-
-        // This refers to width in characters, nothing related to graphics
-        QList<qsizetype> computeColumnWidths() const;
+        void populateFromStringMatrix(const QList<QList<QString>> &rows) override;
     };
 
 }

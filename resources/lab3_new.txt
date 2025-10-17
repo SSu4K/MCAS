@@ -54,7 +54,7 @@
 0033 |      |ADD  |PC  |IR    |PC   |Word  |      |True  |Fetch |    |     |      |
 [Jump Tables]
 ;Opcode|Jump Table 1 |Jump Table 2
-NOP    |Fetch        |tst
+NOP    |Fetch        |
 LDB    |LD           |LDB
 LDH    |LD           |LDH
 LDW    |LD           |LDW

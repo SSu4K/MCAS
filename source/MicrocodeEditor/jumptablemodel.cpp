@@ -1,16 +1,22 @@
 #include "jumptablemodel.h"
-#include "MicrocodeEditor/microcode.h"
 
 #include <QFile>
 #include <QTextStream>
 
-const static QString jumpTablesHeader = "[Jump Tables]";
+const static QString JUMP_TABLE_HEADER = "[Jump Tables]";
+const static QChar HEADER_PREFIX = '[';
+const static QChar COMMENT_PREFIX = ';';
+const static QChar DELIMITER = '|';
 
 using namespace MicrocodeEditor;
 
 JumpTableModel::JumpTableModel(QObject* parent)
-    : QAbstractTableModel(parent)
+    : TextTableModel(parent)
 {
+    sectionHeader = JUMP_TABLE_HEADER;
+    headerPrefix = HEADER_PREFIX;
+    commentPrefix = COMMENT_PREFIX;
+    delimiter = DELIMITER;
 }
 
 int JumpTableModel::rowCount(const QModelIndex&) const {
@@ -85,115 +91,14 @@ void JumpTableModel::clear(){
     endResetModel();
 }
 
-bool JumpTableModel::loadFromTextStream(QTextStream& stream, QChar delimiter){
-
-    bool inHeader = false;
-    while (!stream.atEnd()) {
-        QString line = stream.readLine().trimmed();
-        qDebug("Jump Tables line: %s", line.toStdString().data());
-        if(line == jumpTablesHeader){
-            inHeader = true;
-            break;
-        }
-    }
-
-    if(!inHeader){
-        qDebug("Jump Tables header not found!");
-        return false;
-    }
-
-    qDebug("Jump Tables header found!");
-
+void JumpTableModel::populateFromStringMatrix(const QList<QList<QString>> &rows){
     clear();
-
-    while (!stream.atEnd()) {
-        QString line = stream.readLine().trimmed();
-        if (line.isEmpty())
-            continue;
-
-        if (line.startsWith(';'))
-            continue;
-
-        if (line.startsWith('['))
-            break; // found next header
-
-        QStringList parts = line.split(delimiter, Qt::KeepEmptyParts);
-        for (QString& s : parts)
-            s = s.trimmed();
-
-        if (parts.size() < columnCount()){
-            continue;
-        }
-
+    for(auto row: rows){
         JumpTableEntry entry;
-        for(qsizetype i = 0; i < columnCount(); i++){
-            if(i==0){
-                entry.opcode = parts[i];
-            }
-            else{
-                entry.targets.append(parts[i]);
-            }
+        entry.opcode = row[0];
+        for(qsizetype i = 1; i < columnCount(); i++){
+            entry.targets.append(row[i]);
         }
         m_jumptable.entries.append(entry);
     }
-    return true;
-}
-
-// This refers to width in characters, nothing related to graphics
-QList<qsizetype> JumpTableModel::computeColumnWidths() const{
-    QList<qsizetype> result = {};
-    for (int col = 0; col < columnCount(); col++) {
-        qsizetype currentMax = headerData(col, Qt::Horizontal, Qt::DisplayRole).toString().size();
-        for (int row = 0; row < rowCount(); row++) {
-            qsizetype cellSize = data(index(row, col), Qt::DisplayRole).toString().size();
-            if(cellSize>currentMax){
-                currentMax = cellSize;
-            }
-        }
-        result.append(currentMax);
-    }
-
-    return result;
-}
-
-bool JumpTableModel::saveToTextStream(QTextStream& stream, QChar delimiter){
-    auto columnWidths = computeColumnWidths();
-    stream << jumpTablesHeader << "\n";
-    qsizetype width = 0;
-    for (int col = 0; col < columnCount(); ++col) {
-        auto columnName = headerData(col, Qt::Horizontal, Qt::DisplayRole).toString();
-        if(col == 0){
-            columnName = ";" + columnName;
-        }
-        stream << columnName;
-
-        if (col < columnCount() - 1){
-            width = columnWidths[col] - columnName.size() + 2;
-            stream << qSetFieldWidth(width) << delimiter << qSetFieldWidth(0);
-        }
-    }
-    stream << "\n";
-    for (int row = 0; row < rowCount(); ++row) {
-        for (int col = 0; col < columnCount(); ++col) {
-            QString cell = data(index(row, col), Qt::DisplayRole).toString();
-            stream << cell;
-            if (col < columnCount() - 1){
-                width = columnWidths[col] - cell.size() + 2;
-                stream << qSetFieldWidth(width) << delimiter << qSetFieldWidth(0);
-            }
-        }
-        stream << "\n";
-    }
-
-    return true;
-}
-
-bool JumpTableModel::loadFromTextFile(const QString& filePath, QChar delimiter)
-{
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return false;
-
-    QTextStream in(&file);
-    return loadFromTextStream(in, delimiter);
 }
