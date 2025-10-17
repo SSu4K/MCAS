@@ -21,7 +21,7 @@ namespace MicrocodeEditor{
         QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
         Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-        void setEntries(const QVector<JumpTableEntry>& entries, const QStringList& headers);
+        void setEntries(const QVector<JumpTableEntry>& entries);
         QVector<JumpTableEntry> entries() const;
         QStringList headers() const;
         void clear();

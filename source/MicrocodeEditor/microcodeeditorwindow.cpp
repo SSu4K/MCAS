@@ -48,6 +48,7 @@ void MicrocodeEditorWindow::newFile()
         return;
 
     m_microcodeEditor->m_model->clear();
+    m_jumpTableEditor->model()->clear();
     m_currentFilePath.clear();
     setWindowTitle("Microcode Editor - [New]");
 }

@@ -9,6 +9,7 @@ class JumpTableEntry {
 public:
     QString opcode;
     QStringList targets;
+    JumpTableEntry();
 };
 
 class JumpTable
