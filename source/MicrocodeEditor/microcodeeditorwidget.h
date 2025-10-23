@@ -21,10 +21,10 @@ namespace MicrocodeEditor{
         QTableView* tableView() const { return m_tableView; }
 
     protected:
-        void onZoomChanged(double factor) override;
+        // void onZoomChanged(double factor) override;
 
     private:
-        void resizeColumnsToFit();
+        // void resizeColumnsToFit();
 
         QTableView* m_tableView = nullptr;
         MicrocodeEditorDelegate* m_delegate = nullptr;

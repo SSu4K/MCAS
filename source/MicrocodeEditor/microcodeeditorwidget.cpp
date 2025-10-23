@@ -55,54 +55,5 @@ MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
     code.instructions.append(instr);
 
     m_model->setMicrocode(&code);
-
-    // Adjust column widths
-    resizeColumnsToFit();
-
-    connect(m_model, &QAbstractItemModel::dataChanged,
-            this, &MicrocodeEditorWidget::resizeColumnsToFit);
-    connect(m_model, &QAbstractItemModel::layoutChanged,
-            this, &MicrocodeEditorWidget::resizeColumnsToFit);
-    connect(m_model, &QAbstractItemModel::modelReset,
-            this, &MicrocodeEditorWidget::resizeColumnsToFit);
-
-    QTimer::singleShot(0, this, [this]() {
-        onZoomChanged(1);
-    });
-}
-
-
-void MicrocodeEditorWidget::resizeColumnsToFit()
-{
-    auto *hHeader = m_tableView->horizontalHeader();
-    const int columnCount = m_model->columnCount();
-
-    for (int i = 0; i < columnCount; ++i) {
-        if (i == columnCount - 1)
-            hHeader->setSectionResizeMode(i, QHeaderView::Stretch);
-        else
-            hHeader->setSectionResizeMode(i, QHeaderView::ResizeToContents);
-    }
-
-    m_tableView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
-    m_tableView->resizeColumnsToContents();
-    m_tableView->resizeRowsToContents();
-}
-
-
-void MicrocodeEditorWidget::onZoomChanged(double factor)
-{
-    QFont font = m_tableView->font();
-    font.setPointSizeF(baseFontSize * factor);
-
-    m_tableView->setFont(font);
-    m_tableView->horizontalHeader()->setFont(font);
-    m_tableView->verticalHeader()->setFont(font);
-
-    QTimer::singleShot(0, this, [this, factor]() {
-        m_tableView->horizontalHeader()->setMinimumSectionSize(int(10 * factor));
-        resizeColumnsToFit();
-        m_tableView->updateGeometry();
-    });
 }
 

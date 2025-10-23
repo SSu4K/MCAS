@@ -22,7 +22,8 @@ MicrocodeEditorWindow::MicrocodeEditorWindow(QWidget* parent)
 
     createMenus();
     setWindowTitle("Microcode Editor");
-    resize(m_microcodeEditor->sizeHint());
+    //resize(m_microcodeEditor->sizeHint());
+    resize(1000, 600);
 }
 
 void MicrocodeEditorWindow::createMenus()
