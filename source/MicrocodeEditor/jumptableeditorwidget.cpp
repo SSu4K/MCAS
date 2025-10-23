@@ -1,4 +1,5 @@
 #include "jumptableeditorwidget.h"
+#include "MicrocodeEditor/jumptableeditordelegate.h"
 #include <qheaderview.h>
 #include <QTimer>
 
@@ -15,6 +16,9 @@ JumpTableEditorWidget::JumpTableEditorWidget(QWidget* parent)
     m_table->setSelectionBehavior(QAbstractItemView::SelectItems);
     m_table->setSelectionMode(QAbstractItemView::SingleSelection);
     m_table->horizontalHeader()->setStretchLastSection(true);
+
+    m_delegate = new JumpTableEditorDelegate(this);
+    m_table->setItemDelegate(m_delegate);
 
     auto* layout = new QVBoxLayout(this);
     layout->addWidget(m_table);

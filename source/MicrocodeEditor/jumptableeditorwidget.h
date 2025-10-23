@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTableView>
 #include <QVBoxLayout>
+#include "MicrocodeEditor/jumptableeditordelegate.h"
 #include "zoomwidget.h"
 #include "jumptablemodel.h"
 
@@ -19,7 +20,10 @@ namespace MicrocodeEditor {
 
     private:
         QTableView* m_table;
+        JumpTableEditorDelegate* m_delegate = nullptr;
         JumpTableModel* m_model;
+
+        friend bool JumpTableEditorDelegate::eventFilter(QObject* editor, QEvent* event);
     };
 
 }

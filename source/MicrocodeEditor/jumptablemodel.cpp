@@ -17,6 +17,7 @@ JumpTableModel::JumpTableModel(QObject* parent)
     headerPrefix = HEADER_PREFIX;
     commentPrefix = COMMENT_PREFIX;
     delimiter = DELIMITER;
+    clear();
 }
 
 int JumpTableModel::rowCount(const QModelIndex&) const {
@@ -88,6 +89,18 @@ void JumpTableModel::clear(){
     beginResetModel();
     m_jumptable.entries = {JumpTableEntry()};
     endResetModel();
+}
+
+bool JumpTableModel::insertEntry(int row, const JumpTableEntry& entry) {
+
+    if (row < 0 || row > m_jumptable.entries.size())
+        row = m_jumptable.entries.size();
+
+    beginInsertRows(QModelIndex(), row, row);
+    m_jumptable.entries.insert(row, entry);
+    endInsertRows();
+
+    return true;
 }
 
 void JumpTableModel::populateFromStringMatrix(const QList<QList<QString>> &rows){

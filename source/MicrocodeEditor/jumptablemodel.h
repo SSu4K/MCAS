@@ -25,11 +25,11 @@ namespace MicrocodeEditor{
         QVector<JumpTableEntry> entries() const;
         QStringList headers() const;
         void clear();
-
+        bool insertEntry(int row, const JumpTableEntry& entry);
+        \
     private:
         JumpTable m_jumptable;
         QStringList m_headers = {"Opcode", "Jump Table 1", "Jump Table 2"};
-
         void populateFromStringMatrix(const QList<QList<QString>> &rows) override;
     };
 }
