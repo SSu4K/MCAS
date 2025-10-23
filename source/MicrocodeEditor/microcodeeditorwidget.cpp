@@ -3,11 +3,12 @@
 #include "microcodeeditordelegate.h"
 #include <QHeaderView>
 #include <QVBoxLayout>
+#include <QTimer>
 
 using namespace MicrocodeEditor;
 
 MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
-    : QWidget(parent)
+    : ZoomWidget(parent)
 {
     m_tableView = new QTableView(this);
     m_tableView->setAlternatingRowColors(true);
@@ -54,22 +55,5 @@ MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
     code.instructions.append(instr);
 
     m_model->setMicrocode(&code);
-
-    // Adjust column widths
-    resizeColumnsToFit();
-
-    connect(m_model, &QAbstractItemModel::dataChanged,
-            this, &MicrocodeEditorWidget::resizeColumnsToFit);
-    connect(m_model, &QAbstractItemModel::layoutChanged,
-            this, &MicrocodeEditorWidget::resizeColumnsToFit);
-    connect(m_model, &QAbstractItemModel::modelReset,
-            this, &MicrocodeEditorWidget::resizeColumnsToFit);
 }
 
-
-void MicrocodeEditorWidget::resizeColumnsToFit() {
-    auto* hHeader = m_tableView->horizontalHeader();
-    hHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
-    m_tableView->resizeColumnsToContents();
-    //hHeader->setStretchLastSection(true);
-}

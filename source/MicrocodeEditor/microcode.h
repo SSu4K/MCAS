@@ -65,6 +65,7 @@ namespace MicrocodeEditor{
     class Microcode{
     public:
         QList<Instruction> instructions;
+        QList<QStringList> jumpTable;
         Microcode();
     };
 

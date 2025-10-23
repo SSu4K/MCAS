@@ -3,11 +3,11 @@
 
 #include <QMainWindow>
 #include "microcodeeditorwidget.h"
-#include "zoommainwindow.h"
+#include "jumptableeditorwidget.h"
 
 namespace MicrocodeEditor{
 
-    class MicrocodeEditorWindow : public ZoomMainWindow
+    class MicrocodeEditorWindow : public QMainWindow
     {
         Q_OBJECT
     public:
@@ -26,7 +26,10 @@ namespace MicrocodeEditor{
         bool saveToFile(const QString& filePath);
         bool loadFromFile(const QString& filePath);
 
-        MicrocodeEditorWidget* m_editorWidget = nullptr;
+        QTabWidget* m_tabWidget;
+        MicrocodeEditorWidget* m_microcodeEditor;
+        JumpTableEditorWidget* m_jumpTableEditor;
+
         QString m_currentFilePath;
         bool m_isModified = false;
     };

@@ -1,7 +1,7 @@
 [Microcode]
 ;uAR |Label |ALU  |S1  |S2    |Dest |ExtIR |Const |JCond |Adr   |Mem |MAdr |MDest |Regs
 0000 |Fetch |     |    |      |     |      |      |MBusy |Fetch |RW  |PC   |      |
-0001 |      |ADD  |A   |Const |PC   |      |1     |Jump1 |      |    |     |      |RR
+0001 |      |ADD  |PC  |Const |PC   |      |4     |Jump1 |      |    |     |      |RR
 0002 |ST    |S2   |    |B     |MDR  |      |      |      |      |    |     |      |
 0003 |LD    |ADD  |A   |IR    |MAR  |Word  |      |Jump2 |      |    |     |      |
 0004 |LDB   |     |    |      |     |      |      |MBusy |LDB   |RB  |MAR  |      |

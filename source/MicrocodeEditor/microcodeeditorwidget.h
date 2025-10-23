@@ -6,10 +6,11 @@
 #include <QHeaderView>
 #include "microcodemodel.h"
 #include "microcodeeditordelegate.h"
+#include "zoomwidget.h"
 
 namespace MicrocodeEditor{
 
-    class MicrocodeEditorWidget : public QWidget {
+    class MicrocodeEditorWidget : public ZoomWidget {
         Q_OBJECT
     public:
         MicrocodeModel* m_model = nullptr;
@@ -19,11 +20,15 @@ namespace MicrocodeEditor{
         MicrocodeModel* model() const { return m_model; }
         QTableView* tableView() const { return m_tableView; }
 
+    protected:
+        // void onZoomChanged(double factor) override;
+
     private:
-        void resizeColumnsToFit();
+        // void resizeColumnsToFit();
 
         QTableView* m_tableView = nullptr;
         MicrocodeEditorDelegate* m_delegate = nullptr;
+        const double baseFontSize = 10.0;
 
         friend bool MicrocodeEditorDelegate::eventFilter(QObject* editor, QEvent* event);
     };

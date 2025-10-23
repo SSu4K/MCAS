@@ -8,15 +8,21 @@
 using namespace MicrocodeEditor;
 
 MicrocodeEditorWindow::MicrocodeEditorWindow(QWidget* parent)
-    : ZoomMainWindow(parent)
+    : QMainWindow(parent)
 {
-    m_editorWidget = new MicrocodeEditorWidget(this);
-    setCentralWidget(m_editorWidget);
+    m_tabWidget = new QTabWidget(this);
 
-    registerZoomableWidget(m_editorWidget);
+    m_microcodeEditor = new MicrocodeEditorWidget(this);
+    m_jumpTableEditor = new JumpTableEditorWidget(this);
+
+    m_tabWidget->addTab(m_microcodeEditor, tr("Microcode"));
+    m_tabWidget->addTab(m_jumpTableEditor, tr("Jump Tables"));
+
+    setCentralWidget(m_tabWidget);
 
     createMenus();
     setWindowTitle("Microcode Editor");
+    //resize(m_microcodeEditor->sizeHint());
     resize(1000, 600);
 }
 
@@ -42,7 +48,8 @@ void MicrocodeEditorWindow::newFile()
     if (!maybeSave())
         return;
 
-    m_editorWidget->m_model->clear();
+    m_microcodeEditor->m_model->clear();
+    m_jumpTableEditor->model()->clear();
     m_currentFilePath.clear();
     setWindowTitle("Microcode Editor - [New]");
 }
@@ -54,10 +61,27 @@ void MicrocodeEditorWindow::openFile()
 
     QString filePath = QFileDialog::getOpenFileName(this, tr("Open Microcode File"),
                                                     "", tr("Microcode Files (*.txt *.mc *.tsv)"));
-    if (filePath.isEmpty())
+    if (filePath.isEmpty()){
+        qDebug("Empty path!");
         return;
+    }
 
-    if (m_editorWidget->m_model->loadFromTextFile(filePath)) {
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        qDebug("Failed to open!");
+        return;
+    }
+
+    bool success = true;
+    QTextStream in1(&file);
+    success &= m_microcodeEditor->m_model->loadFromTextStream(in1);
+    file.seek(0);
+    QTextStream in2(&file);
+    success &= m_jumpTableEditor->model()->loadFromTextStream(in2);
+
+    qDebug("Success: %d", success);
+
+    if (success) {
         m_currentFilePath = filePath;
         setWindowTitle(QString("Microcode Editor - [%1]").arg(QFileInfo(filePath).fileName()));
     }
@@ -69,7 +93,16 @@ void MicrocodeEditorWindow::saveFile()
         saveFileAs();
         return;
     }
-    m_editorWidget->m_model->saveToTextFile(m_currentFilePath);
+
+    QFile file(m_currentFilePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        return;
+    }
+
+    bool success = true;
+    QTextStream in(&file);
+    m_microcodeEditor->m_model->saveToTextStream(in);
+    m_jumpTableEditor->model()->saveToTextStream(in);
 }
 
 void MicrocodeEditorWindow::saveFileAs()
@@ -80,7 +113,17 @@ void MicrocodeEditorWindow::saveFileAs()
     if (filePath.isEmpty())
         return;
 
-    if (m_editorWidget->m_model->saveToTextFile(filePath)) {
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        return;
+    }
+
+    bool success = true;
+    QTextStream in(&file);
+    success &= m_microcodeEditor->m_model->saveToTextStream(in);
+    success &= m_jumpTableEditor->model()->saveToTextStream(in);
+
+    if (success) {
         m_currentFilePath = filePath;
         setWindowTitle(QString("Microcode Editor - [%1]").arg(QFileInfo(filePath).fileName()));
     }
