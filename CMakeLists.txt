@@ -13,6 +13,25 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
 find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
 
+# Define version and build info
+set(APP_VERSION "v0.1.0-prealpha")
+set(BUILD_TYPE ${CMAKE_BUILD_TYPE})
+set(BUILD_PLATFORM ${CMAKE_SYSTEM_NAME})
+
+add_compile_definitions(
+    APP_VERSION="${APP_VERSION}"
+    BUILD_TYPE="${BUILD_TYPE}"
+    BUILD_PLATFORM="${BUILD_PLATFORM}"
+)
+
+if (MSVC)
+    add_compile_definitions(COMPILER_NAME="MSVC")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_compile_definitions(COMPILER_NAME="Clang")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_definitions(COMPILER_NAME="GCC")
+endif()
+
 # Include the source directory
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
 

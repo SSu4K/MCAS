@@ -2,7 +2,10 @@
 #define MCASAPP_H
 
 #include <QApplication>
-#include <qtranslator.h>
+#include <QStyleFactory>
+#include <QPalette>
+#include <QTranslator>
+
 #include "appcontext.h"
 #include "mainwindow.h"
 
@@ -20,6 +23,7 @@ public:
     void initTranslations();
     void initPalette();
     void initMainWindow();
+
 
 private:
     AppContext *m_context = nullptr;

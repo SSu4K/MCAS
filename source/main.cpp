@@ -1,6 +1,4 @@
-#include "MicrocodeEditor/microcodeeditorwindow.h"
-
-#include "mainwindow.h"
+#include "mcasapp.h"
 
 #include <QApplication>
 #include <QLocale>
@@ -33,21 +31,17 @@ QPalette createDarkPalette() {
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-    app.setStyle(QStyleFactory::create("Fusion"));
-    //app.setPalette(createDarkPalette());
+    MCASApp app(argc, argv);
 
-    QTranslator translator;
-    const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages) {
-        const QString baseName = "MCAS_" + QLocale(locale).name();
-        if (translator.load(":/i18n/" + baseName)) {
-            app.installTranslator(&translator);
-            break;
-        }
-    }
-    MainWindow window;
-    window.show();
+    qDebug() << "App version:" << AppContext::instance()->appVersion();
+    qDebug() << "Build type:"  << AppContext::instance()->buildType();
+    qDebug() << "Platform:"    << AppContext::instance()->platform();
+    qDebug() << "Compiler:"    << AppContext::instance()->compiler();
+    qDebug() << "Qt version:"  << AppContext::instance()->qtVersion();
+    qDebug() << "Runtime OS:"  << AppContext::instance()->runtimeOS();
+
+    app.context()->setTheme(AppContext::Theme::System);
+    app.initPalette();
     return app.exec();
 }
 
