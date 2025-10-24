@@ -20,6 +20,8 @@ private:
     MicrocodeEditor::MicrocodeEditorWindow *m_microcodeEditorWindow = nullptr;
 
     bool eventFilter(QObject *obj, QEvent *event);
+    void createToolsMenu();
+    void createViewMenu();
 };
 
 #endif // MAINWINDOW_H
