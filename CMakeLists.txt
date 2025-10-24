@@ -46,6 +46,7 @@ qt_add_executable(MCAS
     source/texttablemodel.h source/texttablemodel.cpp
     source/MicrocodeEditor/jumptableeditordelegate.h source/MicrocodeEditor/jumptableeditordelegate.cpp
     source/appcontext.h source/appcontext.cpp
+    source/mcasapp.h source/mcasapp.cpp
 
 
 )
