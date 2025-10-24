@@ -1,8 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "MicrocodeEditor/microcodeeditorwindow.h"
 #include <QMainWindow>
+#include <QMenuBar>
+#include <QActionGroup>
+#include <QEvent>
+
+#include "MicrocodeEditor/microcodeeditorwindow.h"
 
 class MainWindow : public QMainWindow
 {
@@ -20,6 +24,8 @@ private:
     MicrocodeEditor::MicrocodeEditorWindow *m_microcodeEditorWindow = nullptr;
 
     bool eventFilter(QObject *obj, QEvent *event);
+    void createToolsMenu();
+    void createViewMenu();
 };
 
 #endif // MAINWINDOW_H
