@@ -48,8 +48,10 @@ private:
 
     static QPointer<AppContext> s_instance;
 
+    // Temporary until actual implementations are present
     MicrocodeModel* m_microcodeModel = nullptr;
     JumpTableModel* m_jumpTableModel = nullptr;
+
     std::unique_ptr<QSettings> m_settings;
 
     QString m_appVersion;

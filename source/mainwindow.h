@@ -1,8 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "MicrocodeEditor/microcodeeditorwindow.h"
 #include <QMainWindow>
+#include <QMenuBar>
+#include <QActionGroup>
+#include <QEvent>
+
+#include "MicrocodeEditor/microcodeeditorwindow.h"
 
 class MainWindow : public QMainWindow
 {

@@ -1,11 +1,6 @@
 #include "mainwindow.h"
-#include "MicrocodeEditor/microcodeeditorwindow.h"
 #include "appcontext.h"
 #include "mcasapp.h"
-#include <QMenuBar>
-#include <QAction>
-#include <QActionGroup>
-#include <QEvent>
 
 using namespace MicrocodeEditor;
 
@@ -52,6 +47,10 @@ void MainWindow::createViewMenu()
     QAction *lightAct  = themeMenu->addAction(tr("Light"));
     QAction *darkAct   = themeMenu->addAction(tr("Dark"));
 
+    systemAct->setCheckable(true);
+    lightAct->setCheckable(true);
+    darkAct->setCheckable(true);
+
     QActionGroup *group = new QActionGroup(this);
     group->addAction(systemAct);
     group->addAction(lightAct);
@@ -60,11 +59,14 @@ void MainWindow::createViewMenu()
 
     // Reflect current theme
     auto *context = AppContext::instance();
-    switch (context->currentTheme()) {
-    case AppContext::Theme::System: systemAct->setChecked(true); break;
-    case AppContext::Theme::Light: lightAct->setChecked(true); break;
-    case AppContext::Theme::Dark: darkAct->setChecked(true); break;
-    }
+
+    connect(viewMenu, &QMenu::aboutToShow, this, [=]() {
+        switch (context->currentTheme()) {
+        case AppContext::Theme::System: systemAct->setChecked(true); break;
+        case AppContext::Theme::Light:  lightAct->setChecked(true);  break;
+        case AppContext::Theme::Dark:   darkAct->setChecked(true);   break;
+        }
+    });
 
     connect(group, &QActionGroup::triggered, this, [=](QAction *action) {
         auto *app = static_cast<MCASApp*>(QApplication::instance());
