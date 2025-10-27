@@ -55,20 +55,7 @@ set(PROJECT_SOURCES
 qt_add_executable(MCAS
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    source/MicrocodeEditor/microcodeeditordelegate.cpp source/MicrocodeEditor/microcodeeditordelegate.h
-    source/zoomwidget.h source/zoomwidget.cpp
-    source/mainwindow.h source/mainwindow.cpp
-    source/MicrocodeEditor/jumptable.h source/MicrocodeEditor/jumptable.cpp
-    source/MicrocodeEditor/jumptable.h source/MicrocodeEditor/jumptable.cpp
-    source/MicrocodeEditor/jumptablemodel.h source/MicrocodeEditor/jumptablemodel.cpp
-    source/MicrocodeEditor/jumptableeditorwidget.h source/MicrocodeEditor/jumptableeditorwidget.cpp
-    source/texttablemodel.h source/texttablemodel.cpp
-    source/MicrocodeEditor/jumptableeditordelegate.h source/MicrocodeEditor/jumptableeditordelegate.cpp
-    source/appcontext.h source/appcontext.cpp
-    source/mcasapp.h source/mcasapp.cpp
-    resources.qrc
-
-
+    source/Common/editorwindow.h source/Common/editorwindow.cpp
 )
 
 # Link Qt libraries
@@ -81,6 +68,14 @@ if(TS_FILES)
         LUPDATE_OPTIONS -recursive ${CMAKE_SOURCE_DIR}
     )
 endif()
+
+target_include_directories(MCAS PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/Common
+    ${CMAKE_SOURCE_DIR}/src/MicrocodeEditor
+    ${CMAKE_SOURCE_DIR}/src/MemoryEditor
+    ${CMAKE_SOURCE_DIR}/src/App
+)
 
 # Install target
 include(GNUInstallDirs)
