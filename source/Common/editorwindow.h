@@ -2,6 +2,7 @@
 #define EDITORWINDOW_H
 
 #include <QMainWindow>
+#include <QFile>
 
 class EditorWindow : public QMainWindow
 {
@@ -23,8 +24,9 @@ protected:
     virtual QString defaultFilename() const { return "type.txt"; }
     virtual QString fileFilterString() const { return "[Type] Files (*.txt *.mc)"; }
 
-    virtual bool serializeToStream(QTextStream &stream) const;
-    virtual bool serializeFromStream(QTextStream const &stream);
+    virtual bool serializeToFile(QFile& filePath) const {return true;}
+    virtual bool serializeFromFile(QFile& filePath) {return true;}
+    virtual void clearData() {}
 
 private:
     QString m_currentFilePath;

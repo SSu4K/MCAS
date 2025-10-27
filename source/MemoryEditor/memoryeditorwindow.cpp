@@ -10,12 +10,16 @@ MemoryEditorWindow::MemoryEditorWindow(QWidget *parent)
     qDebug() << fileFilterString();
 }
 
-bool serializeToStream(QTextStream &stream) {
+bool MemoryEditorWindow::serializeToFile(QFile &file) const {
     // do nothing for now
     return true;
 }
 
-bool serializeFromStream(QTextStream const &stream){
+bool MemoryEditorWindow::serializeFromFile(QFile &file){
     // do nothing for now
     return true;
+}
+
+void MemoryEditorWindow::clearData(){
+    // do nothing for now
 }

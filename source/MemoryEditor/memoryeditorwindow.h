@@ -19,8 +19,9 @@ namespace MemoryEditor{
         QString defaultFilename() const override { return "memory.txt"; }
         QString fileFilterString() const override { return "Memory Files (*.cpp *.txt)"; }
 
-        bool serializeToStream(QTextStream &stream) const override;
-        bool serializeFromStream(QTextStream const &stream) override;
+        bool serializeToFile(QFile& file) const override;
+        bool serializeFromFile(QFile& file) override;
+        void clearData() override;
 
     signals:
     };

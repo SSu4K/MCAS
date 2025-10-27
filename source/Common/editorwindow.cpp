@@ -37,8 +37,7 @@ void EditorWindow::newFile()
     if (!maybeSave())
         return;
 
-    // m_microcodeEditor->m_model->clear();
-    // m_jumpTableEditor->model()->clear();
+    clearData();
     m_currentFilePath.clear();
     setWindowTitle(windowTitle() + " - [New]");
 }
@@ -61,8 +60,7 @@ void EditorWindow::openFile()
         return;
     }
 
-    QTextStream in(&file);
-    bool success = serializeFromStream(in);
+    bool success = serializeFromFile(file);
 
     qDebug() << "Serializing from" << filePath << "Success:" << success;
 
@@ -85,8 +83,7 @@ void EditorWindow::saveFile()
     }
 
     bool success = true;
-    QTextStream out(&file);
-    success = serializeToStream(out);
+    success = serializeToFile(file);
 
     qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
 }
@@ -105,9 +102,9 @@ void EditorWindow::saveFileAs()
     }
 
     bool success = true;
-    QTextStream in(&file);
-    // success &= m_microcodeEditor->m_model->saveToTextStream(in);
-    // success &= m_jumpTableEditor->model()->saveToTextStream(in);
+    success = serializeToFile(file);
+
+    qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
 
     if (success) {
         m_currentFilePath = filePath;
