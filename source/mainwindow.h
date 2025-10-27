@@ -26,6 +26,9 @@ private:
     bool eventFilter(QObject *obj, QEvent *event);
     void createToolsMenu();
     void createViewMenu();
+    void createMenu();
+    void retranslateUi();
+
 };
 
 #endif // MAINWINDOW_H

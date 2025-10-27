@@ -52,14 +52,7 @@ MCASApp::MCASApp(int &argc, char **argv)
 
 void MCASApp::initTranslations()
 {
-    const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages) {
-        const QString baseName = "MCAS_" + QLocale(locale).name();
-        if (m_translator.load(":/i18n/" + baseName)) {
-            installTranslator(&m_translator);
-            break;
-        }
-    }
+    AppContext::instance()->initLanguage();
 }
 
 void MCASApp::initPalette()

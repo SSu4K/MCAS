@@ -4,39 +4,58 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../source/mainwindow.cpp" line="35"/>
+        <location filename="../source/mainwindow.cpp" line="37"/>
         <source>&amp;Tools</source>
         <translation>&amp;Tools</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="36"/>
+        <location filename="../source/mainwindow.cpp" line="38"/>
         <source>Open Microcode Editor</source>
         <translation>Open Microcode Editor</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="43"/>
+        <location filename="../source/mainwindow.cpp" line="45"/>
         <source>&amp;View</source>
-        <translation>View</translation>
+        <translation>&amp;View</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="44"/>
+        <location filename="../source/mainwindow.cpp" line="46"/>
         <source>Theme</source>
         <translation>Theme</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="46"/>
+        <location filename="../source/mainwindow.cpp" line="48"/>
         <source>System Default</source>
         <translation>System Default</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="47"/>
+        <location filename="../source/mainwindow.cpp" line="49"/>
         <source>Light</source>
         <translation>Light</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="48"/>
+        <location filename="../source/mainwindow.cpp" line="50"/>
         <source>Dark</source>
         <translation>Dark</translation>
+    </message>
+    <message>
+        <location filename="../source/mainwindow.cpp" line="83"/>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Language</source>
+        <translation type="vanished">&amp;Language</translation>
+    </message>
+    <message>
+        <location filename="../source/mainwindow.cpp" line="86"/>
+        <source>English</source>
+        <translation>English</translation>
+    </message>
+    <message>
+        <location filename="../source/mainwindow.cpp" line="88"/>
+        <source>Polish</source>
+        <translation type="unfinished">Polish</translation>
     </message>
 </context>
 <context>

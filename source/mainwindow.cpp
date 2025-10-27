@@ -10,8 +10,10 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("Main Application");
     resize(700, 500);
 
-    createToolsMenu();
-    createViewMenu();
+    createMenu();
+
+    connect(AppContext::instance(), &AppContext::languageChanged,
+            this, &MainWindow::retranslateUi);
 }
 
 void MainWindow::openMicrocodeEditorWindow()
@@ -41,7 +43,7 @@ void MainWindow::createToolsMenu(){
 void MainWindow::createViewMenu()
 {
     auto viewMenu = menuBar()->addMenu(tr("&View"));
-    auto themeMenu = viewMenu->addMenu(tr("&Theme"));
+    auto themeMenu = viewMenu->addMenu(tr("Theme"));
 
     QAction *systemAct = themeMenu->addAction(tr("System Default"));
     QAction *lightAct  = themeMenu->addAction(tr("Light"));
@@ -77,6 +79,43 @@ void MainWindow::createViewMenu()
         context->setTheme(newTheme);
         app->initPalette();
     });
+
+    QMenu* langMenu = viewMenu->addMenu(tr("Language"));
+
+    QActionGroup* langGroup = new QActionGroup(this);
+    QAction* enAction = langMenu->addAction(tr("English"));
+    enAction->setCheckable(true);
+    QAction* plAction = langMenu->addAction(tr("Polish"));
+    plAction->setCheckable(true);
+
+    langGroup->addAction(enAction);
+    langGroup->addAction(plAction);
+
+    connect(plAction, &QAction::triggered, this, []{
+        AppContext::instance()->setLanguage(AppContext::Language::Polish);
+    });
+    connect(enAction, &QAction::triggered, this, []{
+        AppContext::instance()->setLanguage(AppContext::Language::English);
+    });
+
+    connect(viewMenu, &QMenu::aboutToShow, this, [=]() {
+        switch (context->currentLanguage()) {
+            case AppContext::Language::English: enAction->setChecked(true); break;
+            case AppContext::Language::Polish:  plAction->setChecked(true);  break;
+            default: break;
+        }
+    });
+
+}
+
+void MainWindow::createMenu(){
+    createToolsMenu();
+    createViewMenu();
+}
+
+void MainWindow::retranslateUi(){
+    menuBar()->clear();
+    createMenu();
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
