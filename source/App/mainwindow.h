@@ -7,6 +7,7 @@
 #include <QEvent>
 
 #include "MicrocodeEditor/microcodeeditorwindow.h"
+#include "MemoryEditor/memoryeditorwindow.h"
 
 class MainWindow : public QMainWindow
 {
@@ -20,8 +21,12 @@ private slots:
     void openMicrocodeEditorWindow();
     void closeMicrocodeEditorWindow();
 
+    void openMemoryEditorWindow();
+    void closeMemoryEditorWindow();
+
 private:
     MicrocodeEditor::MicrocodeEditorWindow *m_microcodeEditorWindow = nullptr;
+    MemoryEditor::MemoryEditorWindow *m_memoryEditorWindow = nullptr;
 
     bool eventFilter(QObject *obj, QEvent *event);
     void createToolsMenu();
