@@ -14,9 +14,9 @@ namespace MicrocodeEditor{
         explicit MicrocodeEditorWindow(QWidget* parent = nullptr);
 
     protected:
-        QString windowTitle() const override { return "Microcode Editor"; }
-        QString openFilePrompt() const override { return "Open Microcode File"; }
-        QString saveAsFilePrompt() const override { return "Save Microcode File As"; }
+        QString windowTitle() const override { return tr("Microcode Editor"); }
+        QString openFilePrompt() const override { return tr("Open Microcode File"); }
+        QString saveAsFilePrompt() const override { return tr("Save Microcode File As"); }
         QString defaultFilename() const override { return "microcode.txt"; }
         QString fileFilterString() const override { return "Microcode Files (*.mco *.txt)"; }
 

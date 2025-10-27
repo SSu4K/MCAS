@@ -1,13 +1,18 @@
-#include "editorwindow.h"
-
 #include <QMenuBar>
 #include <QFileDialog>
+#include <QCoreApplication>
+#include "Common/appcontext.h"
+#include "editorwindow.h"
 
 EditorWindow::EditorWindow(QWidget* parent)
     : QMainWindow(parent)
 {
-    createMenus();
     resize(1000, 600);
+
+    createMenu();
+
+    connect(AppContext::instance(), &AppContext::languageChanged,
+            this, &EditorWindow::retranslateUi);
 
     // Move to chidren
     setWindowTitle(windowTitle());
@@ -15,21 +20,26 @@ EditorWindow::EditorWindow(QWidget* parent)
     qDebug() << fileFilterString();
 }
 
-void EditorWindow::createMenus()
+void EditorWindow::createMenu()
 {
-    QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
+    const char* ctx = metaObject()->className();
+    QMenu* fileMenu = menuBar()->addMenu(tr(FILE_MENU_TEXT));
 
-    fileMenu->addAction(tr("&New"), QKeySequence::New, this, &EditorWindow::newFile);
-    fileMenu->addAction(tr("&Open..."), QKeySequence::Open, this, &EditorWindow::openFile);
-
-    fileMenu->addSeparator();
-
-    fileMenu->addAction(tr("&Save"), QKeySequence::Save, this, &EditorWindow::saveFile);
-    fileMenu->addAction(tr("Save &As..."), QKeySequence::SaveAs, this, &EditorWindow::saveFileAs);
+    fileMenu->addAction(tr(NEW_TEXT), QKeySequence::New, this, &EditorWindow::newFile);
+    fileMenu->addAction(tr(OPEN_TEXT), QKeySequence::Open, this, &EditorWindow::openFile);
 
     fileMenu->addSeparator();
+    fileMenu->addAction(tr(SAVE_TEXT), QKeySequence::Save, this, &EditorWindow::saveFile);
+    fileMenu->addAction(tr(SAVE_AS_TEXT), QKeySequence::SaveAs, this, &EditorWindow::saveFileAs);
 
-    fileMenu->addAction(tr("E&xit"), QKeySequence::Quit, this, &EditorWindow::exitApp);
+    fileMenu->addSeparator();
+    fileMenu->addAction(tr(EXIT_TEXT), QKeySequence::Quit, this, &EditorWindow::exitApp);
+}
+
+void EditorWindow::retranslateUi(){
+    qDebug("Retranslating editor");
+    menuBar()->clear();
+    createMenu();
 }
 
 void EditorWindow::newFile()

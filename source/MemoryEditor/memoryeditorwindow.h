@@ -13,9 +13,9 @@ namespace MemoryEditor{
         explicit MemoryEditorWindow(QWidget *parent = nullptr);
 
     protected:
-        QString windowTitle() const override { return "Memory Editor"; }
-        QString openFilePrompt() const override { return "Open Memory File"; }
-        QString saveAsFilePrompt() const override { return "Save Memory File As"; }
+        QString windowTitle() const override { return tr("Memory Editor"); }
+        QString openFilePrompt() const override { return tr("Open Memory File"); }
+        QString saveAsFilePrompt() const override { return tr("Save Memory File As"); }
         QString defaultFilename() const override { return "memory.txt"; }
         QString fileFilterString() const override { return "Memory Files (*.cpp *.txt)"; }
 

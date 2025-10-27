@@ -4,8 +4,16 @@
 #include <QMainWindow>
 #include <QFile>
 
+static const char* FILE_MENU_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "&File");
+static const char* NEW_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "&New");
+static const char* OPEN_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "&Open...");
+static const char* SAVE_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "&Save");
+static const char* SAVE_AS_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "Save &As...");
+static const char* EXIT_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "E&xit");
+
 class EditorWindow : public QMainWindow
 {
+    Q_OBJECT
 public:
     explicit EditorWindow(QWidget* parent = nullptr);
 
@@ -31,7 +39,9 @@ protected:
 private:
     QString m_currentFilePath;
 
-    void createMenus();
+    void createMenu();
+    void retranslateUi();
+
     bool maybeSave();
     bool saveToFile(const QString& filePath);
     bool loadFromFile(const QString& filePath);

@@ -2,60 +2,120 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
+    <name>EditorWindow</name>
+    <message>
+        <location filename="../source/Common/editorwindow.h" line="7"/>
+        <source>&amp;File</source>
+        <translation>&amp;File</translation>
+    </message>
+    <message>
+        <location filename="../source/Common/editorwindow.h" line="8"/>
+        <source>&amp;New</source>
+        <translation>&amp;New</translation>
+    </message>
+    <message>
+        <location filename="../source/Common/editorwindow.h" line="9"/>
+        <source>&amp;Open...</source>
+        <translation>&amp;Open...</translation>
+    </message>
+    <message>
+        <location filename="../source/Common/editorwindow.h" line="10"/>
+        <source>&amp;Save</source>
+        <translation>&amp;Save</translation>
+    </message>
+    <message>
+        <location filename="../source/Common/editorwindow.h" line="11"/>
+        <source>Save &amp;As...</source>
+        <translation>Save &amp;As...</translation>
+    </message>
+    <message>
+        <location filename="../source/Common/editorwindow.h" line="12"/>
+        <source>E&amp;xit</source>
+        <translation>E&amp;xit</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
-        <location filename="../source/mainwindow.cpp" line="37"/>
+        <location filename="../source/App/mainwindow.cpp" line="52"/>
         <source>&amp;Tools</source>
         <translation>&amp;Tools</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="38"/>
         <source>Open Microcode Editor</source>
-        <translation>Open Microcode Editor</translation>
+        <translation type="vanished">Open Microcode Editor</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="45"/>
+        <location filename="../source/App/mainwindow.cpp" line="54"/>
+        <source>Microcode Editor</source>
+        <translation>Microcode Editor</translation>
+    </message>
+    <message>
+        <location filename="../source/App/mainwindow.cpp" line="58"/>
+        <source>Memory Editor</source>
+        <translation>Memory Editor</translation>
+    </message>
+    <message>
+        <location filename="../source/App/mainwindow.cpp" line="65"/>
         <source>&amp;View</source>
         <translation>&amp;View</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="46"/>
+        <location filename="../source/App/mainwindow.cpp" line="66"/>
         <source>Theme</source>
         <translation>Theme</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="48"/>
+        <location filename="../source/App/mainwindow.cpp" line="68"/>
         <source>System Default</source>
         <translation>System Default</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="49"/>
+        <location filename="../source/App/mainwindow.cpp" line="69"/>
         <source>Light</source>
         <translation>Light</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="50"/>
+        <location filename="../source/App/mainwindow.cpp" line="70"/>
         <source>Dark</source>
         <translation>Dark</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="83"/>
+        <location filename="../source/App/mainwindow.cpp" line="103"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Language</translation>
     </message>
     <message>
         <source>&amp;Language</source>
         <translation type="vanished">&amp;Language</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="86"/>
+        <location filename="../source/App/mainwindow.cpp" line="106"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="88"/>
+        <location filename="../source/App/mainwindow.cpp" line="108"/>
         <source>Polish</source>
-        <translation type="unfinished">Polish</translation>
+        <translation>Polish</translation>
+    </message>
+</context>
+<context>
+    <name>MemoryEditor::MemoryEditorWindow</name>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="16"/>
+        <source>Memory Editor</source>
+        <translation>Memory Editor</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="17"/>
+        <source>Open Memory File</source>
+        <translation>Open Memory File</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="18"/>
+        <source>Save Memory File As</source>
+        <translation>Save Memory File As</translation>
     </message>
 </context>
 <context>
@@ -71,48 +131,45 @@
         <translation>Jump Tables</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="31"/>
         <source>&amp;File</source>
-        <translation>&amp;File</translation>
+        <translation type="vanished">&amp;File</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="33"/>
         <source>&amp;New</source>
-        <translation>&amp;New</translation>
+        <translation type="vanished">&amp;New</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="34"/>
         <source>&amp;Open...</source>
-        <translation>&amp;Open</translation>
+        <translation type="vanished">&amp;Open</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="38"/>
         <source>&amp;Save</source>
-        <translation>&amp;Save</translation>
+        <translation type="vanished">&amp;Save</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="39"/>
         <source>Save &amp;As...</source>
-        <translation>Save &amp;As...</translation>
+        <translation type="vanished">Save &amp;As...</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="43"/>
         <source>E&amp;xit</source>
-        <translation>E&amp;xit</translation>
+        <translation type="vanished">E&amp;xit</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="62"/>
+        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.h" line="17"/>
+        <source>Microcode Editor</source>
+        <translation>Microcode Editor</translation>
+    </message>
+    <message>
+        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.h" line="18"/>
         <source>Open Microcode File</source>
         <translation>Open Microcode File</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="63"/>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="112"/>
         <source>Microcode Files (*.txt *.mc *.tsv)</source>
-        <translation>Microcode Files (*.txt *.mc *.tsv)</translation>
+        <translation type="vanished">Microcode Files (*.txt *.mc *.tsv)</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="110"/>
+        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.h" line="19"/>
         <source>Save Microcode File As</source>
         <translation>Save Microcode File As</translation>
     </message>
