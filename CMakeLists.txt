@@ -56,6 +56,7 @@ qt_add_executable(MCAS
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     source/Common/editorwindow.h source/Common/editorwindow.cpp
+    source/Common/hexint.cpp source/Common/hexint.h source/Common/hexintdelegate.cpp source/Common/hexintdelegate.h
 )
 
 # Link Qt libraries

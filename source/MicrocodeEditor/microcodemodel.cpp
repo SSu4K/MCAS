@@ -1,5 +1,5 @@
 #include "microcodemodel.h"
-#include "hexint.h"
+#include "Common/hexint.h"
 
 #include <QFile>
 #include <QTextStream>
