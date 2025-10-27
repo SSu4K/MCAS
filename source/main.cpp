@@ -11,8 +11,6 @@ int main(int argc, char *argv[])
     qDebug() << "Qt version:"  << AppContext::instance()->qtVersion();
     qDebug() << "Runtime OS:"  << AppContext::instance()->runtimeOS();
 
-    app.context()->setTheme(AppContext::Theme::System);
-    app.initPalette();
     return app.exec();
 }
 

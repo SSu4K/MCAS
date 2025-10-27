@@ -1,4 +1,5 @@
 #include "appcontext.h"
+#include <QCoreApplication>
 
 QPointer<AppContext> AppContext::s_instance = nullptr;
 
@@ -33,9 +34,58 @@ void AppContext::setTheme(AppContext::Theme theme)
 {
     QString value;
     switch (theme) {
-    case Theme::Dark:  value = "Dark"; break;
-    case Theme::Light: value = "Light"; break;
-    case Theme::System: value = "System"; break;
+        case Theme::Dark:  value = "Dark"; break;
+        case Theme::Light: value = "Light"; break;
+        case Theme::System: value = "System"; break;
     }
     m_settings->setValue("ui/theme", value);
+}
+
+AppContext::Language AppContext::currentLanguage() const{
+    QString value = m_settings->value("ui/language", "System").toString();
+    if (value == "English")  return Language::English;
+    if (value == "Polish") return Language::Polish;
+    return Language::System;
+}
+
+void AppContext::setLanguage(AppContext::Language lang){
+    Language current = currentLanguage();
+    if(current == lang){
+        return;
+    }
+
+    QString value;
+    switch (lang) {
+        case Language::English:  value = "English"; break;
+        case Language::Polish: value = "Polish"; break;
+        case Language::System: value = "System"; break;
+    }
+
+    qApp->removeTranslator(&m_translator);
+    m_settings->setValue("ui/language", value);
+    loadTranslator(lang);
+
+    emit languageChanged();
+}
+
+void AppContext::initLanguage(){
+    Language current = currentLanguage();
+    loadTranslator(current);
+}
+
+void AppContext::loadTranslator(Language lang){
+    QString qmPath;
+    switch (lang) {
+        case Language::Polish:  qmPath = ":/i18n/MCAS_pl.qm"; break;
+        case Language::English: qmPath = ":/i18n/MCAS_en.qm"; break;
+        default: break;
+    }
+
+    if (m_translator.load(qmPath)){
+        qApp->installTranslator(&m_translator);
+        qDebug() << "Loding translator" << qmPath << "success!";
+    }
+    else{
+        qDebug() << "Loding translator" << qmPath << "failed!";
+    }
 }

@@ -8,6 +8,7 @@
 #include <QString>
 #include <QSysInfo>
 #include <QVersionNumber>
+#include <qtranslator.h>
 
 // Forward declarations until actual implementations are present
 class MicrocodeModel;
@@ -19,12 +20,10 @@ class AppContext : public QObject
     Q_OBJECT
 
 public:
-    enum class Theme {
-        System,
-        Light,
-        Dark
-    };
+    enum class Theme {System, Light, Dark};
     Q_ENUM(Theme)
+    enum class Language { System, English, Polish };
+    Q_ENUM(Language)
 
     static AppContext* instance();
 
@@ -42,6 +41,13 @@ public:
     Theme currentTheme() const;
     void setTheme(Theme theme);
 
+    Language currentLanguage() const;
+    void setLanguage(Language lang);
+    void initLanguage();
+
+signals:
+    void languageChanged();
+
 private:
     explicit AppContext(QObject* parent = nullptr);
     ~AppContext() override = default;
@@ -53,10 +59,13 @@ private:
     JumpTableModel* m_jumpTableModel = nullptr;
 
     std::unique_ptr<QSettings> m_settings;
+    QTranslator m_translator;
 
     QString m_appVersion;
     QString m_buildType;
     QString m_platform;
     QString m_compiler;
+
+    void loadTranslator(Language lang);
 };
 #endif // APPCONTEXT_H

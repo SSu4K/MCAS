@@ -66,6 +66,7 @@ qt_add_executable(MCAS
     source/MicrocodeEditor/jumptableeditordelegate.h source/MicrocodeEditor/jumptableeditordelegate.cpp
     source/appcontext.h source/appcontext.cpp
     source/mcasapp.h source/mcasapp.cpp
+    resources.qrc
 
 
 )
@@ -75,7 +76,10 @@ target_link_libraries(MCAS PRIVATE Qt6::Widgets)
 
 # Create translations if they exist
 if(TS_FILES)
-    qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+    qt_add_translations(MCAS
+        TS_FILES ${TS_FILES}
+        LUPDATE_OPTIONS -recursive ${CMAKE_SOURCE_DIR}
+    )
 endif()
 
 # Install target
