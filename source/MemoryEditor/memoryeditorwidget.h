@@ -4,6 +4,8 @@
 #include <QTableView>
 #include <QResizeEvent>
 #include <QHeaderView>
+#include <QBoxLayout>
+#include <QTimer>
 
 #include "memorymodel.h"
 
@@ -19,7 +21,9 @@ namespace MemoryEditor {
         void resizeEvent(QResizeEvent* event) override;
 
     private:
+        QTableView* m_tableView;
         MemoryModel* m_model;
+        void updateColumnCount();
     };
 } // namespace MemoryEditor
 

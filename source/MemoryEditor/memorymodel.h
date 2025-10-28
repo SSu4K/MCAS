@@ -4,12 +4,16 @@
 #include <QObject>
 #include <QAbstractTableModel>
 
+const qsizetype MEMORY_SIZE = 512;
+
 namespace MemoryEditor {
 
     class MemoryModel : public QAbstractTableModel {
         Q_OBJECT
     public:
         explicit MemoryModel(QObject* parent = nullptr);
+
+        QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
         void setMemory(const QByteArray& mem);
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
