@@ -99,19 +99,44 @@
 <context>
     <name>MemoryEditor::MemoryEditorWindow</name>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="16"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="20"/>
         <source>Memory Editor</source>
         <translation>Edytor Pamięci</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="17"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="21"/>
         <source>Open Memory File</source>
         <translation>Otwórz pamięć</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="18"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="22"/>
         <source>Save Memory File As</source>
         <translation>Zapisz pamięć jako</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="35"/>
+        <source>&amp;View</source>
+        <translation>&amp;Widok</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="37"/>
+        <source>&amp;Size</source>
+        <translation>&amp;Jednostka</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="39"/>
+        <source>&amp;Byte</source>
+        <translation>&amp;Bajt</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="40"/>
+        <source>&amp;Half</source>
+        <translation>&amp;Pół</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="41"/>
+        <source>&amp;Word</source>
+        <translation>&amp;Słowo</translation>
     </message>
 </context>
 <context>

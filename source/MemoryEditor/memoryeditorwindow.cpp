@@ -34,11 +34,11 @@ void MemoryEditorWindow::clearData(){
 void MemoryEditorWindow::createCustomMenu(){
     QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
 
-    auto unitSize = viewMenu->addMenu(tr("Size"));
+    auto unitSize = viewMenu->addMenu(tr("&Size"));
 
-    QAction *byteAction = unitSize->addAction(tr("Byte"));
-    QAction *halfAction  = unitSize->addAction(tr("Half"));
-    QAction *wordAction   = unitSize->addAction(tr("Word"));
+    QAction *byteAction = unitSize->addAction(tr("&Byte"));
+    QAction *halfAction  = unitSize->addAction(tr("&Half"));
+    QAction *wordAction   = unitSize->addAction(tr("&Word"));
 
     byteAction->setCheckable(true);
     halfAction->setCheckable(true);
