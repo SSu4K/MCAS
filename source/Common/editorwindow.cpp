@@ -9,12 +9,11 @@ EditorWindow::EditorWindow(QWidget* parent)
 {
     resize(1000, 600);
 
-    createMenu();
-
     connect(AppContext::instance(), &AppContext::languageChanged,
             this, &EditorWindow::retranslateUi);
 
     // Move to chidren
+    createMenu();
     setWindowTitle(windowTitle());
     qDebug() << defaultFilename();
     qDebug() << fileFilterString();
@@ -34,6 +33,8 @@ void EditorWindow::createMenu()
 
     fileMenu->addSeparator();
     fileMenu->addAction(tr(EXIT_TEXT), QKeySequence::Quit, this, &EditorWindow::exitApp);
+
+    createCustomMenu();
 }
 
 void EditorWindow::retranslateUi(){

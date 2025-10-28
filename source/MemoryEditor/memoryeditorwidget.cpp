@@ -39,7 +39,7 @@ void MemoryEditorWidget::updateColumnCount()
 
     QFontMetrics fm(m_tableView->font());
     int charW = fm.horizontalAdvance('F');
-    int hexChars = 4;  // "FFFF"
+    int hexChars = 2 * (int)m_model->getUnitSize();
     int padding = 16;
     int cellWidth = hexChars * charW + padding;
 
@@ -51,4 +51,13 @@ void MemoryEditorWidget::updateColumnCount()
         m_tableView->horizontalHeader()->setDefaultSectionSize(cellWidth);
         m_tableView->verticalHeader()->setDefaultSectionSize(fm.height() + 8);
     }
+}
+
+MemoryUnitSize MemoryEditorWidget::getUnitSize(){
+    return m_model->getUnitSize();
+}
+
+void MemoryEditorWidget::setUnitSize(MemoryUnitSize size){
+    m_model->setUnitSize(size);
+    updateColumnCount();
 }

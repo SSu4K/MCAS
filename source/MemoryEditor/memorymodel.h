@@ -8,6 +8,8 @@ const qsizetype MEMORY_SIZE = 512;
 
 namespace MemoryEditor {
 
+    enum class MemoryUnitSize{Byte=1, Half=2, Word=4};
+
     class MemoryModel : public QAbstractTableModel {
         Q_OBJECT
     public:
@@ -22,9 +24,13 @@ namespace MemoryEditor {
         QVariant data(const QModelIndex& index, int role) const override;
         void setColumns(int cols);
 
+        MemoryUnitSize getUnitSize();
+        void setUnitSize(MemoryUnitSize size);
+
     private:
         QByteArray m_memory;
         int m_cols = 8;
+        MemoryUnitSize unitSize = MemoryUnitSize::Half;
     };
 
 

@@ -2,6 +2,9 @@
 #define MEMORYEDITORWINDOW_H
 
 #include <QMainWindow>
+#include <QMenu>
+#include <QActionGroup>
+#include "Common/appcontext.h"
 #include "Common/editorwindow.h"
 #include "memoryeditorwidget.h"
 
@@ -23,6 +26,8 @@ namespace MemoryEditor{
         bool serializeToFile(QFile& file) const override;
         bool serializeFromFile(QFile& file) override;
         void clearData() override;
+
+        void createCustomMenu() override;
 
     private:
         MemoryEditorWidget *m_memoryEditorWidget;

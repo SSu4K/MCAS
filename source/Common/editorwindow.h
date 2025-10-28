@@ -25,6 +25,9 @@ private slots:
     void exitApp();
 
 protected:
+    void createMenu();
+    void retranslateUi();
+
     // Child classes override these
     virtual QString windowTitle() const { return "[Type] Editor"; }
     virtual QString openFilePrompt() const { return "Open [Type] File"; }
@@ -36,11 +39,10 @@ protected:
     virtual bool serializeFromFile(QFile& filePath) {return true;}
     virtual void clearData() {}
 
+    virtual void createCustomMenu() {}
+
 private:
     QString m_currentFilePath;
-
-    void createMenu();
-    void retranslateUi();
 
     bool maybeSave();
     bool saveToFile(const QString& filePath);
