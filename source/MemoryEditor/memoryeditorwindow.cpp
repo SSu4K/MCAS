@@ -8,6 +8,9 @@ MemoryEditorWindow::MemoryEditorWindow(QWidget *parent)
     setWindowTitle(windowTitle());
     qDebug() << defaultFilename();
     qDebug() << fileFilterString();
+
+    m_memoryEditorWidget = new MemoryEditorWidget();
+    setCentralWidget(m_memoryEditorWidget);
 }
 
 bool MemoryEditorWindow::serializeToFile(QFile &file) const {

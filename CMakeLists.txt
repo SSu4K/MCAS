@@ -57,6 +57,8 @@ qt_add_executable(MCAS
     ${PROJECT_SOURCES}
     source/Common/editorwindow.h source/Common/editorwindow.cpp
     source/Common/hexint.cpp source/Common/hexint.h source/Common/hexintdelegate.cpp source/Common/hexintdelegate.h
+    source/MemoryEditor/memorymodel.h source/MemoryEditor/memorymodel.cpp
+    source/MemoryEditor/memoryeditorwidget.h source/MemoryEditor/memoryeditorwidget.cpp
 )
 
 # Link Qt libraries

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "Common/editorwindow.h"
+#include "memoryeditorwidget.h"
 
 namespace MemoryEditor{
 
@@ -23,7 +24,8 @@ namespace MemoryEditor{
         bool serializeFromFile(QFile& file) override;
         void clearData() override;
 
-    signals:
+    private:
+        MemoryEditorWidget *m_memoryEditorWidget;
     };
 }
 #endif // MEMORYEDITORWINDOW_H
