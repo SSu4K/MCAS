@@ -23,6 +23,9 @@ public:
     void paint(QPainter* painter,
                const QStyleOptionViewItem& option,
                const QModelIndex& index) const override;
+
+private:
+    enum class OutputMode { Auto, String, Integer };
 };
 
 #endif // HEXINTDELEGATE_H

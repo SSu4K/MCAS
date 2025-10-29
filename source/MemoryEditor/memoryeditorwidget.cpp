@@ -1,19 +1,33 @@
 #include "memoryeditorwidget.h"
 
 using namespace MemoryEditor;
-
-MemoryEditorWidget::MemoryEditorWidget(QWidget* parent) : QTableView(parent) {
+MemoryEditorWidget::MemoryEditorWidget(QWidget* parent)
+    : QWidget(parent)
+{
     m_tableView = new QTableView(this);
     m_model = new MemoryModel(this);
 
     m_tableView->setModel(m_model);
     m_tableView->verticalHeader()->setVisible(true);
     m_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    m_tableView->setSelectionMode(QAbstractItemView::NoSelection);
-    m_tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_tableView->setAlternatingRowColors(true);
 
-    // Fill layout
+    m_tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
+    m_tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_tableView->setEditTriggers(
+        QAbstractItemView::DoubleClicked |
+        QAbstractItemView::EditKeyPressed |
+        QAbstractItemView::SelectedClicked |
+        QAbstractItemView::AnyKeyPressed
+        );
+
+    connect(m_tableView, &QTableView::activated, m_tableView, [this](const QModelIndex& idx){
+        m_tableView->edit(idx);
+    });
+
+    m_delegate = new HexIntDelegate(this);
+    m_tableView->setItemDelegate(m_delegate);
+
     auto* layout = new QVBoxLayout(this);
     layout->addWidget(m_tableView);
     layout->setContentsMargins(0, 0, 0, 0);

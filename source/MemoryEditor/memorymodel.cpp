@@ -36,22 +36,28 @@ int MemoryModel::columnCount(const QModelIndex& parent) const {
     return m_cols;
 }
 
-QVariant MemoryModel::data(const QModelIndex& index, int role) const {
-    if (role != Qt::DisplayRole)
+QVariant MemoryModel::data(const QModelIndex& index, int role) const
+{
+    if (!index.isValid()) return {};
+
+    int halfWordIndex = index.row() * m_cols + index.column();
+    int byteIndex = halfWordIndex * 2;
+    if (byteIndex + 1 >= m_memory.size()) {
+        if (role == Qt::DisplayRole) return QString();
+        if (role == Qt::EditRole) return QVariant();
         return {};
-
-    int unitIndex = index.row() * m_cols + index.column();
-    int byteIndex = unitIndex * (int)unitSize;
-    if (byteIndex + 1 >= m_memory.size()) return {};
-
-    uint32_t hw = 0;
-    for(qsizetype i=0; i<(int)unitSize; i++){
-        hw = hw << 8;
-        hw |= uint8_t(m_memory[byteIndex+i]);
     }
-    //uint16_t hw = (uint8_t(m_memory[byteIndex]) << 8) | uint8_t(m_memory[byteIndex+1]);
 
-    return QString("%1").arg(hw, 2*(int)unitSize, 16, QChar('0'));
+    quint16 hw = (quint8(m_memory[byteIndex]) << 8) | quint8(m_memory[byteIndex + 1]);
+
+    if (role == Qt::DisplayRole) {
+        return QString("%1").arg(hw, 4, 16, QChar('0')).toUpper();
+    } else if (role == Qt::EditRole) {
+        // return an integer for editing (delegate will prefer numeric for memory)
+        return QVariant::fromValue(static_cast<quint32>(hw));
+    }
+
+    return {};
 }
 
 void MemoryModel::setColumns(int cols) {
@@ -73,3 +79,39 @@ void MemoryModel::setUnitSize(MemoryUnitSize size){
     endResetModel();
 }
 
+bool MemoryModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+    if (!index.isValid() || role != Qt::EditRole) return false;
+
+    quint32 val = 0;
+    bool ok = false;
+
+    if (value.canConvert<quint32>()) {
+        val = value.toUInt(&ok);
+    } else if (value.typeId() == QMetaType::QString) {
+        QString s = value.toString().trimmed();
+        if (s.startsWith("0x", Qt::CaseInsensitive)) s.remove(0,2);
+        val = s.toUInt(&ok, 16);
+        if (!ok) val = s.toUInt(&ok, 10);
+    } else {
+        val = value.toUInt(&ok);
+    }
+
+    if (!ok) return false;
+
+    int halfWordIndex = index.row() * m_cols + index.column();
+    int byteIndex = halfWordIndex * 2;
+    if (byteIndex + 1 >= m_memory.size()) return false;
+
+    m_memory[byteIndex] = static_cast<char>((val >> 8) & 0xFF);
+    m_memory[byteIndex + 1] = static_cast<char>(val & 0xFF);
+
+    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+    return true;
+}
+
+Qt::ItemFlags MemoryModel::flags(const QModelIndex& index) const
+{
+    if (!index.isValid()) return Qt::NoItemFlags;
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+}
