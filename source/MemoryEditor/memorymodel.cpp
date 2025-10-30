@@ -46,21 +46,24 @@ QVariant MemoryModel::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid()) return {};
 
-    int halfWordIndex = index.row() * m_cols + index.column();
-    int byteIndex = halfWordIndex * 2;
-    if (byteIndex + 1 >= m_memory.size()) {
+    qsizetype i = index.row() * m_cols + index.column();
+    qsizetype byteIndex = i * (qsizetype)unitSize;
+    if (byteIndex + (qsizetype)unitSize > m_memory.size()) {
         if (role == Qt::DisplayRole) return QString();
         if (role == Qt::EditRole) return QVariant();
         return {};
     }
 
-    quint16 hw = (quint8(m_memory[byteIndex]) << 8) | quint8(m_memory[byteIndex + 1]);
+    quint32 val = 0;
+    for(qsizetype i=0; i<(int)unitSize; i++){
+        val = val << 8;
+        val |= quint8(m_memory[byteIndex+i]);
+    }
 
     if (role == Qt::DisplayRole) {
-        return QString("%1").arg(hw, 4, 16, QChar('0')).toUpper();
+        return QString("%1").arg(val, 2*(qsizetype)unitSize, 16, QChar('0')).toUpper();
     } else if (role == Qt::EditRole) {
-        // return an integer for editing (delegate will prefer numeric for memory)
-        return QVariant::fromValue(static_cast<quint32>(hw));
+        return QVariant::fromValue(static_cast<quint32>(val));
     }
 
     return {};
@@ -109,12 +112,14 @@ bool MemoryModel::setData(const QModelIndex& index, const QVariant& value, int r
 
     if (!ok) return false;
 
-    int halfWordIndex = index.row() * m_cols + index.column();
-    int byteIndex = halfWordIndex * 2;
-    if (byteIndex + 1 >= m_memory.size()) return false;
+    qsizetype i = index.row() * m_cols + index.column();
+    qsizetype byteIndex = i * (qsizetype)unitSize;
+    if (byteIndex + (qsizetype)unitSize > m_memory.size()) return false;
 
-    m_memory[byteIndex] = static_cast<char>((val >> 8) & 0xFF);
-    m_memory[byteIndex + 1] = static_cast<char>(val & 0xFF);
+    for(qsizetype i=(int)unitSize-1; i>=0; i--){
+        m_memory[byteIndex+i] = val & 0xFF;
+        val = val >> 8;
+    }
 
     emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
     return true;

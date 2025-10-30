@@ -34,7 +34,7 @@ void HexIntDelegate::setEditorData(QWidget* editor, const QModelIndex& index) co
 
     if (data.typeId() == QMetaType::UInt) {
         quint32 v = data.toUInt();
-        QString s = HexInt::intToString(v, false, 4);
+        QString s = HexInt::intToString(v, false, m_precision);
         line->setText(s);
         mode = OutputMode::Integer;
         qDebug("setEditorData type: quint32");
@@ -79,7 +79,7 @@ void HexIntDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
     if (mode == OutputMode::Integer) {
         model->setData(index, value, Qt::EditRole);
     } else {
-        model->setData(index, HexInt::intToString(value), Qt::EditRole);
+        model->setData(index, HexInt::intToString(value, false, m_precision), Qt::EditRole);
     }
 }
 
@@ -101,4 +101,12 @@ void HexIntDelegate::paint(QPainter* painter,
     const QString value = index.data(Qt::DisplayRole).toString();
     opt.text = value;
     QStyledItemDelegate::paint(painter, opt, index);
+}
+
+void HexIntDelegate::setPrecision(qsizetype precision){
+    m_precision = precision;
+}
+
+qsizetype HexIntDelegate::getPrecision() const{
+    return m_precision;
 }

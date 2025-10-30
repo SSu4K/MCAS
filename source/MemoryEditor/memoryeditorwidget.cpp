@@ -73,6 +73,7 @@ MemoryUnitSize MemoryEditorWidget::getUnitSize(){
 
 void MemoryEditorWidget::setUnitSize(MemoryUnitSize size){
     m_model->setUnitSize(size);
+    m_delegate->setPrecision(2*(qsizetype)size);
     updateColumnCount();
 }
 
