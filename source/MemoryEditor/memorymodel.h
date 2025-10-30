@@ -27,8 +27,13 @@ namespace MemoryEditor {
         Qt::ItemFlags flags(const QModelIndex& index) const override;
         bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
 
+        void clear();
+
         MemoryUnitSize getUnitSize();
         void setUnitSize(MemoryUnitSize size);
+
+        bool loadFromTextStream(QTextStream &stream);
+        bool saveToTextStream(QTextStream &stream);
 
     private:
         QByteArray m_memory;

@@ -1,5 +1,11 @@
 #include "memorymodel.h"
 
+const static QString MEMORRY_HEADER = "[Memory]";
+const static QChar HEADER_PREFIX = '[';
+const static QChar COMMENT_PREFIX = ';';
+
+const static qsizetype MEMORY_SLICE_SIZE = 32; // in bytes
+
 using namespace MemoryEditor;
 
 MemoryModel::MemoryModel(QObject* parent) : QAbstractTableModel(parent), m_memory(MEMORY_SIZE, 0) {
@@ -73,6 +79,10 @@ MemoryUnitSize MemoryModel::getUnitSize(){
     return  unitSize;
 }
 
+void MemoryModel::clear(){
+    m_memory.fill(0);
+}
+
 void MemoryModel::setUnitSize(MemoryUnitSize size){
     beginResetModel();
     unitSize = size;
@@ -115,3 +125,59 @@ Qt::ItemFlags MemoryModel::flags(const QModelIndex& index) const
     if (!index.isValid()) return Qt::NoItemFlags;
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
+
+bool MemoryModel::saveToTextStream(QTextStream &stream){
+    if (!MEMORRY_HEADER.isEmpty())
+        stream << MEMORRY_HEADER << "\n";
+
+    QByteArray hex = m_memory.toHex();
+    qsizetype slice_size = 2*MEMORY_SLICE_SIZE;
+    qsizetype slice_count = hex.size() / slice_size;
+
+    for(qsizetype i=0; i<slice_count; i++){
+        auto slice = hex.sliced(i*slice_size, slice_size);
+        stream << slice << "\n";
+    }
+
+    return true;
+}
+
+static bool findHeader(QTextStream &stream){
+    if(MEMORRY_HEADER.isEmpty()){
+        return true;
+    }
+    while (!stream.atEnd()) {
+        QString line = stream.readLine().trimmed();
+        if (line == MEMORRY_HEADER) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool MemoryModel::loadFromTextStream(QTextStream &stream){
+    if(!findHeader(stream)){
+        return false;
+    }
+
+    beginResetModel();
+    QByteArray hexEncoded;
+
+    while (!stream.atEnd()) {
+        QString line = stream.readLine().trimmed();
+        if (line.isEmpty())
+            continue;
+        if (line.startsWith('['))
+            break; // new header
+        if (line.startsWith(';'))
+            continue;
+
+        hexEncoded.append(line.toLocal8Bit());
+    }
+
+    m_memory = QByteArray::fromHex(hexEncoded);
+
+    endResetModel();
+    return true;
+}
+

@@ -18,8 +18,12 @@ namespace MemoryEditor {
         explicit MemoryEditorWidget(QWidget* parent = nullptr);
         void setMemory(const QByteArray& memory);
 
+        MemoryModel *model() {return m_model;}
+
         MemoryUnitSize getUnitSize();
         void setUnitSize(MemoryUnitSize size);
+
+        void clearData();
 
     protected:
         void resizeEvent(QResizeEvent* event) override;

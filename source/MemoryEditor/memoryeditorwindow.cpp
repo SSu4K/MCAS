@@ -18,17 +18,17 @@ MemoryEditorWindow::MemoryEditorWindow(QWidget *parent)
 }
 
 bool MemoryEditorWindow::serializeToFile(QFile &file) const {
-    // do nothing for now
-    return true;
+    QTextStream out(&file);
+    return m_memoryEditorWidget->model()->saveToTextStream(out);
 }
 
 bool MemoryEditorWindow::serializeFromFile(QFile &file){
-    // do nothing for now
-    return true;
+    QTextStream in(&file);
+    return m_memoryEditorWidget->model()->loadFromTextStream(in);
 }
 
 void MemoryEditorWindow::clearData(){
-    // do nothing for now
+    m_memoryEditorWidget->clearData();
 }
 
 void MemoryEditorWindow::createCustomMenu(){

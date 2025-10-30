@@ -75,3 +75,7 @@ void MemoryEditorWidget::setUnitSize(MemoryUnitSize size){
     m_model->setUnitSize(size);
     updateColumnCount();
 }
+
+void MemoryEditorWidget::clearData(){
+    m_model->clear();
+}

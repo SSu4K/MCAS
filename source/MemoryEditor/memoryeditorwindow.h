@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QActionGroup>
-#include "Common/appcontext.h"
 #include "Common/editorwindow.h"
 #include "memoryeditorwidget.h"
 
@@ -21,7 +20,7 @@ namespace MemoryEditor{
         QString openFilePrompt() const override { return tr("Open Memory File"); }
         QString saveAsFilePrompt() const override { return tr("Save Memory File As"); }
         QString defaultFilename() const override { return "memory.txt"; }
-        QString fileFilterString() const override { return "Memory Files (*.cpp *.txt)"; }
+        QString fileFilterString() const override { return "Memory Files (*.dat *.txt)"; }
 
         bool serializeToFile(QFile& file) const override;
         bool serializeFromFile(QFile& file) override;
