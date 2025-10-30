@@ -24,6 +24,8 @@ namespace MicrocodeEditor{
         bool serializeFromFile(QFile& file) override;
         void clearData() override;
 
+        void createCustomMenu() override;
+
     private:
 
         QTabWidget* m_tabWidget;
