@@ -13,7 +13,7 @@ MemoryEditorWidget::MemoryEditorWidget(QWidget* parent)
     m_tableView->setAlternatingRowColors(true);
 
     m_tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_tableView->setEditTriggers(
         QAbstractItemView::DoubleClicked |
         QAbstractItemView::EditKeyPressed |
@@ -79,4 +79,58 @@ void MemoryEditorWidget::setUnitSize(MemoryUnitSize size){
 
 void MemoryEditorWidget::clearData(){
     m_model->clear();
+}
+
+void MemoryEditorWidget::selectAll(){
+    m_tableView->selectAll();
+}
+
+void MemoryEditorWidget::clearSelected(){
+    auto selectionModel = m_tableView->selectionModel();
+    if (!selectionModel)
+        return;
+
+    QModelIndexList indexes = selectionModel->selectedIndexes();
+    if (indexes.isEmpty())
+        return;
+
+    m_model->blockSignals(true);
+
+    for (qsizetype i=0; i<indexes.size(); i++) {
+        if (indexes[i].flags() & Qt::ItemIsEditable) {
+            m_model->setData(indexes[i], 0, Qt::EditRole);
+            emit m_model->dataChanged(indexes[i], indexes[i], {Qt::EditRole});
+        }
+    }
+
+    m_model->blockSignals(false);
+}
+
+void MemoryEditorWidget::randomSelected(){
+    auto selectionModel = m_tableView->selectionModel();
+    if (!selectionModel)
+        return;
+
+    QModelIndexList indexes = selectionModel->selectedIndexes();
+    if (indexes.isEmpty())
+        return;
+
+    m_model->blockSignals(true);
+
+    for (qsizetype i=0; i<indexes.size(); i++) {
+        quint32 max = unitMasks[(int)m_model->getUnitSize()];
+        quint32 value = QRandomGenerator::global()->bounded(max);
+
+        if (indexes[i].flags() & Qt::ItemIsEditable) {
+            m_model->setData(indexes[i], value, Qt::EditRole);
+            emit m_model->dataChanged(indexes[i], indexes[i], {Qt::EditRole});
+        }
+    }
+
+    m_model->blockSignals(false);
+}
+
+void MemoryEditorWidget::fillSelected(){
+    qDebug("Fill Seleceted!");
+
 }

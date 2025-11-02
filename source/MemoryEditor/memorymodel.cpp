@@ -6,6 +6,9 @@ const static QChar COMMENT_PREFIX = ';';
 
 const static qsizetype MEMORY_SLICE_SIZE = 32; // in bytes
 
+const static qsizetype VERTICAL_HEADER_PRECISION = 3;
+const static qsizetype HORIZONTAL_HEADER_PRECISION = 2;
+
 using namespace MemoryEditor;
 
 MemoryModel::MemoryModel(QObject* parent) : QAbstractTableModel(parent), m_memory(MEMORY_SIZE, 0) {
@@ -17,11 +20,11 @@ QVariant MemoryModel::headerData(int section, Qt::Orientation orientation, int r
 
     if (orientation == Qt::Vertical) {
         int addr = section * m_cols * (int)unitSize;
-        return QString("0x%1").arg(addr, (int)unitSize, 16, QChar('0')).toUpper();
+        return QString("%1").arg(addr, VERTICAL_HEADER_PRECISION, 16, QChar('0')).toUpper();
     }
 
     if (orientation == Qt::Horizontal) {
-        return QString("+%1").arg(section * (int)unitSize, 2, 16, QChar('0')).toUpper();
+        return QString("+%1").arg(section * (int)unitSize, HORIZONTAL_HEADER_PRECISION, 16, QChar('0')).toUpper();
     }
 
     return {};

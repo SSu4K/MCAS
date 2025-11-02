@@ -32,13 +32,21 @@ void MemoryEditorWindow::clearData(){
 }
 
 void MemoryEditorWindow::createCustomMenu(){
+
+    QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
+
+    editMenu->addAction(tr("&Select All"), QKeySequence("Ctrl+A"), m_memoryEditorWidget, &MemoryEditorWidget::selectAll);
+    editMenu->addAction(tr("&Clear"), QKeySequence("Ctrl+Del"), m_memoryEditorWidget, &MemoryEditorWidget::clearSelected);
+    editMenu->addAction(tr("&Random"), QKeySequence("Ctrl+R"), m_memoryEditorWidget, &MemoryEditorWidget::randomSelected);
+    editMenu->addAction(tr("&Fill..."), QKeySequence("Ctrl+F"), m_memoryEditorWidget, &MemoryEditorWidget::fillSelected);
+
     QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
 
-    auto unitSize = viewMenu->addMenu(tr("&Size"));
+    auto unitSizeMenu = viewMenu->addMenu(tr("&Size"));
 
-    QAction *byteAction = unitSize->addAction(tr("&Byte"));
-    QAction *halfAction  = unitSize->addAction(tr("&Half"));
-    QAction *wordAction   = unitSize->addAction(tr("&Word"));
+    QAction *byteAction = unitSizeMenu->addAction(tr("&Byte"));
+    QAction *halfAction  = unitSizeMenu->addAction(tr("&Half"));
+    QAction *wordAction   = unitSizeMenu->addAction(tr("&Word"));
 
     byteAction->setCheckable(true);
     halfAction->setCheckable(true);
@@ -65,6 +73,4 @@ void MemoryEditorWindow::createCustomMenu(){
         if (action == halfAction) m_memoryEditorWidget->setUnitSize(MemoryEditor::MemoryUnitSize::Half);
         if (action == wordAction) m_memoryEditorWidget->setUnitSize(MemoryEditor::MemoryUnitSize::Word);
     });
-
-
 }

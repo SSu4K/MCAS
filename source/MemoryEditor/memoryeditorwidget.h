@@ -6,6 +6,8 @@
 #include <QHeaderView>
 #include <QBoxLayout>
 #include <QTimer>
+#include <QRandomGenerator>
+#include <QTime>
 
 #include "memorymodel.h"
 #include "Common/hexintdelegate.h"
@@ -23,7 +25,11 @@ namespace MemoryEditor {
         MemoryUnitSize getUnitSize();
         void setUnitSize(MemoryUnitSize size);
 
+        void selectAll();
         void clearData();
+        void clearSelected();
+        void randomSelected();
+        void fillSelected();
 
     protected:
         void resizeEvent(QResizeEvent* event) override;

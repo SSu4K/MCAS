@@ -68,7 +68,7 @@ void HexIntDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 
     bool ok = false;
     int value = text.toInt(&ok, 10);
-    if(!ok){
+    if(!ok || value >= 0){
         value = text.toInt(&ok, 16);
     }
 

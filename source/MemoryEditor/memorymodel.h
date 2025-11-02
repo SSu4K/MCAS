@@ -8,7 +8,13 @@ const qsizetype MEMORY_SIZE = 512;
 
 namespace MemoryEditor {
 
+    const quint32 BYTE_MASK = 0xFF;
+    const quint32 HALF_MASK = 0xFFFF;
+    const quint32 WORD_MASK = 0xFFFFFFFF;
+
     enum class MemoryUnitSize{Byte=1, Half=2, Word=4};
+
+    const quint32 unitMasks[3] = {BYTE_MASK, HALF_MASK, WORD_MASK};
 
     class MemoryModel : public QAbstractTableModel {
         Q_OBJECT
