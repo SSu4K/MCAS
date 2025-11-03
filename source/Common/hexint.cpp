@@ -1,7 +1,7 @@
 #include "hexint.h"
 
-QString HexInt::intToString(const quint16 value, const bool prefix, const qsizetype precision){
-    quint16 twosComplement = static_cast<quint16>(value);
+QString HexInt::intToString(const quint32 value, const bool prefix, const qsizetype precision){
+    quint32 twosComplement = static_cast<quint32>(value);
     if(prefix){
         return QString("0x") + QString("%1").arg(value, precision, 16, QLatin1Char('0')).toUpper();
     }
@@ -10,9 +10,9 @@ QString HexInt::intToString(const quint16 value, const bool prefix, const qsizet
     }
 }
 
-quint16 HexInt::hexStringToInt(const QString &string, bool* okptr)
+quint32 HexInt::hexStringToInt(const QString &string, bool* okptr)
 {
-    quint16 value = 0;
+    quint32 value = 0;
     QString s = string.trimmed();
 
     if (s.startsWith("0x", Qt::CaseInsensitive)) {
@@ -24,10 +24,10 @@ quint16 HexInt::hexStringToInt(const QString &string, bool* okptr)
     return *okptr ? value : 0;
 }
 
-quint16 HexInt::stringToInt(const QString &string, bool* okptr)
+quint32 HexInt::stringToInt(const QString &string, bool* okptr)
 {
     *okptr = false;
-    quint16 value = 0;
+    quint32 value = 0;
 
     QString s = string.trimmed();
 
