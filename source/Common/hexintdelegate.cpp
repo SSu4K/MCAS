@@ -6,6 +6,7 @@
 #include <QRegularExpression>
 #include <QPainter>
 #include <QStyleOptionViewItem>
+#include <QDebug>
 
 HexIntDelegate::HexIntDelegate(QObject* parent)
     : QStyledItemDelegate(parent) {}
@@ -27,14 +28,14 @@ void HexIntDelegate::setEditorData(QWidget* editor, const QModelIndex& index) co
     if (!line) return;
 
     OutputMode mode = OutputMode::Auto;
-
     QVariant data = index.data(Qt::EditRole);
 
     qDebug() << "typeID:" << data.typeId() << "name:" << data.typeName();
 
     if (data.typeId() == QMetaType::UInt) {
-        quint32 v = data.toUInt();
+        quint32 v = data.toInt();
         QString s = HexInt::intToString(v, false, m_precision);
+        qDebug() << QString::number(v, 16) << m_precision << s;
         line->setText(s);
         mode = OutputMode::Integer;
         qDebug("setEditorData type: quint32");

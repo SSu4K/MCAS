@@ -52,7 +52,7 @@ void MemoryEditorWidget::updateColumnCount()
     if (!m_tableView->model()) return;
 
     QFontMetrics fm(m_tableView->font());
-    int charW = fm.horizontalAdvance('F');
+    int charW = fm.horizontalAdvance('F') + 1;
     int hexChars = 2 * (int)m_model->getUnitSize();
     int padding = 16;
     int cellWidth = hexChars * charW + padding;
@@ -104,6 +104,7 @@ void MemoryEditorWidget::clearSelected(){
     }
 
     m_model->blockSignals(false);
+    m_tableView->viewport()->update();
 }
 
 void MemoryEditorWidget::randomSelected(){
@@ -128,9 +129,33 @@ void MemoryEditorWidget::randomSelected(){
     }
 
     m_model->blockSignals(false);
+    m_tableView->viewport()->update();
 }
 
-void MemoryEditorWidget::fillSelected(){
-    qDebug("Fill Seleceted!");
+void MemoryEditorWidget::fillSelected()
+{
+    FillDialog dlg(this);
+    if (dlg.exec() != QDialog::Accepted)
+        return;
 
+    int value = dlg.value();
+
+    auto sel = m_tableView->selectionModel();
+    if (!sel)
+        return;
+
+    QModelIndexList indexes = sel->selectedIndexes();
+    if (indexes.isEmpty())
+        return;
+
+    m_model->blockSignals(true);
+
+    for (const QModelIndex& idx : indexes) {
+        if (!(idx.flags() & Qt::ItemIsEditable))
+            continue;
+        m_model->setData(idx, value, Qt::EditRole);
+    }
+
+    m_model->blockSignals(false);
+    m_tableView->viewport()->update();
 }

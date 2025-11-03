@@ -10,6 +10,7 @@
 #include <QTime>
 
 #include "memorymodel.h"
+#include "filldialog.h"
 #include "Common/hexintdelegate.h"
 
 namespace MemoryEditor {
