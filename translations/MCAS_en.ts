@@ -101,39 +101,77 @@
     </message>
 </context>
 <context>
+    <name>MemoryEditor::FillDialog</name>
+    <message>
+        <location filename="../source/MemoryEditor/filldialog.cpp" line="13"/>
+        <source>Fill Memory</source>
+        <translation>Fill Memory</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/filldialog.cpp" line="17"/>
+        <source>Enter value:</source>
+        <translation>Enter value:</translation>
+    </message>
+</context>
+<context>
     <name>MemoryEditor::MemoryEditorWindow</name>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="20"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="19"/>
         <source>Memory Editor</source>
         <translation>Memory Editor</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="21"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="20"/>
         <source>Open Memory File</source>
         <translation>Open Memory File</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="22"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.h" line="21"/>
         <source>Save Memory File As</source>
         <translation>Save Memory File As</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="35"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="36"/>
+        <source>&amp;Edit</source>
+        <translation>&amp;Edit</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="38"/>
+        <source>&amp;Select All</source>
+        <translation>&amp;Select All</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="39"/>
+        <source>&amp;Clear</source>
+        <translation>&amp;Clear</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="40"/>
+        <source>&amp;Random</source>
+        <translation>&amp;Random</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="41"/>
+        <source>&amp;Fill...</source>
+        <translation>&amp;Fill...</translation>
+    </message>
+    <message>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="43"/>
         <source>&amp;View</source>
         <translation>&amp;View</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="39"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="47"/>
         <source>&amp;Byte</source>
         <translation>&amp;Byte</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="40"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="48"/>
         <source>&amp;Half</source>
         <translation>&amp;Half</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="41"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="49"/>
         <source>&amp;Word</source>
         <translation>&amp;Word</translation>
     </message>
@@ -142,7 +180,7 @@
         <translation type="vanished">Size</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="37"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="45"/>
         <source>&amp;Size</source>
         <translation>&amp;Size</translation>
     </message>
@@ -150,12 +188,12 @@
 <context>
     <name>MicrocodeEditor::MicrocodeEditorWindow</name>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="18"/>
+        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="48"/>
         <source>Microcode</source>
         <translation>Microcode</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="19"/>
+        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="49"/>
         <source>Jump Tables</source>
         <translation>Jump Tables</translation>
     </message>
