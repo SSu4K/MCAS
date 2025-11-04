@@ -5,10 +5,15 @@
 using namespace MicrocodeEditor;
 using namespace MemoryEditor;
 
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle("Main Application");
+    setWindowTitle(tr("MCAS Main Window"));
+
+    setWindowIcon(QIcon(":/icons/appicon.png"));
+
     resize(700, 500);
 
     createMenu();
@@ -134,6 +139,7 @@ void MainWindow::createMenu(){
 }
 
 void MainWindow::retranslateUi(){
+    setWindowTitle(tr("MCAS Main Window"));
     menuBar()->clear();
     createMenu();
 }

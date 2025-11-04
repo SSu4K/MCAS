@@ -60,6 +60,8 @@ qt_add_executable(MCAS
     source/MemoryEditor/memorymodel.h source/MemoryEditor/memorymodel.cpp
     source/MemoryEditor/memoryeditorwidget.h source/MemoryEditor/memoryeditorwidget.cpp
     source/MemoryEditor/filldialog.h source/MemoryEditor/filldialog.cpp
+    resources.qrc
+    resources.qrc
 )
 
 # Link Qt libraries

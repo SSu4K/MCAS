@@ -44,6 +44,7 @@ void MicrocodeEditorWindow::clearData(){
 }
 
 void MicrocodeEditorWindow::createCustomMenu(){
+    setWindowTitle(windowTitle());
     m_tabWidget = new QTabWidget(this);
     m_tabWidget->addTab(m_microcodeEditor, tr("Microcode"));
     m_tabWidget->addTab(m_jumpTableEditor, tr("Jump Tables"));
