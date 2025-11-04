@@ -6,6 +6,7 @@
 #include <QRegularExpression>
 #include <QPainter>
 #include <QStyleOptionViewItem>
+#include <QDebug>
 
 HexIntDelegate::HexIntDelegate(QObject* parent)
     : QStyledItemDelegate(parent) {}
@@ -15,7 +16,6 @@ QWidget* HexIntDelegate::createEditor(QWidget* parent,
                                       const QModelIndex&) const
 {
     auto* line = new QLineEdit(parent);
-    line->setPlaceholderText("Enter int or 0xHEX");
     QFont mono("Monospace");
     mono.setStyleHint(QFont::TypeWriter);
     line->setFont(mono);
@@ -27,9 +27,29 @@ void HexIntDelegate::setEditorData(QWidget* editor, const QModelIndex& index) co
     auto* line = qobject_cast<QLineEdit*>(editor);
     if (!line) return;
 
-    line->setText(index.data(Qt::EditRole).toString());
-    line->selectAll(); // select everything for quick overwrite
+    OutputMode mode = OutputMode::Auto;
+    QVariant data = index.data(Qt::EditRole);
+
+    qDebug() << "typeID:" << data.typeId() << "name:" << data.typeName();
+
+    if (data.typeId() == QMetaType::UInt) {
+        quint32 v = data.toInt();
+        QString s = HexInt::intToString(v, false, m_precision);
+        qDebug() << QString::number(v, 16) << m_precision << s;
+        line->setText(s);
+        mode = OutputMode::Integer;
+        qDebug("setEditorData type: quint32");
+    }
+    else {
+        line->setText(data.toString());
+        mode = OutputMode::String;
+        qDebug("setEditorData type: QString");
+    }
+
+    line->setProperty("outputMode", static_cast<int>(mode));
+    line->selectAll();
 }
+
 
 void HexIntDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
                                   const QModelIndex& index) const
@@ -45,15 +65,22 @@ void HexIntDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
         return;
     }
 
+    auto mode = static_cast<OutputMode>(line->property("outputMode").toInt());
+
     bool ok = false;
     int value = text.toInt(&ok, 10);
-    if(!ok){
+    if(!ok || value >= 0){
         value = text.toInt(&ok, 16);
     }
 
-    if (ok){
-        text = HexInt::intToString(value);
-        model->setData(index, HexInt::intToString(value), Qt::EditRole);
+    if(!ok){
+        return;
+    }
+
+    if (mode == OutputMode::Integer) {
+        model->setData(index, value, Qt::EditRole);
+    } else {
+        model->setData(index, HexInt::intToString(value, false, m_precision), Qt::EditRole);
     }
 }
 
@@ -75,4 +102,12 @@ void HexIntDelegate::paint(QPainter* painter,
     const QString value = index.data(Qt::DisplayRole).toString();
     opt.text = value;
     QStyledItemDelegate::paint(painter, opt, index);
+}
+
+void HexIntDelegate::setPrecision(qsizetype precision){
+    m_precision = precision;
+}
+
+qsizetype HexIntDelegate::getPrecision() const{
+    return m_precision;
 }

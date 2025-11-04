@@ -1,5 +1,5 @@
 #include "microcode.h"
-#include "hexint.h"
+#include "Common/hexint.h"
 
 using namespace MicrocodeEditor;
 

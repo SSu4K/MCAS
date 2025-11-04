@@ -6,7 +6,7 @@
 #include <QHeaderView>
 #include "microcodemodel.h"
 #include "microcodeeditordelegate.h"
-#include "zoomwidget.h"
+#include "Common/zoomwidget.h"
 
 namespace MicrocodeEditor{
 

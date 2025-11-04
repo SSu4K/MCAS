@@ -6,7 +6,7 @@
 #include <QVector>
 
 #include "jumptable.h"
-#include "texttablemodel.h"
+#include "Common/texttablemodel.h"
 
 namespace MicrocodeEditor{
     class JumpTableModel : public TextTableModel {
