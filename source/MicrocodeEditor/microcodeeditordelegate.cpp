@@ -1,7 +1,7 @@
 #include "microcodeeditordelegate.h"
 #include "MicrocodeEditor/enumdelegate.h"
 #include "microcodeeditorwidget.h"
-#include "hexintdelegate.h"
+#include "Common/hexintdelegate.h"
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QPainter>

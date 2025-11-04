@@ -13,6 +13,25 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
 find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
 
+# Define version and build info
+set(APP_VERSION "v0.1.0-prealpha")
+set(BUILD_TYPE ${CMAKE_BUILD_TYPE})
+set(BUILD_PLATFORM ${CMAKE_SYSTEM_NAME})
+
+add_compile_definitions(
+    APP_VERSION="${APP_VERSION}"
+    BUILD_TYPE="${BUILD_TYPE}"
+    BUILD_PLATFORM="${BUILD_PLATFORM}"
+)
+
+if (MSVC)
+    add_compile_definitions(COMPILER_NAME="MSVC")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_compile_definitions(COMPILER_NAME="Clang")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_definitions(COMPILER_NAME="GCC")
+endif()
+
 # Include the source directory
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
 
@@ -36,17 +55,11 @@ set(PROJECT_SOURCES
 qt_add_executable(MCAS
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    source/MicrocodeEditor/microcodeeditordelegate.cpp source/MicrocodeEditor/microcodeeditordelegate.h
-    source/zoomwidget.h source/zoomwidget.cpp
-    source/mainwindow.h source/mainwindow.cpp
-    source/MicrocodeEditor/jumptable.h source/MicrocodeEditor/jumptable.cpp
-    source/MicrocodeEditor/jumptable.h source/MicrocodeEditor/jumptable.cpp
-    source/MicrocodeEditor/jumptablemodel.h source/MicrocodeEditor/jumptablemodel.cpp
-    source/MicrocodeEditor/jumptableeditorwidget.h source/MicrocodeEditor/jumptableeditorwidget.cpp
-    source/texttablemodel.h source/texttablemodel.cpp
-    source/MicrocodeEditor/jumptableeditordelegate.h source/MicrocodeEditor/jumptableeditordelegate.cpp
-
-
+    source/Common/editorwindow.h source/Common/editorwindow.cpp
+    source/Common/hexint.cpp source/Common/hexint.h source/Common/hexintdelegate.cpp source/Common/hexintdelegate.h
+    source/MemoryEditor/memorymodel.h source/MemoryEditor/memorymodel.cpp
+    source/MemoryEditor/memoryeditorwidget.h source/MemoryEditor/memoryeditorwidget.cpp
+    source/MemoryEditor/filldialog.h source/MemoryEditor/filldialog.cpp
 )
 
 # Link Qt libraries
@@ -54,8 +67,19 @@ target_link_libraries(MCAS PRIVATE Qt6::Widgets)
 
 # Create translations if they exist
 if(TS_FILES)
-    qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+    qt_add_translations(MCAS
+        TS_FILES ${TS_FILES}
+        LUPDATE_OPTIONS -recursive ${CMAKE_SOURCE_DIR}
+    )
 endif()
+
+target_include_directories(MCAS PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/Common
+    ${CMAKE_SOURCE_DIR}/src/MicrocodeEditor
+    ${CMAKE_SOURCE_DIR}/src/MemoryEditor
+    ${CMAKE_SOURCE_DIR}/src/App
+)
 
 # Install target
 include(GNUInstallDirs)

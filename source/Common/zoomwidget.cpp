@@ -1,8 +1,4 @@
 #include "zoomwidget.h"
-#include <QKeySequence>
-#include <QTableView>
-#include <QDebug>
-#include <QShortcut>
 
 ZoomWidget::ZoomWidget(QWidget *parent)
     : QWidget(parent)

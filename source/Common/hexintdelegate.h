@@ -23,6 +23,13 @@ public:
     void paint(QPainter* painter,
                const QStyleOptionViewItem& option,
                const QModelIndex& index) const override;
+
+    void setPrecision(qsizetype precision);
+    qsizetype getPrecision() const;
+
+private:
+    enum class OutputMode { Auto, String, Integer };
+    qsizetype m_precision = 4;
 };
 
 #endif // HEXINTDELEGATE_H
