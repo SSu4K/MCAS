@@ -64,6 +64,8 @@ qt_add_executable(MCAS
     resources.qrc
     resources.qrc
     source/InstructionEditor/instructioneditorwindow.h source/InstructionEditor/instructioneditorwindow.cpp
+    source/InstructionEditor/instruction.h
+    source/InstructionEditor/instruction.cpp
 )
 
 # Link Qt libraries
