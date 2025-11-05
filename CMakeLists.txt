@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Find Qt 6 modules
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
 find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 # Define version and build info
 set(APP_VERSION "v0.1.0-prealpha")
@@ -62,9 +63,11 @@ qt_add_executable(MCAS
     source/MemoryEditor/filldialog.h source/MemoryEditor/filldialog.cpp
     resources.qrc
     resources.qrc
+    source/InstructionEditor/instructioneditorwindow.h source/InstructionEditor/instructioneditorwindow.cpp
 )
 
 # Link Qt libraries
+target_link_libraries(MCAS PRIVATE Qt6::Widgets)
 target_link_libraries(MCAS PRIVATE Qt6::Widgets)
 
 # Create translations if they exist

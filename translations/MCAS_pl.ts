@@ -35,9 +35,27 @@
     </message>
 </context>
 <context>
+    <name>InstructionEditor::InstructionEditorWindow</name>
+    <message>
+        <location filename="../source/InstructionEditor/instructioneditorwindow.h" line="17"/>
+        <source>Instruction Editor</source>
+        <translation>Edytor Instrukcji</translation>
+    </message>
+    <message>
+        <location filename="../source/InstructionEditor/instructioneditorwindow.h" line="18"/>
+        <source>Open Instruction File</source>
+        <translation>Zapisz Pilik Instrukcji</translation>
+    </message>
+    <message>
+        <location filename="../source/InstructionEditor/instructioneditorwindow.h" line="19"/>
+        <source>Save Instruction File As</source>
+        <translation>Zapisz Plik Instrukcji Jako</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="57"/>
+        <location filename="../source/App/mainwindow.cpp" line="72"/>
         <source>&amp;Tools</source>
         <translation>&amp;Narzędzia</translation>
     </message>
@@ -47,57 +65,62 @@
     </message>
     <message>
         <location filename="../source/App/mainwindow.cpp" line="13"/>
-        <location filename="../source/App/mainwindow.cpp" line="142"/>
+        <location filename="../source/App/mainwindow.cpp" line="161"/>
         <source>MCAS Main Window</source>
         <translation type="unfinished">MCAS Główne Okno</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="59"/>
+        <location filename="../source/App/mainwindow.cpp" line="74"/>
         <source>Microcode Editor</source>
         <translation>Edytor Mirokodu</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="63"/>
+        <location filename="../source/App/mainwindow.cpp" line="78"/>
         <source>Memory Editor</source>
         <translation>Edytor Pamięci</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="70"/>
+        <location filename="../source/App/mainwindow.cpp" line="82"/>
+        <source>Instruction Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/App/mainwindow.cpp" line="89"/>
         <source>&amp;View</source>
         <translation>&amp;Widok</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="71"/>
+        <location filename="../source/App/mainwindow.cpp" line="90"/>
         <source>Theme</source>
         <translation>Motyw</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="73"/>
+        <location filename="../source/App/mainwindow.cpp" line="92"/>
         <source>System Default</source>
         <translation>Systemowy</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="74"/>
+        <location filename="../source/App/mainwindow.cpp" line="93"/>
         <source>Light</source>
         <translation>Jasny</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="75"/>
+        <location filename="../source/App/mainwindow.cpp" line="94"/>
         <source>Dark</source>
         <translation>Ciemny</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="108"/>
+        <location filename="../source/App/mainwindow.cpp" line="127"/>
         <source>Language</source>
         <translation>Język</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="111"/>
+        <location filename="../source/App/mainwindow.cpp" line="130"/>
         <source>English</source>
         <translation>Angielski</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="113"/>
+        <location filename="../source/App/mainwindow.cpp" line="132"/>
         <source>Polish</source>
         <translation>Polski</translation>
     </message>
