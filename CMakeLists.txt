@@ -70,10 +70,14 @@ qt_add_executable(MCAS
 
 add_executable(tests
     tests/testrunner.cpp
+    tests/test_instructions.h
     tests/test_instructions.cpp
     source/InstructionEditor/instruction.h
     source/InstructionEditor/instruction.cpp
-    tests/test_instructions.h
+    source/InstructionEditor/instructionparser.h
+    source/InstructionEditor/instructionparser.cpp
+    tests/testparser.h
+    tests/testparser.cpp
 )
 
 # Link Qt libraries

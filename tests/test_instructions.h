@@ -2,7 +2,6 @@
 #define TEST_INSTRUCTIONS_H
 
 #include <QtTest/QTest>
-#include "InstructionEditor/instruction.h"
 
 class TestInstructions : public QObject
 {

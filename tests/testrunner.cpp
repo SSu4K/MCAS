@@ -1,5 +1,6 @@
 #include <QTest>
 #include "test_instructions.h"
+#include "testparser.h"
 
 int main(int argc, char *argv[])
 {
@@ -8,9 +9,9 @@ int main(int argc, char *argv[])
         TestInstructions t1;
         status |= QTest::qExec(&t1, argc, argv);
     }
-    // {
-    //     TestOtherComponent t2;
-    //     status |= QTest::qExec(&t2, argc, argv);
-    // }
+    {
+        TestParser t2;
+        status |= QTest::qExec(&t2, argc, argv);
+    }
     return status;
 }

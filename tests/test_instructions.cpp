@@ -1,4 +1,6 @@
 #include "test_instructions.h"
+#include "InstructionEditor/instruction.h"
+
 using namespace InstructionEditor;
 
 void TestInstructions::initTestCase() {
