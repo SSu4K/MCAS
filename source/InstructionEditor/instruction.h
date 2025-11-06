@@ -2,6 +2,7 @@
 #define INSTRUCTION_H
 
 #include <QList>
+#include <QMap>
 #include <qtypes.h>
 
 namespace InstructionEditor{
