@@ -22,7 +22,6 @@ RType::RType(const quint8 opcode, QList<quint8> formals){
 quint32 RType::encode() const{
     quint32 result = 0;
     result |= OPCODE_MASK & opcode;
-    result = result << OPCODE_SIZE;
 
     for(qsizetype i=0; i<R_FORMAL_COUNT; i++){
         result = result << REGISTER_SIZE;
@@ -56,7 +55,7 @@ quint32 IType::encode() const{
     quint32 result = 0;
     result |= OPCODE_MASK & opcode;
 
-    result = result << OPCODE_SIZE;
+    result = result << REGISTER_SIZE;
     result |= REGISTER_MASK & sourceRegister;
 
     result = result << REGISTER_SIZE;
@@ -94,8 +93,8 @@ quint32 JType::encode() const{
     quint32 result = 0;
     result |= OPCODE_MASK & opcode;
 
-    result = result << I_IMMEDIATE_SIZE;
-    result |= I_IMMEDIATE_MASK & immediate;
+    result = result << J_IMMEDIATE_SIZE;
+    result |= J_IMMEDIATE_MASK & immediate;
 
     return result << I_UNUSED_SIZE;
 }

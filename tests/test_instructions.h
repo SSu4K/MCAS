@@ -10,9 +10,16 @@ class TestInstructions : public QObject
 
 private slots:
     void initTestCase();
+
     void RTypeEncodeAndDecode();
+    void RTypeEncode();
+
     void ITypeEncodeAndDecode();
+    void ITypeEncode();
+
     void JTypeEncodeAndDecode();
+    void JTypeEncode();
+
     void cleanupTestCase();
 };
 
