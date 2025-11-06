@@ -7,7 +7,7 @@ RType::RType(){
     formals.fill(0, R_FORMAL_COUNT);
 }
 
-RType::RType(quint8 opcode, QList<quint8> formals){
+RType::RType(const quint8 opcode, QList<quint8> formals){
     this->opcode = opcode;
     for(qsizetype i=0; i<R_FORMAL_COUNT; i++){
         if(i<formals.count()){
@@ -19,7 +19,7 @@ RType::RType(quint8 opcode, QList<quint8> formals){
     }
 }
 
-quint32 RType::encode(){
+quint32 RType::encode() const{
     quint32 result = 0;
     result |= OPCODE_MASK & opcode;
     result = result << OPCODE_SIZE;
@@ -52,7 +52,7 @@ IType::IType(quint8 opcode, quint8 source, quint8 destination, quint16 immediate
     this->immediate = immediate;
 }
 
-quint32 IType::encode(){
+quint32 IType::encode() const{
     quint32 result = 0;
     result |= OPCODE_MASK & opcode;
 
@@ -85,12 +85,12 @@ IType IType::decode(quint32 in){
     return result;
 }
 
-JType::JType(quint8 opcode, quint32 immediate){
+JType::JType(const quint8 opcode, const quint32 immediate){
     this->opcode = opcode;
     this->immediate = immediate;
 }
 
-quint32 JType::encode(){
+quint32 JType::encode() const{
     quint32 result = 0;
     result |= OPCODE_MASK & opcode;
 
@@ -109,4 +109,43 @@ JType JType::decode(quint32 in){
 
     result.opcode = OPCODE_MASK & in;
     return result;
+}
+
+bool operator==(const RType &l, const RType &r){
+    if(l.opcode != r.opcode){
+        return false;
+    }
+
+    if(l.formals.size() != r.formals.size()){
+        return false;
+    }
+    for(qsizetype i=0; i<l.formals.size(); i++){
+        if(l.formals[i] != r.formals[i]){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool operator==(const IType &l, const IType &r){
+    if(l.opcode != r.opcode){
+        return false;
+    }
+    if(l.sourceRegister != r.sourceRegister){
+        return false;
+    }
+    if(l.destinationRegister != r.destinationRegister){
+        return false;
+    }
+
+    return l.immediate == r.immediate;
+}
+
+bool operator==(const JType &l, const JType &r){
+    if(l.opcode != r.opcode){
+        return false;
+    }
+
+    return l.immediate == r.immediate;
 }

@@ -40,7 +40,7 @@ namespace InstructionEditor{
     public:
         explicit Instruction() = default;
         quint8 opcode;
-        virtual quint32 encode();
+        virtual quint32 encode() const;
     };
 
     class RType: public Instruction{
@@ -49,8 +49,8 @@ namespace InstructionEditor{
         QList<quint8> formals;
 
         explicit RType();
-        explicit RType(quint8 opcode, QList<quint8> formals);
-        quint32 encode() override;
+        explicit RType(const quint8 opcode, QList<quint8> formals);
+        quint32 encode() const override;
         static RType decode(quint32 instruction);
     };
 
@@ -62,8 +62,8 @@ namespace InstructionEditor{
         quint16 immediate;
 
         explicit IType() = default;
-        explicit IType(quint8 opcode, quint8 source, quint8 destination, quint16 immediate);
-        quint32 encode() override;
+        explicit IType(const quint8 opcode, const quint8 source, const quint8 destination, const quint16 immediate);
+        quint32 encode() const override;
         static IType decode(quint32 instruction);
     };
 
@@ -73,10 +73,14 @@ namespace InstructionEditor{
         quint32 immediate;
 
         explicit JType() = default;
-        explicit JType(quint8 opcode, quint32 immediate);
-        quint32 encode() override;
+        explicit JType(const quint8 opcode, const quint32 immediate);
+        quint32 encode() const override;
         static JType decode(quint32 instruction);
     };
+
+    bool operator==(const RType &l, const RType &r);
+    bool operator==(const IType &l, const IType &r);
+    bool operator==(const JType &l, const JType &r);
 
 }
 
