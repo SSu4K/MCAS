@@ -40,7 +40,7 @@ namespace InstructionEditor{
     public:
         explicit Instruction() = default;
         quint8 opcode;
-        virtual quint32 encode() const;
+        virtual quint32 encode() const {return 0;}
     };
 
     class RType: public Instruction{

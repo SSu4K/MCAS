@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find Qt 6 modules
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
-find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
+find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools Test)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 # Define version and build info
@@ -68,9 +68,22 @@ qt_add_executable(MCAS
     source/InstructionEditor/instruction.cpp
 )
 
+add_executable(tests
+    tests/testrunner.cpp
+    tests/test_instructions.cpp
+    source/InstructionEditor/instruction.h
+    source/InstructionEditor/instruction.cpp
+    tests/test_instructions.h
+)
+
 # Link Qt libraries
 target_link_libraries(MCAS PRIVATE Qt6::Widgets)
-target_link_libraries(MCAS PRIVATE Qt6::Widgets)
+
+
+target_link_libraries(tests PRIVATE
+    Qt6::Core
+    Qt6::Test
+)
 
 # Create translations if they exist
 if(TS_FILES)

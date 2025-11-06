@@ -111,7 +111,7 @@ JType JType::decode(quint32 in){
     return result;
 }
 
-bool operator==(const RType &l, const RType &r){
+bool InstructionEditor::operator==(const RType &l, const RType &r){
     if(l.opcode != r.opcode){
         return false;
     }
@@ -128,7 +128,7 @@ bool operator==(const RType &l, const RType &r){
     return true;
 }
 
-bool operator==(const IType &l, const IType &r){
+bool InstructionEditor::operator==(const IType &l, const IType &r){
     if(l.opcode != r.opcode){
         return false;
     }
@@ -142,7 +142,7 @@ bool operator==(const IType &l, const IType &r){
     return l.immediate == r.immediate;
 }
 
-bool operator==(const JType &l, const JType &r){
+bool InstructionEditor::operator==(const JType &l, const JType &r){
     if(l.opcode != r.opcode){
         return false;
     }
