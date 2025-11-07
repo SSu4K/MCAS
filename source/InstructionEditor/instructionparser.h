@@ -31,8 +31,9 @@ namespace InstructionEditor {
 
     struct Token{
         QString str;
-        qsizetype address; // adress in string
-        qsizetype index; // token id
+        qsizetype charIndex;
+        qsizetype tokenIndex;
+        qsizetype lineNumber;
     };
 
     typedef QList<Token> TokenList;
@@ -68,19 +69,29 @@ namespace InstructionEditor {
     private:
         InstructionSet instructionSet;
         QList<char> separatorTokens;
+        QMap<QString, quint32> labelMap;
 
-        qsizetype parseAddress;
+        qsizetype currentLineNumber;
+        qsizetype currentCharIndex;
         QString charBuffer;
         TokenList tokenBuffer;
 
         void flushCharBuffer();
-        TokenList tokenize(const QString &line);
+        TokenList tokenize(const qsizetype lineNumber, const QString &line);
         ParseStatus mapTokens(const TokenList &formatTokens, const TokenList &argumentTokens, QMap<QString, Token> &tokenMappings) const;
+        ParseResult parseRType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const;
+        ParseResult parseIType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const;
+        ParseResult parseJType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const;
     public:
 
         InstructionParser();
         bool addInstruction(const QString &mnemonic, const InstructionType type, const QString &format);
-        ParseResult parse(const QString &instruction);
+        bool removeInstruction(const QString &mnemonic);
+        bool addLabel(const QString &label, const quint32 address);
+        bool removeLabel(const QString &label);
+        // bool isValidLabel(const QString &label);
+        // quint32 getLabelAddress(const QString &label, bool *okptr);
+        ParseResult parseLine(const qsizetype lineNumber, const QString &instruction);
     };
 
 } // namespace InstructionEditor

@@ -7,12 +7,12 @@ void TestParser::initTestCase() {
 }
 
 void successParseCase(QString instr, InstructionParser &parser){
-    ParseResult result = parser.parse(instr);
+    ParseResult result = parser.parseLine(0xF, instr);
     QCOMPARE(result.status.severity, ErrorSeverity::Correct);
 }
 
 void parseStatusCase(QString instr, ParseStatus expected, InstructionParser &parser){
-    ParseResult result = parser.parse(instr);
+    ParseResult result = parser.parseLine(0xF, instr);
     if(result.status.severity == ErrorSeverity::Error){
         qDebug() << result.status;
     }
@@ -45,7 +45,7 @@ void TestParser::RTypeParse(){
         );
 
         QString instr = "ADD4 R1, R2, R3, R4, R5";
-        auto parsed = parser.parse(instr);
+        auto parsed = parser.parseLine(0xF, instr);
         auto result_ptr = qSharedPointerCast<RType>(parsed.instruction);
         auto expected = RType(6, {1, 2, 3, 4, 5});
         QCOMPARE(*result_ptr, expected);
@@ -53,12 +53,12 @@ void TestParser::RTypeParse(){
 
     parseStatusCase(
         "ADD R1, R2, 0xABCD",
-        ParseStatus::fail("Expected register token for: r3 instead of: 0xABCD [token=0xABCD index=6 char=12]"),
+        ParseStatus::fail("Expected register token for: r3 instead of: 0xABCD [token=0xABCD line=15 index=6 char=12]"),
         parser
     );
     parseStatusCase(
         "ADD R1, R2, R3, R4",
-        ParseStatus::fail("Too many tokens for the format [token=, index=7 char=14]"),
+        ParseStatus::fail("Too many tokens for the format [token=, line=15 index=7 char=14]"),
         parser
     );
     parseStatusCase(
@@ -73,7 +73,7 @@ void TestParser::RTypeParse(){
     );
     parseStatusCase(
         "ADD R1, R2(R3)",
-        ParseStatus::fail("Expected separator token: , instead of: ( [token=( index=5 char=10]"),
+        ParseStatus::fail("Expected separator token: , instead of: ( [token=( line=15 index=5 char=10]"),
         parser
     );
 }

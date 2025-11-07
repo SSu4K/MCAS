@@ -32,8 +32,8 @@ QString ParseStatus::toString() const {
     }
 
     QString loc;
-    if (token.index >= 0 || token.address >= 0)
-        loc = QString(" [token=%1 index=%2 char=%3]").arg(token.str).arg(token.index).arg(token.address);
+    if (token.tokenIndex >= 0 || token.charIndex >= 0)
+        loc = QString(" [token=%1 line=%2 index=%3 char=%4]").arg(token.str).arg(token.lineNumber).arg(token.tokenIndex).arg(token.charIndex);
 
     if (!msg.isEmpty())
         return QString("%1: %2%3").arg(rankStr, msg, loc);
@@ -57,31 +57,47 @@ bool InstructionParser::addInstruction(const QString &mnemonic, const Instructio
     return true;
 }
 
+bool InstructionParser::removeInstruction(const QString &mnemonic){
+    return instructionSet.remove(mnemonic);
+}
+
+bool InstructionParser::addLabel(const QString &label, const quint32 address){
+    if(labelMap.contains(label)){
+        return false;
+    }
+    labelMap[label] = address;
+    return true;
+}
+
+bool InstructionParser::removeLabel(const QString &label){
+    return labelMap.remove(label);
+}
+
 InstructionParser::InstructionParser(): instructionSet(DEFAULT_INSTRUCTION_SET), separatorTokens(DEFAULT_SEPARATOR_TOKENS) {}
 
 void InstructionParser::flushCharBuffer(){
     if(!charBuffer.isEmpty()){
-        tokenBuffer.append({charBuffer, parseAddress, tokenBuffer.size()+1});
+        tokenBuffer.append({charBuffer, currentCharIndex, tokenBuffer.size()+1, currentLineNumber});
         charBuffer = "";
     }
 }
 
-TokenList InstructionParser::tokenize(const QString &line){
-    parseAddress = 0;
+TokenList InstructionParser::tokenize(const qsizetype lineNumber, const QString &line){
+    currentCharIndex = 0;
     charBuffer = 0;
     tokenBuffer = {};
     for(qsizetype i=0; i<line.size(); i++){
         QChar c = line[i];
         if(c.isSpace()){
             flushCharBuffer();
-            parseAddress = i+1;
+            currentCharIndex = i+1;
         }
         else if(separatorTokens.contains(c)){
             flushCharBuffer();
             charBuffer = c;
-            parseAddress = i;
+            currentCharIndex = i;
             flushCharBuffer();
-            parseAddress = i+1;
+            currentCharIndex = i+1;
         }
         else{
             charBuffer += c;
@@ -171,13 +187,78 @@ quint8 parseRegisterToken(QString token, bool* okptr = nullptr){
     return 0;
 }
 
-ParseResult InstructionParser::parse(const QString &instruction){
+ParseResult InstructionParser::parseRType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const{
+    QList<quint8> regs = {};
+    bool ok = true;
+    for(qsizetype i=1; i<=R_FORMAL_COUNT; i++){
+        QString ftok = QString("r%1").arg(i, 0, 10);
+        if(tokenMappings.contains(ftok)){
+            Token atok = tokenMappings[ftok];
+            regs.append(parseRegisterToken(atok.str, &ok));
+            if(!ok){
+                QString msg = "Failed to parse register token: " + atok.str;
+                return {nullptr, ParseStatus::fail(msg, atok)};
+            }
+        }
+        else{
+            regs.append(0);
+        }
+    }
+
+    auto instr_ptr = QSharedPointer<Instruction>(new RType(definition.opcode, regs));
+    return {instr_ptr, ParseStatus::done("Parsed RType instruction")};
+}
+
+ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const{
+    bool ok = true;
+    quint8 r1 = 0;
+    if(tokenMappings.contains("r1")){
+        Token token = tokenMappings["r1"];
+        r1 = parseRegisterToken(token.str, &ok);
+        if(!ok){
+            QString msg = "Failed to parse register token: " + token.str;
+            return {nullptr, ParseStatus::fail(msg, token)};
+        }
+    }
+
+    quint8 r2 = 0;
+    if(tokenMappings.contains("r2")){
+        Token token = tokenMappings["r2"];
+        r2 = parseRegisterToken(token.str, &ok);
+        if(!ok){
+            QString msg = "Failed to parse register token: " + token.str;
+            return {nullptr, ParseStatus::fail(msg, token)};
+        }
+    }
+
+    quint16 immediate = 0;
+
+    // I-Type with hexadecimal immediate (example: ADDI)
+    if(definition.format.contains('i')){
+
+    }
+    // I-Type with lebel immediate (example: BRZ)
+    else if(definition.format.contains('j')){
+
+    }
+
+    auto instr_ptr = QSharedPointer<Instruction>(new IType(definition.opcode, r1, r2, immediate));
+    return {instr_ptr, ParseStatus::done("Parsed IType instruction")};
+}
+
+ParseResult InstructionParser::parseJType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const{
+    return {nullptr, ParseStatus::fail("Undefined")};
+}
+
+ParseResult InstructionParser::parseLine(const qsizetype lineNumber, const QString &instruction){
+    currentLineNumber = lineNumber;
+
     QString trimmed = instruction.trimmed();
     if(trimmed.isEmpty()){
         return {nullptr, ParseStatus::fail("Empty line")};
     }
 
-    TokenList argumentTokens = tokenize(trimmed);
+    TokenList argumentTokens = tokenize(lineNumber, trimmed);
 
     // Recognize the instrucion
     QString mnemonic = argumentTokens[0].str;
@@ -189,7 +270,7 @@ ParseResult InstructionParser::parse(const QString &instruction){
     // remove mnemonic from arguments for parsing
     argumentTokens.removeFirst();
     // tokenize format string
-    TokenList formatTokens = tokenize(definition.format);
+    TokenList formatTokens = tokenize(0, definition.format); // lineNumber irrelevant for format tokens
 
     // map format token strings to argument tokens
     QMap<QString, Token> tokenMappings;
