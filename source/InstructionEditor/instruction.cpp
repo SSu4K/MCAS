@@ -3,12 +3,12 @@
 using namespace InstructionEditor;
 
 RType::RType(){
-    opcode = 0;
+    opcode_ = 0;
     formals.fill(0, R_FORMAL_COUNT);
 }
 
 RType::RType(const quint8 opcode, QList<quint8> formals){
-    this->opcode = opcode;
+    this->opcode_= opcode;
     for(qsizetype i=0; i<R_FORMAL_COUNT; i++){
         if(i<formals.count()){
             this->formals.append(formals[i]);
@@ -21,7 +21,7 @@ RType::RType(const quint8 opcode, QList<quint8> formals){
 
 quint32 RType::encode() const{
     quint32 result = 0;
-    result |= OPCODE_MASK & opcode;
+    result |= OPCODE_MASK & opcode_;
 
     for(qsizetype i=0; i<R_FORMAL_COUNT; i++){
         result = result << REGISTER_SIZE;
@@ -39,13 +39,13 @@ RType RType::decode(quint32 in){
         in = in >> REGISTER_SIZE;
     }
 
-    result.opcode = OPCODE_MASK & in;
+    result.opcode_= OPCODE_MASK & in;
 
     return result;
 }
 
 IType::IType(quint8 opcode, quint8 source, quint8 destination, quint16 immediate){
-    this->opcode = opcode;
+    this->opcode_= opcode;
     this->sourceRegister = source;
     this->destinationRegister = destination;
     this->immediate = immediate;
@@ -53,7 +53,7 @@ IType::IType(quint8 opcode, quint8 source, quint8 destination, quint16 immediate
 
 quint32 IType::encode() const{
     quint32 result = 0;
-    result |= OPCODE_MASK & opcode;
+    result |= OPCODE_MASK & opcode_;
 
     result = result << REGISTER_SIZE;
     result |= REGISTER_MASK & sourceRegister;
@@ -80,18 +80,18 @@ IType IType::decode(quint32 in){
     result.sourceRegister = REGISTER_MASK & in;
     in = in >> REGISTER_SIZE;
 
-    result.opcode = OPCODE_MASK & in;
+    result.opcode_= OPCODE_MASK & in;
     return result;
 }
 
 JType::JType(const quint8 opcode, const quint32 immediate){
-    this->opcode = opcode;
+    this->opcode_= opcode;
     this->immediate = immediate;
 }
 
 quint32 JType::encode() const{
     quint32 result = 0;
-    result |= OPCODE_MASK & opcode;
+    result |= OPCODE_MASK & opcode_;
 
     result = result << J_IMMEDIATE_SIZE;
     result |= J_IMMEDIATE_MASK & immediate;
@@ -106,12 +106,12 @@ JType JType::decode(quint32 in){
     result.immediate = J_IMMEDIATE_MASK & in;
     in = in >> J_IMMEDIATE_SIZE;
 
-    result.opcode = OPCODE_MASK & in;
+    result.opcode_= OPCODE_MASK & in;
     return result;
 }
 
 bool InstructionEditor::operator==(const RType &l, const RType &r){
-    if(l.opcode != r.opcode){
+    if(l.opcode_!= r.opcode_){
         return false;
     }
 
@@ -128,7 +128,7 @@ bool InstructionEditor::operator==(const RType &l, const RType &r){
 }
 
 bool InstructionEditor::operator==(const IType &l, const IType &r){
-    if(l.opcode != r.opcode){
+    if(l.opcode_!= r.opcode_){
         return false;
     }
     if(l.sourceRegister != r.sourceRegister){
@@ -142,7 +142,7 @@ bool InstructionEditor::operator==(const IType &l, const IType &r){
 }
 
 bool InstructionEditor::operator==(const JType &l, const JType &r){
-    if(l.opcode != r.opcode){
+    if(l.opcode_!= r.opcode_){
         return false;
     }
 

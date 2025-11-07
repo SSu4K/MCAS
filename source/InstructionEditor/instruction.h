@@ -36,11 +36,15 @@ namespace InstructionEditor{
     const quint32 J_IMMEDIATE_MASK = 0x03FFFFFF;
     const quint8 J_UNUSED_SIZE = 32 - (OPCODE_SIZE + J_IMMEDIATE_SIZE);
 
+     enum class InstructionType{R, I, J, None};
+
     class Instruction{
 
     public:
         explicit Instruction() = default;
-        quint8 opcode;
+        quint8 opcode_ = 0;
+        virtual quint8 opcode() const {return opcode_;}
+        virtual InstructionType type() const {return InstructionType::None;}
         virtual quint32 encode() const {return 0;}
     };
 
@@ -51,6 +55,8 @@ namespace InstructionEditor{
 
         explicit RType();
         explicit RType(const quint8 opcode, QList<quint8> formals);
+        quint8 opcode() const override {return opcode_;}
+        InstructionType type() const override {return InstructionType::R;}
         quint32 encode() const override;
         static RType decode(quint32 instruction);
     };
@@ -64,6 +70,8 @@ namespace InstructionEditor{
 
         explicit IType() = default;
         explicit IType(const quint8 opcode, const quint8 source, const quint8 destination, const quint16 immediate);
+        quint8 opcode() const override {return opcode_;}
+        InstructionType type() const override {return InstructionType::I;}
         quint32 encode() const override;
         static IType decode(quint32 instruction);
     };
@@ -75,6 +83,8 @@ namespace InstructionEditor{
 
         explicit JType() = default;
         explicit JType(const quint8 opcode, const quint32 immediate);
+        quint8 opcode() const override {return opcode_;}
+        InstructionType type() const override {return InstructionType::J;}
         quint32 encode() const override;
         static JType decode(quint32 instruction);
     };

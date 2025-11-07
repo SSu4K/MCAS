@@ -3,22 +3,21 @@
 
 #include <QList>
 #include <QMap>
+#include <QSharedPointer>
 #include <qtypes.h>
 #include "InstructionEditor/instruction.h"
 
 namespace InstructionEditor {
 
-    // list of instructions accepted, constant for now, make dynamic later
-    enum class InstructionType{R, I, J};
-
     struct IntructionDefinition{
-        quint8 index;
+        quint8 opcode;
         InstructionType type;
         QString format;
     };
 
     typedef QMap<QString, IntructionDefinition> InstructionSet;
 
+    // list of instructions accepted, constant for now, make dynamic later
     inline InstructionSet DEFAULT_INSTRUCTION_SET = {
         { "NOP",    {0, InstructionType::R, ""} },
         { "ADD",    {1, InstructionType::R, "r1, r2, r3"} },
@@ -28,8 +27,38 @@ namespace InstructionEditor {
         { "BRZ",    {5, InstructionType::I, "r1, j"} }
     };
 
-    //QStringList tokens = {"r1"}
     inline QList<char> DEFAULT_SEPARATOR_TOKENS = {',', '(', ')'};
+
+    struct Token{
+        QString str;
+        qsizetype address; // adress in string
+        qsizetype index; // token id
+    };
+
+    typedef QList<Token> TokenList;
+
+    enum class ErrorSeverity{
+        Correct, Warning, Error
+    };
+
+    class ParseStatus{
+    public:
+        ErrorSeverity severity;
+        QString msg;
+        qsizetype tokenIndex;
+        qsizetype charIndex;
+
+        ParseStatus(ErrorSeverity severity, QString msg, qsizetype tokenIndex = -1, qsizetype charIndex = -1);
+
+        static ParseStatus done(QString msg="", qsizetype tokenIndex = -1, qsizetype charIndex = -1);
+        static ParseStatus warning(QString msg="", qsizetype tokenIndex = -1, qsizetype charIndex = -1);
+        static ParseStatus fail(QString msg="", qsizetype tokenIndex = -1, qsizetype charIndex = -1);
+    };
+
+    struct ParseResult{
+        QSharedPointer<Instruction> instruction;
+        ParseStatus status;
+    };
 
     class InstructionParser
     {
@@ -37,14 +66,15 @@ namespace InstructionEditor {
         InstructionSet instructionSet;
         QList<char> separatorTokens;
 
+        qsizetype parseAddress;
         QString charBuffer;
-        QStringList tokenBuffer;
+        TokenList tokenBuffer;
 
         void flushCharBuffer();
-        QStringList tokenize(const QString &line);
-        //QMap<QString, QString> mapTokens(const QStringList &formatTokens, const QStringList &argumentTokens) const;
+        TokenList tokenize(const QString &line);
+        ParseStatus mapTokens(const TokenList &formatTokens, const TokenList &argumentTokens, QMap<QString, Token> &tokenMappings) const;
     public:
-        QVariant parse(const QString &instruction);
+        ParseResult parse(const QString &instruction);
         InstructionParser();
     };
 
