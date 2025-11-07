@@ -11,8 +11,9 @@ private slots:
     void initTestCase();
 
     void GeneralParse();
-
     void RTypeParse();
+    void ITypeParse();
+    void JTypeParse();
 
     void cleanupTestCase();
 };
