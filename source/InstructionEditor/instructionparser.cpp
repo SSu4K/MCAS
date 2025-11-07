@@ -61,11 +61,11 @@ bool InstructionParser::removeInstruction(const QString &mnemonic){
     return instructionSet.remove(mnemonic);
 }
 
-bool InstructionParser::addLabel(const QString &label, const quint32 address){
+bool InstructionParser::addLabel(const QString &label, const qsizetype lineNumber){
     if(labelMap.contains(label)){
         return false;
     }
-    labelMap[label] = address;
+    labelMap[label] = lineNumber;
     return true;
 }
 
@@ -231,15 +231,55 @@ ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappi
         }
     }
 
-    quint16 immediate = 0;
+    uint32_t immediate = 0;
 
-    // I-Type with hexadecimal immediate (example: ADDI)
+    // I-Type with hexadecimal immediate (example: ADDI R2, 0x0022(R1))
     if(definition.format.contains('i')){
+        Token token = tokenMappings["i"];
+        uint32_t value = token.str.toUInt(&ok, 16);
+        if (!ok) {
+            QString msg = "Invalid hex immediate: " + token.str;
+            return {nullptr, ParseStatus::fail(msg, token)};
+        }
+
+        // Validate that it fits into bitWidth
+        if (value > I_IMMEDIATE_MASK) {
+            QString msg = "Immediate out of range for I-Type immediate field";
+            return {nullptr, ParseStatus::fail(msg, token)};
+        }
+
+        immediate = I_IMMEDIATE_MASK & value;
 
     }
-    // I-Type with lebel immediate (example: BRZ)
+    // I-Type with lebel immediate (example: BRZ R1, loop)
     else if(definition.format.contains('j')){
+        Token token = tokenMappings["j"];
+        if(!labelMap.contains(token.str)){
+            QString msg = "Unknown label: " + token.str;
+            return {nullptr, ParseStatus::fail(msg, token)};
+        }
 
+        qsizetype currentLineNumber = token.lineNumber;
+        qsizetype labeltLineNumber = labelMap[token.str];
+
+        qint32 offset = labeltLineNumber - (currentLineNumber+1); // next line is offset = 0
+        quint32 modulus = 1 << (I_IMMEDIATE_SIZE-1); // modulus for 2c in I_IMMEDIATE_SIZE-bit number
+        qint32 minValue = -modulus;
+        quint32 maxValue = modulus - 1;
+
+        // jump out of range
+        if (offset < minValue || offset > maxValue) {
+            QString msg = "Jump to label: " + token.str + " out of range for I-Type encoding";
+            return {nullptr, ParseStatus::fail(msg, token)};
+        }
+
+        // save immediate in 2c
+        if(offset >= 0){
+            immediate = I_IMMEDIATE_MASK & offset;
+        }
+        else{
+            immediate = I_IMMEDIATE_MASK & (offset+modulus);
+        }
     }
 
     auto instr_ptr = QSharedPointer<Instruction>(new IType(definition.opcode, r1, r2, immediate));
@@ -287,25 +327,10 @@ ParseResult InstructionParser::parseLine(const qsizetype lineNumber, const QStri
     }
 
     if(definition.type == InstructionType::R){
-        QList<quint8> regs = {};
-        bool ok = true;
-        for(qsizetype i=1; i<=R_FORMAL_COUNT; i++){
-            QString ftok = QString("r%1").arg(i, 0, 10);
-            if(tokenMappings.contains(ftok)){
-                Token atok = tokenMappings[ftok];
-                regs.append(parseRegisterToken(atok.str, &ok));
-                if(!ok){
-                    QString msg = "Failed to parse register token: " + atok.str;
-                    return {nullptr, ParseStatus::done(msg, atok)};
-                }
-            }
-            else{
-                regs.append(0);
-            }
-        }
-        auto instr_ptr = QSharedPointer<Instruction>(new RType(definition.opcode, regs));
-
-        return {instr_ptr, ParseStatus::done("Parsed RType instruction")};
+        return parseRType(tokenMappings, definition);
+    }
+    else if(definition.type == InstructionType::I){
+        return parseIType(tokenMappings, definition);
     }
 
 

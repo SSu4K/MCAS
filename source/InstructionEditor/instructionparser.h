@@ -69,7 +69,7 @@ namespace InstructionEditor {
     private:
         InstructionSet instructionSet;
         QList<char> separatorTokens;
-        QMap<QString, quint32> labelMap;
+        QMap<QString, qsizetype> labelMap;
 
         qsizetype currentLineNumber;
         qsizetype currentCharIndex;
@@ -87,7 +87,7 @@ namespace InstructionEditor {
         InstructionParser();
         bool addInstruction(const QString &mnemonic, const InstructionType type, const QString &format);
         bool removeInstruction(const QString &mnemonic);
-        bool addLabel(const QString &label, const quint32 address);
+        bool addLabel(const QString &label, const qsizetype lineNumber);
         bool removeLabel(const QString &label);
         // bool isValidLabel(const QString &label);
         // quint32 getLabelAddress(const QString &label, bool *okptr);
