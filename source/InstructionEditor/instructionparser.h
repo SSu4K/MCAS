@@ -9,13 +9,13 @@
 
 namespace InstructionEditor {
 
-    struct IntructionDefinition{
+    struct InstructionDefinition{
         quint8 opcode;
         InstructionType type;
         QString format;
     };
 
-    typedef QMap<QString, IntructionDefinition> InstructionSet;
+    typedef QMap<QString, InstructionDefinition> InstructionSet;
 
     // list of instructions accepted, constant for now, make dynamic later
     inline InstructionSet DEFAULT_INSTRUCTION_SET = {
@@ -77,8 +77,10 @@ namespace InstructionEditor {
         TokenList tokenize(const QString &line);
         ParseStatus mapTokens(const TokenList &formatTokens, const TokenList &argumentTokens, QMap<QString, Token> &tokenMappings) const;
     public:
-        ParseResult parse(const QString &instruction);
+
         InstructionParser();
+        bool addInstruction(const QString &mnemonic, const InstructionType type, const QString &format);
+        ParseResult parse(const QString &instruction);
     };
 
 } // namespace InstructionEditor

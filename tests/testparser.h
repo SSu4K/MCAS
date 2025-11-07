@@ -7,7 +7,6 @@
 class TestParser: public QObject
 {
     Q_OBJECT
-    InstructionEditor::InstructionParser parser;
 
 private slots:
     void initTestCase();

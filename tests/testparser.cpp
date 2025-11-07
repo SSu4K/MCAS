@@ -19,13 +19,8 @@ void parseStatusCase(QString instr, ParseStatus expected, InstructionParser &par
     QCOMPARE(result.status.toString(), expected.toString());
 }
 
-// void parseResultCase(QString instr, ParseStatus expectedStatus, InstructionParser &parser){
-//     ParseResult result = parser.parse(instr);
-//     QCOMPARE(*result.instruction, *expected.instruction);
-//     QCOMPARE(result.status.toString(), expected.status.toString());
-// }
-
 void TestParser::GeneralParse(){
+    InstructionParser parser;
     parseStatusCase(
         "", ParseStatus::fail("Empty line"), parser
     );
@@ -38,35 +33,53 @@ void TestParser::GeneralParse(){
 }
 
 void TestParser::RTypeParse(){
+    InstructionParser parser;
+
     parseStatusCase(
         "ADD R1, R2, R3", ParseStatus::done("Parsed RType instruction"), parser
     );
 
+    if(parser.addInstruction("ADD4", InstructionType::R, "r1, r2, r3, r4, r5")){
+        parseStatusCase(
+            "ADD4 R1, R2, R3, R4, R5", ParseStatus::done("Parsed RType instruction"), parser
+        );
+
+        QString instr = "ADD4 R1, R2, R3, R4, R5";
+        auto parsed = parser.parse(instr);
+        auto result_ptr = qSharedPointerCast<RType>(parsed.instruction);
+        auto expected = RType(6, {1, 2, 3, 4, 5});
+        QCOMPARE(*result_ptr, expected);
+    }
+
     parseStatusCase(
         "ADD R1, R2, 0xABCD",
-        ParseStatus::fail("Expected register token for: r3 instead of: 0xABCD [token=0xABCD, index=6 char=12]"),
+        ParseStatus::fail("Expected register token for: r3 instead of: 0xABCD [token=0xABCD index=6 char=12]"),
         parser
     );
-    // parseCase(
-    //     "ADD R1, R2, R3, R4",
-    //     {"Too many tokens for the format"}
-    // );
-    // parseCase(
-    //     "ADD R1, R2",
-    //     {"Expected a token for: , instead of nothing"}
-    // );
-    // parseCase(
-    //     "ADD R1, R2,",
-    //     {"Expected a token for: r3 instead of nothing"}
-    // );
-    // parseCase(
-    //     "ADD R1, R2(R3)",
-    //     {"Expected separator token: , instead of: ("}
-    // );
+    parseStatusCase(
+        "ADD R1, R2, R3, R4",
+        ParseStatus::fail("Too many tokens for the format [token=, index=7 char=14]"),
+        parser
+    );
+    parseStatusCase(
+        "ADD R1, R2",
+        ParseStatus::fail("Expected a token for: , instead of nothing"),
+        parser
+    );
+    parseStatusCase(
+        "ADD R1, R2,",
+        ParseStatus::fail("Expected a token for: r3 instead of nothing"),
+        parser
+    );
+    parseStatusCase(
+        "ADD R1, R2(R3)",
+        ParseStatus::fail("Expected separator token: , instead of: ( [token=( index=5 char=10]"),
+        parser
+    );
 }
 
 // void TestParser::ITypeParse(){
-//     parseCase(
+//     parseStatusCase(
 //         "LDH R2, 0x0022(R1)",
 //         {"Done"}
 //     );
@@ -114,7 +127,7 @@ void TestParser::RTypeParse(){
 //         "BRZ R1, 0x00FF",
 //         {"Invalid label: 0x00FF"}
 //     );
-// }
+//}
 
 // void TestParser::JTypeParse(){
 //     parseCase(

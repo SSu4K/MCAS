@@ -33,7 +33,7 @@ QString ParseStatus::toString() const {
 
     QString loc;
     if (token.index >= 0 || token.address >= 0)
-        loc = QString(" [token=%1, index=%2 char=%3]").arg(token.str).arg(token.index).arg(token.address);
+        loc = QString(" [token=%1 index=%2 char=%3]").arg(token.str).arg(token.index).arg(token.address);
 
     if (!msg.isEmpty())
         return QString("%1: %2%3").arg(rankStr, msg, loc);
@@ -45,6 +45,16 @@ QDebug InstructionEditor::operator<<(QDebug dbg, const ParseStatus &status)
     QDebugStateSaver saver(dbg);
     dbg.nospace() << status.toString();
     return dbg;
+}
+
+bool InstructionParser::addInstruction(const QString &mnemonic, const InstructionType type, const QString &format){
+    if(instructionSet.contains(mnemonic.toUpper())){
+        return false;
+    }
+    quint8 opcode = instructionSet.size();
+    InstructionDefinition definition = {opcode, type, format};
+    instructionSet[mnemonic.toUpper()] = definition;
+    return true;
 }
 
 InstructionParser::InstructionParser(): instructionSet(DEFAULT_INSTRUCTION_SET), separatorTokens(DEFAULT_SEPARATOR_TOKENS) {}
@@ -69,6 +79,7 @@ TokenList InstructionParser::tokenize(const QString &line){
         else if(separatorTokens.contains(c)){
             flushCharBuffer();
             charBuffer = c;
+            parseAddress = i;
             flushCharBuffer();
             parseAddress = i+1;
         }
@@ -91,7 +102,7 @@ ParseStatus InstructionParser::mapTokens(const TokenList &formatTokens, const To
         ftok = formatTokens[i];
         if(i>=argumentTokens.size()){
             msg = "Expected a token for: " + ftok.str + " instead of nothing";
-            return ParseStatus::fail(msg, atok);
+            return ParseStatus::fail(msg);
         }
         atok = argumentTokens[i];
         i++;
@@ -131,11 +142,11 @@ ParseStatus InstructionParser::mapTokens(const TokenList &formatTokens, const To
 
     if(i<argumentTokens.size()){
         msg = "Too many tokens for the format";
-        return ParseStatus::fail(msg, atok);
+        return ParseStatus::fail(msg, argumentTokens[i]);
     }
 
     msg = "Success!";
-    return ParseStatus::done(msg, atok);
+    return ParseStatus::done(msg);
 }
 
 quint8 parseRegisterToken(QString token, bool* okptr = nullptr){
