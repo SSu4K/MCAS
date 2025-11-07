@@ -8,26 +8,50 @@ bool isLabel(QString str){
     return QRegularExpression("^[A-Za-z_][A-Za-z0-9_]*$").match(str).hasMatch();
 }
 
-ParseStatus::ParseStatus(ErrorSeverity severity, QString msg, qsizetype tokenIndex, qsizetype charIndex):
-    severity(severity), msg(msg), tokenIndex(tokenIndex), charIndex(charIndex) {}
+ParseStatus::ParseStatus(ErrorSeverity severity, const QString &msg, const Token &token):
+    severity(severity), msg(msg), token(token) {}
 
-ParseStatus ParseStatus::done(QString msg, qsizetype tokenIndex, qsizetype charIndex){
-    return ParseStatus(ErrorSeverity::Correct, msg, tokenIndex, charIndex);
+ParseStatus ParseStatus::done(const QString &msg, const Token &token){
+    return ParseStatus(ErrorSeverity::Correct, msg, token);
 }
 
-ParseStatus ParseStatus::warning(QString msg, qsizetype tokenIndex, qsizetype charIndex){
-    return ParseStatus(ErrorSeverity::Warning, msg, tokenIndex, charIndex);
+ParseStatus ParseStatus::warning(const QString &msg, const Token &token){
+    return ParseStatus(ErrorSeverity::Warning, msg, token);
 }
 
-ParseStatus ParseStatus::fail(QString msg, qsizetype tokenIndex, qsizetype charIndex){
-    return ParseStatus(ErrorSeverity::Error, msg, tokenIndex, charIndex);
+ParseStatus ParseStatus::fail(const QString &msg, const Token &token){
+    return ParseStatus(ErrorSeverity::Error, msg, token);
+}
+
+QString ParseStatus::toString() const {
+    QString rankStr;
+    switch (severity) {
+    case ErrorSeverity::Correct:    rankStr = "Correct"; break;
+    case ErrorSeverity::Warning:    rankStr = "Warning"; break;
+    case ErrorSeverity::Error:      rankStr = "Error"; break;
+    }
+
+    QString loc;
+    if (token.index >= 0 || token.address >= 0)
+        loc = QString(" [token=%1, index=%2 char=%3]").arg(token.str).arg(token.index).arg(token.address);
+
+    if (!msg.isEmpty())
+        return QString("%1: %2%3").arg(rankStr, msg, loc);
+    return QString("%1%2").arg(rankStr, loc);
+}
+
+QDebug InstructionEditor::operator<<(QDebug dbg, const ParseStatus &status)
+{
+    QDebugStateSaver saver(dbg);
+    dbg.nospace() << status.toString();
+    return dbg;
 }
 
 InstructionParser::InstructionParser(): instructionSet(DEFAULT_INSTRUCTION_SET), separatorTokens(DEFAULT_SEPARATOR_TOKENS) {}
 
 void InstructionParser::flushCharBuffer(){
     if(!charBuffer.isEmpty()){
-        tokenBuffer.append({charBuffer, parseAddress, tokenBuffer.size()});
+        tokenBuffer.append({charBuffer, parseAddress, tokenBuffer.size()+1});
         charBuffer = "";
     }
 }
@@ -67,7 +91,7 @@ ParseStatus InstructionParser::mapTokens(const TokenList &formatTokens, const To
         ftok = formatTokens[i];
         if(i>=argumentTokens.size()){
             msg = "Expected a token for: " + ftok.str + " instead of nothing";
-            return ParseStatus::fail(msg, atok.index, atok.address);
+            return ParseStatus::fail(msg, atok);
         }
         atok = argumentTokens[i];
         i++;
@@ -77,7 +101,7 @@ ParseStatus InstructionParser::mapTokens(const TokenList &formatTokens, const To
         if(separatorTokens.contains(ftok.str)){
             if(ftok.str != atok.str){
                 msg = "Expected separator token: " + ftok.str + " instead of: " + atok.str;
-                return ParseStatus::fail(msg, atok.index, atok.address);
+                return ParseStatus::fail(msg, atok);
             }
             continue;
         }
@@ -85,21 +109,21 @@ ParseStatus InstructionParser::mapTokens(const TokenList &formatTokens, const To
         else if(ftok.str.startsWith("r")){
             if (!atok.str.toUpper().startsWith("R")){
                 msg = "Expected register token for: " + ftok.str + " instead of: " + atok.str;
-                return ParseStatus::fail(msg, atok.index, atok.address);
+                return ParseStatus::fail(msg, atok);
             }
         }
         // Hexadecimal immediates starting with '0x'
         else if(ftok.str == 'i'){
             if(!atok.str.startsWith("0x")){
                 msg = "Expected hex immediate token for: i instead of: " + atok.str;
-                return ParseStatus::fail(msg, atok.index, atok.address);
+                return ParseStatus::fail(msg, atok);
             }
         }
         // Label type immediate
         else if(ftok.str == "j"){
             if(!isLabel(atok.str)){
                 msg = "Invalid label: " + atok.str;
-                return ParseStatus::fail(msg, atok.index, atok.address);
+                return ParseStatus::fail(msg, atok);
             }
         }
         tokenMappings[ftok.str] = atok;
@@ -107,11 +131,11 @@ ParseStatus InstructionParser::mapTokens(const TokenList &formatTokens, const To
 
     if(i<argumentTokens.size()){
         msg = "Too many tokens for the format";
-        return ParseStatus::fail(msg, atok.index, atok.address);
+        return ParseStatus::fail(msg, atok);
     }
 
     msg = "Success!";
-    return ParseStatus::done(msg, atok.index, atok.address);
+    return ParseStatus::done(msg, atok);
 }
 
 quint8 parseRegisterToken(QString token, bool* okptr = nullptr){
@@ -142,18 +166,21 @@ ParseResult InstructionParser::parse(const QString &instruction){
         return {nullptr, ParseStatus::fail("Empty line")};
     }
 
+    TokenList argumentTokens = tokenize(trimmed);
+
     // Recognize the instrucion
-    QString mnemonic = trimmed.section(' ', 0, 0).toUpper();
+    QString mnemonic = argumentTokens[0].str;
     if(!instructionSet.contains(mnemonic)){
         return {nullptr, ParseStatus::fail("Unknown instruction")};
     }
     const auto &definition = instructionSet[mnemonic];
-    QString arguments = trimmed.section(' ', 1);
 
-    // tokenize arguments and format
+    // remove mnemonic from arguments for parsing
+    argumentTokens.removeFirst();
+    // tokenize format string
     TokenList formatTokens = tokenize(definition.format);
-    TokenList argumentTokens = tokenize(arguments);
 
+    // map format token strings to argument tokens
     QMap<QString, Token> tokenMappings;
     auto status = mapTokens(formatTokens, argumentTokens, tokenMappings);
 
@@ -177,7 +204,7 @@ ParseResult InstructionParser::parse(const QString &instruction){
                 regs.append(parseRegisterToken(atok.str, &ok));
                 if(!ok){
                     QString msg = "Failed to parse register token: " + atok.str;
-                    return {nullptr, ParseStatus::done(msg, atok.index, atok.address)};
+                    return {nullptr, ParseStatus::done(msg, atok)};
                 }
             }
             else{

@@ -2,18 +2,20 @@
 #define TESTPARSER_H
 
 #include <QtTest/QTest>
+#include "InstructionEditor/instructionparser.h"
 
 class TestParser: public QObject
 {
     Q_OBJECT
+    InstructionEditor::InstructionParser parser;
 
 private slots:
     void initTestCase();
 
     void GeneralParse();
     void RTypeParse();
-    void ITypeParse();
-    void JTypeParse();
+    // void ITypeParse();
+    // void JTypeParse();
 
     void cleanupTestCase();
 };

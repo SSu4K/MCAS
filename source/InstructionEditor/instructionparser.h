@@ -45,15 +45,18 @@ namespace InstructionEditor {
     public:
         ErrorSeverity severity;
         QString msg;
-        qsizetype tokenIndex;
-        qsizetype charIndex;
+        Token token;
 
-        ParseStatus(ErrorSeverity severity, QString msg, qsizetype tokenIndex = -1, qsizetype charIndex = -1);
+        ParseStatus(ErrorSeverity severity, const QString &msg="", const Token &token = {"", -1, -1});
 
-        static ParseStatus done(QString msg="", qsizetype tokenIndex = -1, qsizetype charIndex = -1);
-        static ParseStatus warning(QString msg="", qsizetype tokenIndex = -1, qsizetype charIndex = -1);
-        static ParseStatus fail(QString msg="", qsizetype tokenIndex = -1, qsizetype charIndex = -1);
+        static ParseStatus done(const QString &msg="", const Token &token = {"", -1, -1});
+        static ParseStatus warning(const QString &msg="", Token const &token = {"", -1, -1});
+        static ParseStatus fail(const QString &msg="", Token const &token = {"", -1, -1});
+
+        QString toString() const;
     };
+
+    QDebug operator<<(QDebug dbg, const ParseStatus &status);
 
     struct ParseResult{
         QSharedPointer<Instruction> instruction;
