@@ -40,6 +40,18 @@ QString ParseStatus::toString() const {
     return QString("%1%2").arg(rankStr, loc);
 }
 
+bool ParseStatus::isOk() const{
+    return severity == ErrorSeverity::Correct;
+}
+
+bool ParseStatus::isWarning() const{
+    return severity == ErrorSeverity::Warning;
+}
+
+bool ParseStatus::isError() const{
+    return severity == ErrorSeverity::Error;
+}
+
 QDebug InstructionEditor::operator<<(QDebug dbg, const ParseStatus &status)
 {
     QDebugStateSaver saver(dbg);
@@ -165,40 +177,119 @@ ParseStatus InstructionParser::mapTokens(const TokenList &formatTokens, const To
     return ParseStatus::done(msg);
 }
 
-quint8 parseRegisterToken(QString token, bool* okptr = nullptr){
-    bool ok = true;
-    QString number;
-    int index;
-
-    if(!token.startsWith('R'))
-        goto err;
-
-    number = token.slice(1);
-    index = number.toInt(&ok);
-    if(!ok || index<0 || index>=REGISTER_COUNT)
-        goto err;
-
-    return index;
-
-    err:
-    if(okptr){
-        *okptr = false;
+quint32 InstructionParser::parseRegisterToken(const Token &token, const qsizetype bitWidth, ParseStatus &status) const{
+    if(!token.str.startsWith('R')){
+        QString msg = "Invalid register: " + token.str;
+        status = ParseStatus::fail(msg, token);
+        return 0;
     }
-    return 0;
+    bool ok = true;
+    QString number = token.str.sliced(1);
+    int index = number.toInt(&ok);
+
+    if(!ok){
+        QString msg = "Invalid register: " + token.str;
+        status = ParseStatus::fail(msg, token);
+        return 0;
+    }
+
+    const quint32 bitMask = (1u << bitWidth) - 1u;
+    if(index < 0 || index > bitMask){
+        QString msg = "Register index out of range";
+        status = ParseStatus::fail(msg, token);
+        return 0;
+    }
+
+    status = ParseStatus::done("Parsed register token");
+    return bitMask & index;
+}
+
+quint32 InstructionParser::parseHexToken(const Token &token, const qsizetype bitWidth, ParseStatus &status) const{
+    if(!token.str.startsWith("0x", Qt::CaseInsensitive)){
+        QString msg = "Invalid hex immediate: " + token.str;
+        status = ParseStatus::fail(msg, token);
+        return 0;
+    }
+    bool ok;
+
+    uint32_t value = token.str.toUInt(&ok, 16);
+    if (!ok) {
+        QString msg = "Invalid hex immediate: " + token.str;
+        status = ParseStatus::fail(msg, token);
+        return 0;
+    }
+
+    // Validate that it fits into bitWidth
+    const quint32 bitMask = (1u << bitWidth) - 1u;
+
+    if (value > bitMask) {
+        QString msg = QString("Immediate out of range for %1-bit hex immediate field").arg(bitWidth);
+        status = ParseStatus::fail(msg, token);
+        return 0;
+    }
+    status = ParseStatus::done("Parsed hex token");
+    return bitMask & value;
+}
+
+quint32 InstructionParser::parseLabelToken(const Token &token, const qsizetype bitWidth, ParseStatus &status) const{
+    if(!labelMap.contains(token.str)){
+        QString msg = "Unknown label: " + token.str;
+        status = ParseStatus::fail(msg, token);
+        return 0;
+    }
+    else {
+        const quint32 bitMask = (1u << bitWidth) - 1u;
+        const qint32 offset = 4*(labelMap[token.str] - (token.lineNumber+1)); // next line is offset = 0
+        const quint32 modulus = 1 << (bitWidth-1); // modulus for 2c
+        const qint32 minValue = -modulus;
+        const quint32 maxValue = modulus - 1;
+
+        // jump out of range
+        if (offset < minValue || offset > maxValue) {
+            QString msg = "Jump to label: " + token.str + " out of range for I-Type encoding";
+            status = ParseStatus::fail(msg, token);
+            return 0;
+        }
+
+        status = ParseStatus::done("Parsed label token");
+        // save immediate in 2c
+        if(offset >= 0){
+            return bitMask & offset;
+        }
+        else{
+            return bitMask & (offset+modulus);
+        }
+    }
+}
+
+quint32 InstructionParser::parseJumpToken(const Token &token, const qsizetype bitWidth, ParseStatus &status) const{
+    quint32 result = 0;
+    result = parseHexToken(token, bitWidth, status);
+    if(status.isOk()){
+        return result;
+    }
+    result = parseLabelToken(token, bitWidth, status);
+    if(status.isOk()){
+        return result;
+    }
+    else{
+        return 0;
+    }
 }
 
 ParseResult InstructionParser::parseRType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const{
     QList<quint8> regs = {};
-    bool ok = true;
+    ParseStatus status;
     for(qsizetype i=1; i<=R_FORMAL_COUNT; i++){
         QString ftok = QString("r%1").arg(i, 0, 10);
         if(tokenMappings.contains(ftok)){
             Token atok = tokenMappings[ftok];
-            regs.append(parseRegisterToken(atok.str, &ok));
-            if(!ok){
-                QString msg = "Failed to parse register token: " + atok.str;
-                return {nullptr, ParseStatus::fail(msg, atok)};
+            quint8 reg = parseRegisterToken(atok, REGISTER_SIZE, status);
+            if(!status.isOk()){
+                return {nullptr, status};
             }
+            regs.append(reg);
+
         }
         else{
             regs.append(0);
@@ -210,24 +301,22 @@ ParseResult InstructionParser::parseRType(const QMap<QString, Token> &tokenMappi
 }
 
 ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const{
-    bool ok = true;
+    ParseStatus status;
     quint8 r1 = 0;
     if(tokenMappings.contains("r1")){
         Token token = tokenMappings["r1"];
-        r1 = parseRegisterToken(token.str, &ok);
-        if(!ok){
-            QString msg = "Failed to parse register token: " + token.str;
-            return {nullptr, ParseStatus::fail(msg, token)};
+        r1 = parseRegisterToken(token, REGISTER_SIZE, status);
+        if(!status.isOk()){
+            return {nullptr, status};
         }
     }
 
     quint8 r2 = 0;
     if(tokenMappings.contains("r2")){
         Token token = tokenMappings["r2"];
-        r2 = parseRegisterToken(token.str, &ok);
-        if(!ok){
-            QString msg = "Failed to parse register token: " + token.str;
-            return {nullptr, ParseStatus::fail(msg, token)};
+        r2 = parseRegisterToken(token, REGISTER_SIZE, status);
+        if(!status.isOk()){
+            return {nullptr, status};
         }
     }
 
@@ -236,49 +325,17 @@ ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappi
     // I-Type with hexadecimal immediate (example: ADDI R2, 0x0022(R1))
     if(definition.format.contains('i')){
         Token token = tokenMappings["i"];
-        uint32_t value = token.str.toUInt(&ok, 16);
-        if (!ok) {
-            QString msg = "Invalid hex immediate: " + token.str;
-            return {nullptr, ParseStatus::fail(msg, token)};
+        immediate = parseHexToken(token, I_IMMEDIATE_SIZE, status);
+        if(!status.isOk()){
+            return {nullptr, status};
         }
-
-        // Validate that it fits into bitWidth
-        if (value > I_IMMEDIATE_MASK) {
-            QString msg = "Immediate out of range for I-Type immediate field";
-            return {nullptr, ParseStatus::fail(msg, token)};
-        }
-
-        immediate = I_IMMEDIATE_MASK & value;
-
     }
     // I-Type with lebel immediate (example: BRZ R1, loop)
     else if(definition.format.contains('j')){
         Token token = tokenMappings["j"];
-        if(!labelMap.contains(token.str)){
-            QString msg = "Unknown label: " + token.str;
-            return {nullptr, ParseStatus::fail(msg, token)};
-        }
-
-        qsizetype currentLineNumber = token.lineNumber;
-        qsizetype labeltLineNumber = labelMap[token.str];
-
-        qint32 offset = labeltLineNumber - (currentLineNumber+1); // next line is offset = 0
-        quint32 modulus = 1 << (I_IMMEDIATE_SIZE-1); // modulus for 2c in I_IMMEDIATE_SIZE-bit number
-        qint32 minValue = -modulus;
-        quint32 maxValue = modulus - 1;
-
-        // jump out of range
-        if (offset < minValue || offset > maxValue) {
-            QString msg = "Jump to label: " + token.str + " out of range for I-Type encoding";
-            return {nullptr, ParseStatus::fail(msg, token)};
-        }
-
-        // save immediate in 2c
-        if(offset >= 0){
-            immediate = I_IMMEDIATE_MASK & offset;
-        }
-        else{
-            immediate = I_IMMEDIATE_MASK & (offset+modulus);
+        immediate = parseLabelToken(token, I_IMMEDIATE_SIZE, status);
+        if(!status.isOk()){
+            return {nullptr, status};
         }
     }
 
@@ -287,7 +344,17 @@ ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappi
 }
 
 ParseResult InstructionParser::parseJType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const{
-    return {nullptr, ParseStatus::fail("Undefined")};
+    bool ok = true;
+    uint32_t immediate = 0;
+    if(tokenMappings.contains("j")){
+        Token token = tokenMappings["j"];
+
+
+
+    }
+
+    auto instr_ptr = QSharedPointer<Instruction>(new JType(definition.opcode, immediate));
+    return {instr_ptr, ParseStatus::done("Parsed JType instruction")};
 }
 
 ParseResult InstructionParser::parseLine(const qsizetype lineNumber, const QString &instruction){
