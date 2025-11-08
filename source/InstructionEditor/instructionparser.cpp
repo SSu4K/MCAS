@@ -160,10 +160,10 @@ ParseStatus InstructionParser::mapTokens(const TokenList &formatTokens, const To
         }
         // Label type immediate
         else if(ftok.str == "j"){
-            if(!isLabel(atok.str)){
-                msg = "Invalid label: " + atok.str;
-                return ParseStatus::fail(msg, atok);
-            }
+            // if(!isLabel(atok.str)){
+            //     msg = "Invalid label: " + atok.str;
+            //     return ParseStatus::fail(msg, atok);
+            // }
         }
         tokenMappings[ftok.str] = atok;
     }
@@ -333,7 +333,7 @@ ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappi
     // I-Type with lebel immediate (example: BRZ R1, loop)
     else if(definition.format.contains('j')){
         Token token = tokenMappings["j"];
-        immediate = parseLabelToken(token, I_IMMEDIATE_SIZE, status);
+        immediate = parseJumpToken(token, I_IMMEDIATE_SIZE, status);
         if(!status.isOk()){
             return {nullptr, status};
         }
@@ -344,13 +344,14 @@ ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappi
 }
 
 ParseResult InstructionParser::parseJType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const{
-    bool ok = true;
+    ParseStatus status;
     uint32_t immediate = 0;
     if(tokenMappings.contains("j")){
         Token token = tokenMappings["j"];
-
-
-
+        immediate = parseJumpToken(token, J_IMMEDIATE_SIZE, status);
+        if(!status.isOk()){
+            return {nullptr, status};
+        }
     }
 
     auto instr_ptr = QSharedPointer<Instruction>(new JType(definition.opcode, immediate));
@@ -398,6 +399,9 @@ ParseResult InstructionParser::parseLine(const qsizetype lineNumber, const QStri
     }
     else if(definition.type == InstructionType::I){
         return parseIType(tokenMappings, definition);
+    }
+    else if(definition.type == InstructionType::J){
+        return parseJType(tokenMappings, definition);
     }
 
 

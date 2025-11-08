@@ -6,7 +6,7 @@ void TestParser::initTestCase() {
     qDebug() << "Starting Instruction Parser tests...";
 }
 
-void successParseCase(QString instr, InstructionParser &parser){
+void successparseStatusCase(QString instr, InstructionParser &parser){
     ParseResult result = parser.parseLine(0xF, instr);
     QCOMPARE(result.status.severity, ErrorSeverity::Correct);
 }
@@ -78,87 +78,98 @@ void TestParser::RTypeParse(){
     );
 }
 
-// void TestParser::ITypeParse(){
-//     parseStatusCase(
-//         "LDH R2, 0x0022(R1)",
-//         {"Done"}
-//     );
-//     parseCase(
-//         "LDH R2, 0x0022(",
-//         {"Expected a token for: r1 instead of nothing"}
-//     );
-//     parseCase(
-//         "LDH R2, 0x0022",
-//         {"Expected a token for: ( instead of nothing"}
-//     );
-//     parseCase(
-//         "LDH R2, 0x0022, R1",
-//         {"Expected separator token: ( instead of: ,"}
-//     );
-//     parseCase(
-//         "LDH R2, R1, 0x0022",
-//         {"Expected hex immediate token for: i instead of: R1"}
-//     );
-//     parseCase(
-//         "LDH R2, 0x0022(R1), R3",
-//         {"Too many tokens for the format"}
-//     );
-//     parseCase(
-//         "ADDI R1, 0x0022, R2",
-//         {"Done"}
-//     );
-//     parseCase(
-//         "ADDI R1, R2, 0x0022",
-//         {"Expected hex immediate token for: i instead of: R2"}
-//     );
-//     parseCase(
-//         "ADDI R1, 0x0022",
-//         {"Expected a token for: , instead of nothing"}
-//     );
-//     parseCase(
-//         "ADDI R1, 0x0022,",
-//         {"Expected a token for: r2 instead of nothing"}
-//     );
-//     parseCase(
-//         "BRZ R1, loop1",
-//         {"Done"}
-//     );
-//     parseCase(
-//         "BRZ R1, 0x00FF",
-//         {"Invalid label: 0x00FF"}
-//     );
-//}
+void TestParser::ITypeParse(){
+    InstructionParser parser;
+    parser.addLabel("label", 32);
+    parseStatusCase(
+        "LDH R2, 0x0022(R1)",
+        ParseStatus::done("Parsed IType instruction"),
+        parser
+    );
+    parseStatusCase(
+        "ADDI R1, 0x0022, R2",
+        ParseStatus::done("Parsed IType instruction"),
+        parser
+    );
+    parseStatusCase(
+        "BRZ R1, label",
+        ParseStatus::done("Parsed IType instruction"),
+        parser
+    );
+    parseStatusCase(
+        "BRZ R1, 0x0008",
+        ParseStatus::done("Parsed IType instruction"),
+        parser
+    );
+    parseStatusCase(
+        "LDH R2, 0x0022(",
+        ParseStatus::fail("Expected a token for: r1 instead of nothing"),
+        parser
+    );
+    parseStatusCase(
+        "LDH R2, 0x0022",
+        ParseStatus::fail("Expected a token for: ( instead of nothing"),
+        parser
+    );
+    parseStatusCase(
+        "LDH R2, 0x0022, R1",
+        ParseStatus::fail("Expected separator token: ( instead of: , [token=, line=15 index=5 char=14]"),
+        parser
+    );
+    parseStatusCase(
+        "LDH R2, R1, 0x0022",
+        ParseStatus::fail("Expected hex immediate token for: i instead of: R1 [token=R1 line=15 index=4 char=8]"),
+        parser
+    );
+    parseStatusCase(
+        "LDH R2, 0x0022(R1), R3",
+        ParseStatus::fail("Too many tokens for the format [token=, line=15 index=8 char=18]"),
+        parser
+    );
+    parseStatusCase(
+        "ADDI R1, R2, 0x0022",
+        ParseStatus::fail("Expected hex immediate token for: i instead of: R2 [token=R2 line=15 index=4 char=9]"),
+        parser
+    );
+    parseStatusCase(
+        "ADDI R1, 0x0022",
+        ParseStatus::fail("Expected a token for: , instead of nothing"),
+        parser
+    );
+    parseStatusCase(
+        "ADDI R1, 0x0022,",
+        ParseStatus::fail("Expected a token for: r2 instead of nothing"),
+        parser
+    );
+}
 
-// void TestParser::JTypeParse(){
-//     parseCase(
-//         "JUMP loop1",
-//         {"Done"}
-//     );
-//     parseCase(
-//         "JUMP R3",
-//         {"Done"}
-//     );
-//     parseCase(
-//         "JUMP label_two",
-//         {"Done"}
-//     );
-//     parseCase(
-//         "JUMP -loop1",
-//         {"Invalid label: -loop1"}
-//     );
-//     parseCase(
-//         "JUMP 0x0022",
-//         {"Invalid label: 0x0022"}
-//     );
-//     parseCase(
-//         "JUMP",
-//         {"Expected a token for: j instead of nothing"}
-//     );
-//     parseCase(
-//         "JUMP loop, R1",
-//         {"Too many tokens for the format"}
-//     );
-// }
+void TestParser::JTypeParse(){
+    InstructionParser parser;
+    parser.addLabel("label", 32);
+
+    parseStatusCase(
+        "JUMP 0x0022",
+        ParseStatus::done("Parsed JType instruction"),
+        parser
+    );
+    parseStatusCase(
+        "JUMP label",
+        ParseStatus::done("Parsed JType instruction"),
+        parser
+    );
+    parseStatusCase(
+        "JUMP loop1",
+        ParseStatus::fail("Unknown label: loop1 [token=loop1 line=15 index=2 char=5]"), parser
+    );
+    parseStatusCase(
+        "JUMP",
+        ParseStatus::fail("Expected a token for: j instead of nothing"), parser
+    );
+    parseStatusCase(
+        "JUMP loop, R1",
+        ParseStatus::fail("Too many tokens for the format [token=, line=15 index=3 char=9]"), parser
+    );
+}
 
 void TestParser::cleanupTestCase() {
     qDebug() << "Finished Instruction Parser tests.";

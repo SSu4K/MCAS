@@ -13,8 +13,8 @@ private slots:
 
     void GeneralParse();
     void RTypeParse();
-    // void ITypeParse();
-    // void JTypeParse();
+    void ITypeParse();
+    void JTypeParse();
 
     void cleanupTestCase();
 };
