@@ -240,9 +240,9 @@ quint32 InstructionParser::parseLabelToken(const Token &token, const qsizetype b
     else {
         const quint32 bitMask = (1u << bitWidth) - 1u;
         const qint32 offset = 4*(labelMap[token.str] - (token.lineNumber+1)); // next line is offset = 0
-        const quint32 modulus = 1 << (bitWidth-1); // modulus for 2c
+        const qint32 modulus = 1 << (bitWidth-1); // modulus for 2c
         const qint32 minValue = -modulus;
-        const quint32 maxValue = modulus - 1;
+        const qint32 maxValue = modulus - 1;
 
         // jump out of range
         if (offset < minValue || offset > maxValue) {

@@ -1,4 +1,5 @@
 #include "instruction.h"
+#include "Common/hexint.h"
 
 using namespace InstructionEditor;
 
@@ -82,6 +83,11 @@ IType IType::decode(quint32 in){
 
     result.opcode_= OPCODE_MASK & in;
     return result;
+}
+
+QString IType::toString() const{
+    QString hexImmediate = HexInt::intToString(immediate, true, qsizetype(I_IMMEDIATE_SIZE/4));
+    return QString("%1, %2, %3, ").arg(opcode_).arg(sourceRegister).arg(destinationRegister) + hexImmediate;
 }
 
 JType::JType(const quint8 opcode, const quint32 immediate){

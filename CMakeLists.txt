@@ -78,6 +78,8 @@ add_executable(tests
     source/InstructionEditor/instructionparser.cpp
     tests/testparser.h
     tests/testparser.cpp
+    source/Common/hexint.h
+    source/Common/hexint.cpp
 )
 
 # Link Qt libraries

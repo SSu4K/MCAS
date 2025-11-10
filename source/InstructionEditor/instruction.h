@@ -74,6 +74,8 @@ namespace InstructionEditor{
         InstructionType type() const override {return InstructionType::I;}
         quint32 encode() const override;
         static IType decode(quint32 instruction);
+
+        QString toString() const;
     };
 
     class JType: public Instruction{
