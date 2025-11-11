@@ -56,16 +56,6 @@ set(PROJECT_SOURCES
 qt_add_executable(MCAS
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    source/Common/editorwindow.h source/Common/editorwindow.cpp
-    source/Common/hexint.cpp source/Common/hexint.h source/Common/hexintdelegate.cpp source/Common/hexintdelegate.h
-    source/MemoryEditor/memorymodel.h source/MemoryEditor/memorymodel.cpp
-    source/MemoryEditor/memoryeditorwidget.h source/MemoryEditor/memoryeditorwidget.cpp
-    source/MemoryEditor/filldialog.h source/MemoryEditor/filldialog.cpp
-    resources.qrc
-    resources.qrc
-    source/InstructionEditor/instructioneditorwindow.h source/InstructionEditor/instructioneditorwindow.cpp
-    source/InstructionEditor/instruction.h
-    source/InstructionEditor/instruction.cpp
 )
 
 add_executable(tests
