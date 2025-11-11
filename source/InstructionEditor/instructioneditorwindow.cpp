@@ -9,6 +9,14 @@ InstructionEditorWindow::InstructionEditorWindow(QWidget *parent)
     // setWindowTitle(windowTitle());
     menuBar()->clear();
     createMenu();
+
+    m_widget = new InstructionEditorWidget();
+    if(m_widget){
+        setCentralWidget(m_widget);
+    }
+    else{
+        qDebug() << "Failed to init InstructionEditorWidget";
+    }
 }
 
 bool InstructionEditorWindow::serializeToFile(QFile& file) const {

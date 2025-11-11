@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "Common/editorwindow.h"
+#include "instructioneditorwidget.h"
 
 namespace InstructionEditor{
 
@@ -25,6 +26,8 @@ namespace InstructionEditor{
         void clearData() override;
 
         void createCustomMenu() override;
+
+        InstructionEditorWidget *m_widget;
 
     signals:
     };
