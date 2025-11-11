@@ -11,10 +11,16 @@ class TestParser: public QObject
 private slots:
     void initTestCase();
 
-    void GeneralParse();
-    void RTypeParse();
-    void ITypeParse();
-    void JTypeParse();
+    void General_Parse();
+    void RType_Parse_Done();
+    void RType_Parse_Fail();
+
+    void IType_Parse_Done();
+    void IType_Parse_Fail();
+    void IType_Jumps();
+
+    void JType_Parse_Done();
+    void JType_Parse_Fail();
 
     void cleanupTestCase();
 };
