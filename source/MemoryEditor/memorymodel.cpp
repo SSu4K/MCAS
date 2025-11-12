@@ -1,4 +1,5 @@
 #include "memorymodel.h"
+#include "Common/appcontext.h"
 
 const static QString MEMORRY_HEADER = "[Memory]";
 const static QChar HEADER_PREFIX = '[';
@@ -12,7 +13,7 @@ const static qsizetype HORIZONTAL_HEADER_PRECISION = 2;
 using namespace MemoryEditor;
 
 MemoryModel::MemoryModel(QObject* parent) : QAbstractTableModel(parent) {
-    memoryData = new MemoryData(); // create locally for now
+    memoryData = AppContext::instance()->sharedData()->memory().get();
 }
 
 QVariant MemoryModel::headerData(int section, Qt::Orientation orientation, int role) const {

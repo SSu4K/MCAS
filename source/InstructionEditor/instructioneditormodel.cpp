@@ -1,11 +1,12 @@
 #include "instructioneditormodel.h"
+#include "Common/appcontext.h"
 
 using namespace InstructionEditor;
 
 InstructionEditorModel::InstructionEditorModel(QObject* parent)
     : QAbstractTableModel(parent)
 {
-    instructionData = new InstructionData(); // init locally for now
+    instructionData = AppContext::instance()->sharedData()->instructions().get();
 }
 
 int InstructionEditorModel::rowCount(const QModelIndex& parent) const  {

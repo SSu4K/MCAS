@@ -1,8 +1,9 @@
-#include "microcodemodel.h"
-#include "Common/hexint.h"
-
 #include <QFile>
 #include <QTextStream>
+
+#include "microcodemodel.h"
+#include "Common/hexint.h"
+#include "Common/appcontext.h"
 
 using namespace MicrocodeEditor;
 
@@ -19,7 +20,7 @@ MicrocodeModel::MicrocodeModel(QObject* parent)
     commentPrefix = COMMENT_PREFIX;
     delimiter = DELIMITER;
 
-    microcodeData = new MicrocodeData(); // local for now
+    microcodeData = AppContext::instance()->sharedData()->microcode().get();
 }
 
 // void MicrocodeModel::setMicrocode(Microcode* code) {

@@ -10,10 +10,37 @@
 #include <QVersionNumber>
 #include <qtranslator.h>
 
-// Forward declarations until actual implementations are present
-class MicrocodeModel;
-class JumpTableModel;
-class MemoryModel;
+#include "MicrocodeEditor/microcodedata.h"
+#include "MicrocodeEditor/jumptabledata.h"
+#include "MemoryEditor/memorydata.h"
+#include "InstructionEditor/instructiondata.h"
+
+using namespace MicrocodeEditor;
+using namespace MemoryEditor;
+using namespace InstructionEditor;
+
+class SharedData: public QObject{
+    Q_OBJECT
+public:
+    explicit SharedData(QObject* parent = nullptr);
+
+    std::shared_ptr<MemoryData> memory() const { return m_memory; }
+    std::shared_ptr<InstructionData> instructions() const { return m_instructions; }
+    std::shared_ptr<MicrocodeData> microcode() const { return m_microcode; }
+    std::shared_ptr<JumpTableData> jumptable() const { return m_jumptable; }
+
+signals:
+    void memoryUpdated();
+    void instructionsUpdated();
+    void microcodeUpdated();
+    void configChanged();
+
+private:
+    std::shared_ptr<MemoryData> m_memory;
+    std::shared_ptr<InstructionData> m_instructions;
+    std::shared_ptr<MicrocodeData> m_microcode;
+    std::shared_ptr<JumpTableData> m_jumptable;
+};
 
 class AppContext : public QObject
 {
@@ -27,10 +54,9 @@ public:
 
     static AppContext* instance();
 
-    MicrocodeModel* microcodeModel() const { return m_microcodeModel; }
-    JumpTableModel* jumpTableModel() const { return m_jumpTableModel; }
-
+    SharedData* sharedData() { return m_sharedData.get(); }
     QSettings* settings() const { return m_settings.get(); }
+
     QString appVersion() const { return m_appVersion; }
     QString buildType() const { return m_buildType; }
     QString platform() const { return m_platform; }
@@ -54,10 +80,7 @@ private:
 
     static QPointer<AppContext> s_instance;
 
-    // Temporary until actual implementations are present
-    MicrocodeModel* m_microcodeModel = nullptr;
-    JumpTableModel* m_jumpTableModel = nullptr;
-
+    std::shared_ptr<SharedData> m_sharedData;
     std::unique_ptr<QSettings> m_settings;
     QTranslator m_translator;
 

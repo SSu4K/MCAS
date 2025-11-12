@@ -1,7 +1,8 @@
-#include "jumptablemodel.h"
-
 #include <QFile>
 #include <QTextStream>
+
+#include "jumptablemodel.h"
+#include "Common/appcontext.h"
 
 const static QString JUMP_TABLE_HEADER = "[Jump Tables]";
 const static QChar HEADER_PREFIX = '[';
@@ -18,7 +19,7 @@ JumpTableModel::JumpTableModel(QObject* parent)
     commentPrefix = COMMENT_PREFIX;
     delimiter = DELIMITER;
 
-    jumpTableData = new JumpTableData();
+    jumpTableData = AppContext::instance()->sharedData()->jumptable().get();
     clear();
 }
 
