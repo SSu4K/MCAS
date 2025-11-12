@@ -11,7 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find Qt 6 modules
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
-find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
+find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools Test)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 # Define version and build info
 set(APP_VERSION "v0.1.0-prealpha")
@@ -55,15 +56,30 @@ set(PROJECT_SOURCES
 qt_add_executable(MCAS
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    source/Common/editorwindow.h source/Common/editorwindow.cpp
-    source/Common/hexint.cpp source/Common/hexint.h source/Common/hexintdelegate.cpp source/Common/hexintdelegate.h
-    source/MemoryEditor/memorymodel.h source/MemoryEditor/memorymodel.cpp
-    source/MemoryEditor/memoryeditorwidget.h source/MemoryEditor/memoryeditorwidget.cpp
-    source/MemoryEditor/filldialog.h source/MemoryEditor/filldialog.cpp
+)
+
+add_executable(tests
+    tests/testrunner.cpp
+    tests/test_instructions.h
+    tests/test_instructions.cpp
+    source/InstructionEditor/instruction.h
+    source/InstructionEditor/instruction.cpp
+    source/InstructionEditor/instructionparser.h
+    source/InstructionEditor/instructionparser.cpp
+    tests/testparser.h
+    tests/testparser.cpp
+    source/Common/hexint.h
+    source/Common/hexint.cpp
 )
 
 # Link Qt libraries
 target_link_libraries(MCAS PRIVATE Qt6::Widgets)
+
+
+target_link_libraries(tests PRIVATE
+    Qt6::Core
+    Qt6::Test
+)
 
 # Create translations if they exist
 if(TS_FILES)

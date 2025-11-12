@@ -4,11 +4,16 @@
 
 using namespace MicrocodeEditor;
 using namespace MemoryEditor;
+using namespace InstructionEditor;
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle("Main Application");
+    setWindowTitle(tr("MCAS Main Window"));
+
+    setWindowIcon(QIcon(":/icons/appicon.png"));
+
     resize(700, 500);
 
     createMenu();
@@ -48,6 +53,21 @@ void MainWindow::closeMemoryEditorWindow(){
     m_memoryEditorWindow = nullptr;
 }
 
+void MainWindow::openInstructionEditorWindow(){
+    if (!m_instructionEditorWindow) {
+        m_instructionEditorWindow = new InstructionEditorWindow(this);
+        m_instructionEditorWindow->installEventFilter(this);
+    }
+
+    m_instructionEditorWindow->show();
+    m_instructionEditorWindow->raise();
+    m_instructionEditorWindow->activateWindow();
+}
+
+void MainWindow::closeInstructionEditorWindow(){
+    m_instructionEditorWindow = nullptr;
+}
+
 void MainWindow::createToolsMenu(){
     QMenu *toolsMenu = menuBar()->addMenu(tr("&Tools"));
 
@@ -58,6 +78,10 @@ void MainWindow::createToolsMenu(){
     QAction *openMemoryEditorAction = new QAction(tr("Memory Editor"), this);
     toolsMenu->addAction(openMemoryEditorAction);
     connect(openMemoryEditorAction, &QAction::triggered, this, &MainWindow::openMemoryEditorWindow);
+
+    QAction *openInstructionEditorAction = new QAction(tr("Instruction Editor"), this);
+    toolsMenu->addAction(openInstructionEditorAction);
+    connect(openInstructionEditorAction, &QAction::triggered, this, &MainWindow::openInstructionEditorWindow);
 }
 
 void MainWindow::createViewMenu()
@@ -134,6 +158,7 @@ void MainWindow::createMenu(){
 }
 
 void MainWindow::retranslateUi(){
+    setWindowTitle(tr("MCAS Main Window"));
     menuBar()->clear();
     createMenu();
 }

@@ -35,9 +35,27 @@
     </message>
 </context>
 <context>
+    <name>InstructionEditor::InstructionEditorWindow</name>
+    <message>
+        <location filename="../source/InstructionEditor/instructioneditorwindow.h" line="17"/>
+        <source>Instruction Editor</source>
+        <translation>Edytor Instrukcji</translation>
+    </message>
+    <message>
+        <location filename="../source/InstructionEditor/instructioneditorwindow.h" line="18"/>
+        <source>Open Instruction File</source>
+        <translation>Zapisz Pilik Instrukcji</translation>
+    </message>
+    <message>
+        <location filename="../source/InstructionEditor/instructioneditorwindow.h" line="19"/>
+        <source>Save Instruction File As</source>
+        <translation>Zapisz Plik Instrukcji Jako</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="52"/>
+        <location filename="../source/App/mainwindow.cpp" line="72"/>
         <source>&amp;Tools</source>
         <translation>&amp;Narzędzia</translation>
     </message>
@@ -46,52 +64,63 @@
         <translation type="vanished">Edytor Mikrokodu</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="54"/>
+        <location filename="../source/App/mainwindow.cpp" line="13"/>
+        <location filename="../source/App/mainwindow.cpp" line="161"/>
+        <source>MCAS Main Window</source>
+        <translation type="unfinished">MCAS Główne Okno</translation>
+    </message>
+    <message>
+        <location filename="../source/App/mainwindow.cpp" line="74"/>
         <source>Microcode Editor</source>
         <translation>Edytor Mirokodu</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="58"/>
+        <location filename="../source/App/mainwindow.cpp" line="78"/>
         <source>Memory Editor</source>
         <translation>Edytor Pamięci</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="65"/>
+        <location filename="../source/App/mainwindow.cpp" line="82"/>
+        <source>Instruction Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/App/mainwindow.cpp" line="89"/>
         <source>&amp;View</source>
         <translation>&amp;Widok</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="66"/>
+        <location filename="../source/App/mainwindow.cpp" line="90"/>
         <source>Theme</source>
         <translation>Motyw</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="68"/>
+        <location filename="../source/App/mainwindow.cpp" line="92"/>
         <source>System Default</source>
         <translation>Systemowy</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="69"/>
+        <location filename="../source/App/mainwindow.cpp" line="93"/>
         <source>Light</source>
         <translation>Jasny</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="70"/>
+        <location filename="../source/App/mainwindow.cpp" line="94"/>
         <source>Dark</source>
         <translation>Ciemny</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="103"/>
+        <location filename="../source/App/mainwindow.cpp" line="127"/>
         <source>Language</source>
         <translation>Język</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="106"/>
+        <location filename="../source/App/mainwindow.cpp" line="130"/>
         <source>English</source>
         <translation>Angielski</translation>
     </message>
     <message>
-        <location filename="../source/App/mainwindow.cpp" line="108"/>
+        <location filename="../source/App/mainwindow.cpp" line="132"/>
         <source>Polish</source>
         <translation>Polski</translation>
     </message>
@@ -127,52 +156,52 @@
         <translation>Zapisz pamięć jako</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="36"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="37"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edycja</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="38"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="39"/>
         <source>&amp;Select All</source>
         <translation>&amp;Zaznacz Wszystko</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="39"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="40"/>
         <source>&amp;Clear</source>
         <translation>&amp;Wyczyść</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="40"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="41"/>
         <source>&amp;Random</source>
         <translation>&amp;Losuj</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="41"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="42"/>
         <source>&amp;Fill...</source>
         <translation>&amp;Wypełnij...</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="43"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="44"/>
         <source>&amp;View</source>
         <translation>&amp;Widok</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="45"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="46"/>
         <source>&amp;Size</source>
         <translation>&amp;Jednostka</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="47"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="48"/>
         <source>&amp;Byte</source>
         <translation>&amp;Bajt</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="48"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="49"/>
         <source>&amp;Half</source>
         <translation>&amp;Pół</translation>
     </message>
     <message>
-        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="49"/>
+        <location filename="../source/MemoryEditor/memoryeditorwindow.cpp" line="50"/>
         <source>&amp;Word</source>
         <translation>&amp;Słowo</translation>
     </message>
@@ -180,12 +209,12 @@
 <context>
     <name>MicrocodeEditor::MicrocodeEditorWindow</name>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="48"/>
+        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="49"/>
         <source>Microcode</source>
         <translation>Mikrokod</translation>
     </message>
     <message>
-        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="49"/>
+        <location filename="../source/MicrocodeEditor/microcodeeditorwindow.cpp" line="50"/>
         <source>Jump Tables</source>
         <translation>Tablice skoków</translation>
     </message>

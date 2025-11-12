@@ -33,6 +33,7 @@ void MemoryEditorWindow::clearData(){
 
 void MemoryEditorWindow::createCustomMenu(){
 
+    setWindowTitle(windowTitle());
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
 
     editMenu->addAction(tr("&Select All"), QKeySequence("Ctrl+A"), m_memoryEditorWidget, &MemoryEditorWidget::selectAll);
