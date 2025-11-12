@@ -3,4 +3,8 @@
         <file>translations/MCAS_en.ts</file>
         <file>translations/MCAS_pl.ts</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file alias="appicon.png">resources/applogo_64.png</file>
+        <file alias="appicon@2x.png">resources/applogo_128.png</file>
+    </qresource>
 </RCC>

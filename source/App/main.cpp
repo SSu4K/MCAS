@@ -11,6 +11,8 @@ int main(int argc, char *argv[])
     qDebug() << "Qt version:"  << AppContext::instance()->qtVersion();
     qDebug() << "Runtime OS:"  << AppContext::instance()->runtimeOS();
 
+    qDebug() << app.windowIcon().name();
+
     return app.exec();
 }
 

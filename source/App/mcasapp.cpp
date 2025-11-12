@@ -38,6 +38,11 @@ static QPalette getLightPalette(){
 MCASApp::MCASApp(int &argc, char **argv)
     : QApplication(argc, argv)
 {
+    setWindowIcon(QIcon(":/icons/appicon.png"));
+
+    QFile f(":/icons/appicon.png");
+    qDebug() << "Icon exists?" << f.exists();
+
     m_context = AppContext::instance();
 
     setOrganizationName("SzymonSudak");

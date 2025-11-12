@@ -1,13 +1,19 @@
 #include "mainwindow.h"
-#include "appcontext.h"
+#include "Common/appcontext.h"
 #include "mcasapp.h"
 
 using namespace MicrocodeEditor;
+using namespace MemoryEditor;
+using namespace InstructionEditor;
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle("Main Application");
+    setWindowTitle(tr("MCAS Main Window"));
+
+    setWindowIcon(QIcon(":/icons/appicon.png"));
+
     resize(700, 500);
 
     createMenu();
@@ -32,12 +38,50 @@ void MainWindow::closeMicrocodeEditorWindow(){
     m_microcodeEditorWindow = nullptr;
 }
 
+void MainWindow::openMemoryEditorWindow(){
+    if (!m_memoryEditorWindow) {
+        m_memoryEditorWindow = new MemoryEditorWindow(this);
+        m_memoryEditorWindow->installEventFilter(this);
+    }
+
+    m_memoryEditorWindow->show();
+    m_memoryEditorWindow->raise();
+    m_memoryEditorWindow->activateWindow();
+}
+
+void MainWindow::closeMemoryEditorWindow(){
+    m_memoryEditorWindow = nullptr;
+}
+
+void MainWindow::openInstructionEditorWindow(){
+    if (!m_instructionEditorWindow) {
+        m_instructionEditorWindow = new InstructionEditorWindow(this);
+        m_instructionEditorWindow->installEventFilter(this);
+    }
+
+    m_instructionEditorWindow->show();
+    m_instructionEditorWindow->raise();
+    m_instructionEditorWindow->activateWindow();
+}
+
+void MainWindow::closeInstructionEditorWindow(){
+    m_instructionEditorWindow = nullptr;
+}
 
 void MainWindow::createToolsMenu(){
     QMenu *toolsMenu = menuBar()->addMenu(tr("&Tools"));
-    QAction *openEditorAction = new QAction(tr("Open Microcode Editor"), this);
-    toolsMenu->addAction(openEditorAction);
-    connect(openEditorAction, &QAction::triggered, this, &MainWindow::openMicrocodeEditorWindow);
+
+    QAction *openMicrocodeEditorAction = new QAction(tr("Microcode Editor"), this);
+    toolsMenu->addAction(openMicrocodeEditorAction);
+    connect(openMicrocodeEditorAction, &QAction::triggered, this, &MainWindow::openMicrocodeEditorWindow);
+
+    QAction *openMemoryEditorAction = new QAction(tr("Memory Editor"), this);
+    toolsMenu->addAction(openMemoryEditorAction);
+    connect(openMemoryEditorAction, &QAction::triggered, this, &MainWindow::openMemoryEditorWindow);
+
+    QAction *openInstructionEditorAction = new QAction(tr("Instruction Editor"), this);
+    toolsMenu->addAction(openInstructionEditorAction);
+    connect(openInstructionEditorAction, &QAction::triggered, this, &MainWindow::openInstructionEditorWindow);
 }
 
 void MainWindow::createViewMenu()
@@ -114,6 +158,7 @@ void MainWindow::createMenu(){
 }
 
 void MainWindow::retranslateUi(){
+    setWindowTitle(tr("MCAS Main Window"));
     menuBar()->clear();
     createMenu();
 }
@@ -122,6 +167,11 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
     if (obj == m_microcodeEditorWindow && event->type() == QEvent::Close) {
         m_microcodeEditorWindow->hide();
+        event->ignore();
+        return true;
+    }
+    else if (obj == m_memoryEditorWindow && event->type() == QEvent::Close) {
+        m_memoryEditorWindow->hide();
         event->ignore();
         return true;
     }

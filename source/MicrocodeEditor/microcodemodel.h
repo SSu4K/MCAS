@@ -3,7 +3,7 @@
 
 #include <QAbstractTableModel>
 #include "microcode.h"
-#include "texttablemodel.h"
+#include "Common/texttablemodel.h"
 
 namespace MicrocodeEditor{
 

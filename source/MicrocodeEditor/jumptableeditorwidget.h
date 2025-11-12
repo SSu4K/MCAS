@@ -5,7 +5,7 @@
 #include <QTableView>
 #include <QVBoxLayout>
 #include "MicrocodeEditor/jumptableeditordelegate.h"
-#include "zoomwidget.h"
+#include "Common/zoomwidget.h"
 #include "jumptablemodel.h"
 
 namespace MicrocodeEditor {
