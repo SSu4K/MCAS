@@ -22,7 +22,7 @@ MicrocodeEditorWindow::MicrocodeEditorWindow(QWidget* parent)
 
 bool MicrocodeEditorWindow::serializeToFile(QFile &file) const {
     QTextStream out(&file);
-    m_microcodeEditor->m_model->saveToTextStream(out);
+    m_microcodeEditor->model()->saveToTextStream(out);
     m_jumpTableEditor->model()->saveToTextStream(out);
     return true;
 }
@@ -30,7 +30,7 @@ bool MicrocodeEditorWindow::serializeToFile(QFile &file) const {
 bool MicrocodeEditorWindow::serializeFromFile(QFile &file){
     bool success = true;
     QTextStream in1(&file);
-    success &= m_microcodeEditor->m_model->loadFromTextStream(in1);
+    success &= m_microcodeEditor->model()->loadFromTextStream(in1);
     file.seek(0);
     QTextStream in2(&file);
     success &= m_jumpTableEditor->model()->loadFromTextStream(in2);
@@ -39,7 +39,7 @@ bool MicrocodeEditorWindow::serializeFromFile(QFile &file){
 }
 
 void MicrocodeEditorWindow::clearData(){
-    m_microcodeEditor->m_model->clear();
+    m_microcodeEditor->model()->clear();
     m_jumpTableEditor->model()->clear();
 }
 

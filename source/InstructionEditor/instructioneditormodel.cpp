@@ -2,15 +2,15 @@
 
 using namespace InstructionEditor;
 
-InstructionEditorModel::InstructionEditorModel(QObject* parent, int maxLines, quint32 baseAddress)
-    : QAbstractTableModel(parent),
-    m_maxLines(maxLines),
-    m_baseAddress(baseAddress)
-{}
+InstructionEditorModel::InstructionEditorModel(QObject* parent)
+    : QAbstractTableModel(parent)
+{
+    instructionData = new InstructionData(); // init locally for now
+}
 
 int InstructionEditorModel::rowCount(const QModelIndex& parent) const  {
     Q_UNUSED(parent);
-    return m_instructions.size();
+    return instructionData->instructions.size();
 }
 
 int InstructionEditorModel::columnCount(const QModelIndex& parent) const  {
@@ -19,11 +19,11 @@ int InstructionEditorModel::columnCount(const QModelIndex& parent) const  {
 }
 
 QVariant InstructionEditorModel::data(const QModelIndex& index, int role) const  {
-    if (!index.isValid() || index.row() >= m_instructions.size())
+    if (!index.isValid() || index.row() >= instructionData->instructions.size())
         return {};
 
-    const auto& entry = m_instructions[index.row()];
-    const int lineAddr = m_baseAddress + 4 * index.row();
+    const auto& entry = instructionData->instructions[index.row()];
+    const int lineAddr = instructionData->baseAddress + 4 * index.row();
 
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
@@ -74,7 +74,7 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
     if (role != Qt::EditRole || index.column() != INSTRUCTION_COLUMN_INDEX)
         return false;
 
-    auto& entry = m_instructions[index.row()];
+    auto& entry = instructionData->instructions[index.row()];
     entry.text = value.toString();
 
     auto lineNumber = index.row();
@@ -91,44 +91,44 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
 }
 
 bool InstructionEditorModel::addInstruction(const QString& text) {
-    if (m_instructions.size() >= m_maxLines)
+    if (instructionData->instructions.size() >= instructionData->maxLines)
         return false;
 
-    beginInsertRows({}, m_instructions.size(), m_instructions.size());
+    beginInsertRows({}, instructionData->instructions.size(), instructionData->instructions.size());
     if(!text.isEmpty()){
-        m_instructions.append({0, text});
+        instructionData->instructions.append({0, text});
     }
     else{
-        m_instructions.append(InstructionEntry());
+        instructionData->instructions.append(InstructionEntry());
     }
     endInsertRows();
     return true;
 }
 
 bool InstructionEditorModel::removeInstruction(int row) {
-    if (row < 0 || row >= m_instructions.size())
+    if (row < 0 || row >= instructionData->instructions.size())
         return false;
 
     beginRemoveRows({}, row, row);
-    m_instructions.removeAt(row);
+    instructionData->instructions.removeAt(row);
     endRemoveRows();
     return true;
 }
 
 QList<QByteArray> InstructionEditorModel::encodedInstructions() const {
     QList<QByteArray> list;
-    for (const auto& e : m_instructions)
+    for (const auto& e : instructionData->instructions)
         list.append(e.encoded);
     return list;
 }
 
 void InstructionEditorModel::setBaseAddress(quint32 addr) {
-    if (addr != m_baseAddress) {
-        m_baseAddress = addr;
-        emit dataChanged(index(0,0), index(m_instructions.size()-1,0));
+    if (addr != instructionData->baseAddress) {
+        instructionData->baseAddress = addr;
+        emit dataChanged(index(0,0), index(instructionData->instructions.size()-1,0));
     }
 }
 
-quint32 InstructionEditorModel::baseAddress() const { return m_baseAddress; }
+quint32 InstructionEditorModel::baseAddress() const { return instructionData->baseAddress; }
 
-int InstructionEditorModel::maxLines() const { return m_maxLines; }
+int InstructionEditorModel::maxLines() const { return instructionData->maxLines; }

@@ -11,7 +11,8 @@ const static qsizetype HORIZONTAL_HEADER_PRECISION = 2;
 
 using namespace MemoryEditor;
 
-MemoryModel::MemoryModel(QObject* parent) : QAbstractTableModel(parent), m_memory(MEMORY_SIZE, 0) {
+MemoryModel::MemoryModel(QObject* parent) : QAbstractTableModel(parent) {
+    memoryData = new MemoryData(); // create locally for now
 }
 
 QVariant MemoryModel::headerData(int section, Qt::Orientation orientation, int role) const {
@@ -31,13 +32,13 @@ QVariant MemoryModel::headerData(int section, Qt::Orientation orientation, int r
 }
 
 void MemoryModel::setMemory(const QByteArray& mem) {
-    m_memory = mem;
+    memoryData->memory = mem;
     emit layoutChanged();
 }
 
 int MemoryModel::rowCount(const QModelIndex& parent) const {
     Q_UNUSED(parent);
-    return (m_memory.size() / (int)unitSize + m_cols - 1) / m_cols;
+    return (memoryData->memory.size() / (int)unitSize + m_cols - 1) / m_cols;
 }
 
 int MemoryModel::columnCount(const QModelIndex& parent) const {
@@ -51,7 +52,7 @@ QVariant MemoryModel::data(const QModelIndex& index, int role) const
 
     qsizetype i = index.row() * m_cols + index.column();
     qsizetype byteIndex = i * (qsizetype)unitSize;
-    if (byteIndex + (qsizetype)unitSize > m_memory.size()) {
+    if (byteIndex + (qsizetype)unitSize > memoryData->memory.size()) {
         if (role == Qt::DisplayRole) return QString();
         if (role == Qt::EditRole) return QVariant();
         return {};
@@ -60,7 +61,7 @@ QVariant MemoryModel::data(const QModelIndex& index, int role) const
     quint32 val = 0;
     for(qsizetype i=0; i<(int)unitSize; i++){
         val = val << 8;
-        val |= quint8(m_memory[byteIndex+i]);
+        val |= quint8(memoryData->memory[byteIndex+i]);
     }
 
     if (role == Qt::DisplayRole) {
@@ -86,7 +87,7 @@ MemoryUnitSize MemoryModel::getUnitSize(){
 }
 
 void MemoryModel::clear(){
-    m_memory.fill(0);
+    memoryData->memory.fill(0);
 }
 
 void MemoryModel::setUnitSize(MemoryUnitSize size){
@@ -117,10 +118,10 @@ bool MemoryModel::setData(const QModelIndex& index, const QVariant& value, int r
 
     qsizetype i = index.row() * m_cols + index.column();
     qsizetype byteIndex = i * (qsizetype)unitSize;
-    if (byteIndex + (qsizetype)unitSize > m_memory.size()) return false;
+    if (byteIndex + (qsizetype)unitSize > memoryData->memory.size()) return false;
 
     for(qsizetype i=(int)unitSize-1; i>=0; i--){
-        m_memory[byteIndex+i] = val & 0xFF;
+        memoryData->memory[byteIndex+i] = val & 0xFF;
         val = val >> 8;
     }
 
@@ -138,7 +139,7 @@ bool MemoryModel::saveToTextStream(QTextStream &stream){
     if (!MEMORRY_HEADER.isEmpty())
         stream << MEMORRY_HEADER << "\n";
 
-    QByteArray hex = m_memory.toHex();
+    QByteArray hex = memoryData->memory.toHex();
     qsizetype slice_size = 2*MEMORY_SLICE_SIZE;
     qsizetype slice_count = hex.size() / slice_size;
 
@@ -183,7 +184,7 @@ bool MemoryModel::loadFromTextStream(QTextStream &stream){
         hexEncoded.append(line.toLocal8Bit());
     }
 
-    m_memory = QByteArray::fromHex(hexEncoded);
+    memoryData->memory = QByteArray::fromHex(hexEncoded);
 
     endResetModel();
     return true;

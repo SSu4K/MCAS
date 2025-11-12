@@ -1,5 +1,5 @@
-#ifndef JUMPTABLE_H
-#define JUMPTABLE_H
+#ifndef JUMPTABLEDATA_H
+#define JUMPTABLEDATA_H
 
 #include <QStringList>
 
@@ -12,13 +12,13 @@ public:
     JumpTableEntry();
 };
 
-class JumpTable
+class JumpTableData
 {
 public:
     QList<JumpTableEntry> entries;
-    JumpTable();
+    JumpTableData();
 };
 
 }
 
-#endif // JUMPTABLE_H
+#endif // JUMPTABLEDATA_H
