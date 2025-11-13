@@ -16,9 +16,5 @@ using namespace InstructionEditor;
         tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
         tableView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
 
-        auto* addButton = new QPushButton("Add Instruction", this);
-        connect(addButton, &QPushButton::clicked, model, [this]() { model->addInstruction(); });
-
         layout->addWidget(tableView);
-        layout->addWidget(addButton);
     }

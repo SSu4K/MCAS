@@ -6,12 +6,13 @@
 
 namespace InstructionEditor {
 
-const qsizetype MAX_LINES = 512;
+const qsizetype MAX_LINES = 128;
 const quint32 BASE_ADDRESS = 0;
 
 struct InstructionEntry {
-    QByteArray encoded = 0;
+    quint32 encoded = 0;
     QString text = "NOP";
+    std::shared_ptr<Instruction> instruction;
     bool valid = true;
     QString errorMessage;
 };

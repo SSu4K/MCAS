@@ -63,7 +63,7 @@ namespace InstructionEditor {
     QDebug operator<<(QDebug dbg, const ParseStatus &status);
 
     struct ParseResult{
-        QSharedPointer<Instruction> instruction;
+        std::shared_ptr<Instruction> instruction;
         ParseStatus status;
     };
 

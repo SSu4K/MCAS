@@ -1,5 +1,6 @@
 #include "instructioneditormodel.h"
 #include "Common/appcontext.h"
+#include "Common/hexint.h"
 
 using namespace InstructionEditor;
 
@@ -29,7 +30,7 @@ QVariant InstructionEditorModel::data(const QModelIndex& index, int role) const 
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
             case 0: return QString("0x%1").arg(lineAddr, 4, 16, QChar('0')).toUpper();
-            case 1: return entry.valid ? entry.encoded.toHex(' ').toUpper() : QString();
+            case 1: return entry.valid ? HexInt::intToString(entry.encoded, false, 8) : QString();
             case INSTRUCTION_COLUMN_INDEX: return entry.text;
             case 3: return entry.valid ? "OK" : entry.errorMessage;
         }
@@ -82,10 +83,29 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
     auto result = m_parser.parseLine(lineNumber, entry.text);
     entry.valid = result.status.isOk();
     entry.errorMessage = result.status.msg;
-    entry.encoded.clear();
 
-    if (entry.valid)
-        entry.encoded = 0; // zero for now because no correct object casting present
+    if (entry.valid){
+        switch(result.instruction->type()){
+        case InstructionType::R:
+            break;
+        case InstructionType::I:
+            break;
+        case InstructionType::J:
+            break;
+        default:
+            entry.encoded = 0;
+            break;
+        }
+        entry.encoded = result.instruction->encode();
+        entry.instruction = result.instruction;
+
+        auto memoryData = AppContext::instance()->sharedData()->memory().get();
+        const qsizetype addr = 4*lineNumber;
+        memoryData->memory[addr + 3] = static_cast<quint8>(entry.encoded & 0xFF);
+        memoryData->memory[addr + 2] = static_cast<quint8>((entry.encoded >> 8) & 0xFF);
+        memoryData->memory[addr + 1] = static_cast<quint8>((entry.encoded >> 16) & 0xFF);
+        memoryData->memory[addr + 0] = static_cast<quint8>((entry.encoded >> 24) & 0xFF);
+    }
 
     emit dataChanged(index, this->index(index.row(), 3)); // update row
     return true;
@@ -116,8 +136,8 @@ bool InstructionEditorModel::removeInstruction(int row) {
     return true;
 }
 
-QList<QByteArray> InstructionEditorModel::encodedInstructions() const {
-    QList<QByteArray> list;
+QList<quint32> InstructionEditorModel::encodedInstructions() const {
+    QList<quint32> list;
     for (const auto& e : instructionData->instructions)
         list.append(e.encoded);
     return list;

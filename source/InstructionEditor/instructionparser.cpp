@@ -296,7 +296,7 @@ ParseResult InstructionParser::parseRType(const QMap<QString, Token> &tokenMappi
         }
     }
 
-    auto instr_ptr = QSharedPointer<Instruction>(new RType(definition.opcode, regs));
+    auto instr_ptr = std::shared_ptr<Instruction>(new RType(definition.opcode, regs));
     return {instr_ptr, ParseStatus::done("Parsed RType instruction")};
 }
 
@@ -339,7 +339,7 @@ ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappi
         }
     }
 
-    auto instr_ptr = QSharedPointer<Instruction>(new IType(definition.opcode, r1, r2, immediate));
+    auto instr_ptr = std::shared_ptr<Instruction>(new IType(definition.opcode, r1, r2, immediate));
     return {instr_ptr, ParseStatus::done("Parsed IType instruction")};
 }
 
@@ -354,7 +354,7 @@ ParseResult InstructionParser::parseJType(const QMap<QString, Token> &tokenMappi
         }
     }
 
-    auto instr_ptr = QSharedPointer<Instruction>(new JType(definition.opcode, immediate));
+    auto instr_ptr = std::shared_ptr<Instruction>(new JType(definition.opcode, immediate));
     return {instr_ptr, ParseStatus::done("Parsed JType instruction")};
 }
 

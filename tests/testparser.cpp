@@ -21,7 +21,7 @@ void parseStatusCase(QString instr, ParseStatus expected, InstructionParser &par
 template <class T>
 void parseResultCase(const qsizetype lineNumber, const QString &instr, const T &expectedInstr, const ParseStatus &expectedStatus, InstructionParser &parser){
     auto parsed = parser.parseLine(lineNumber, instr);
-    auto result_ptr = qSharedPointerCast<T>(parsed.instruction);
+    auto result_ptr = std::static_pointer_cast<T>(parsed.instruction);
 
     QCOMPARE(parsed.status.msg, expectedStatus.msg);
     QCOMPARE(result_ptr->toString(), expectedInstr.toString());
@@ -58,7 +58,7 @@ void TestParser::RType_Parse_Done(){
 
         QString instr = "ADD4 R1, R2, R3, R4, R5";
         auto parsed = parser.parseLine(0xF, instr);
-        auto result_ptr = qSharedPointerCast<RType>(parsed.instruction);
+        auto result_ptr = std::static_pointer_cast<RType>(parsed.instruction);
         auto expected = RType(6, {1, 2, 3, 4, 5});
         QCOMPARE(*result_ptr, expected);
     }

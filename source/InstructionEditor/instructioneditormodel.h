@@ -27,7 +27,7 @@ namespace InstructionEditor {
         bool addInstruction(const QString& text = QString());
         bool removeInstruction(int row);
 
-        QList<QByteArray> encodedInstructions() const;
+        QList<quint32> encodedInstructions() const;
         void setBaseAddress(quint32 addr);
         quint32 baseAddress() const;
 
