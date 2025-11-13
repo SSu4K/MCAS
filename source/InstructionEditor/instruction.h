@@ -7,36 +7,89 @@
 
 namespace InstructionEditor{
 
-    // const variables for now, needed to encode instructions into binary
-    // in future should be modifiable with settings screen.
-    // then the sizes and masks need to dynamically adjusted
+    inline const quint8 DEFAULT_OPCODE_SIZE = 6;
+    inline const quint8 DEFAULT_REGISTER_SIZE = 5;
 
-    const quint8 OPCODE_COUNT = 64;
-    const quint8 OPCODE_SIZE = 6;       // log64 = 6 -> 6 bits needed for encoding
-    const quint32 OPCODE_MASK = 0x3F;   // mask = b00111111 = 0x3F
+    class InstructionEncodingConig{
 
-    const quint8 REGISTER_COUNT = 32;
-    const quint8 REGISTER_SIZE = 5;     // log32 = 5 -> 5 bits needed for encoding
-    const quint32 REGISTER_MASK = 0x1F; // mask = b00011111 = 0x1F
+    private:
+        quint8 opcodeCount_;
+        quint8 opcodeSize_;
+        quint32 opcodeMask_;
 
-    // R-type
-    // OPCODE_SIZE + FORMAL_COUNT * REGISTER_SIZE <= 32
-    const quint8 R_FORMAL_COUNT = 5;
-    const quint8 R_UNUSED_SIZE = 32 - (OPCODE_SIZE + R_FORMAL_COUNT*REGISTER_SIZE); // == 1
+        quint8 registerCount_;
+        quint8 registerSize_;
+        quint32 registerMask_;
 
-    // I-type
-    // OPCODE_SIZE + 2 * REGISTER_SIZE + I_IMMEDIATE_SIZE <= 32
-    const quint8 I_IMMEDIATE_SIZE = 16;
-    const quint32 I_IMMEDIATE_MASK = 0xFFFF;
-    const quint8 I_UNUSED_SIZE = 32 - (OPCODE_SIZE + 2 * REGISTER_SIZE + I_IMMEDIATE_SIZE);
+        quint8 RFormalCount_;
+        quint8 RUnusedSize_;
 
-    // J-type
-    // OPCODE_SIZE + J_IMMEDIATE_SIZE <= 32
-    const quint8 J_IMMEDIATE_SIZE = 26;
-    const quint32 J_IMMEDIATE_MASK = 0x03FFFFFF;
-    const quint8 J_UNUSED_SIZE = 32 - (OPCODE_SIZE + J_IMMEDIATE_SIZE);
+        quint16 IImmediateSize_;
+        quint32 IImmediateMask_;
+        quint8 IUnusedSize_;
 
-     enum class InstructionType{R, I, J, None};
+        quint8 JImmediateSize_;
+        quint32 JImmediateMask_;
+        quint8 JUnusedSize_;
+
+        void updateValues();
+
+    public:
+
+        InstructionEncodingConig(quint8 opcodeSize = DEFAULT_OPCODE_SIZE, quint8 registerSize = DEFAULT_REGISTER_SIZE);
+
+        bool setOpcodeSize(quint8 size);
+        bool setRegisterSize(quint8 size);
+
+        quint8 opcodeCount() const {return opcodeCount_;}
+
+        quint8 opcodeSize() const {return opcodeSize_;}
+        quint32 opcodeMask() const {return opcodeMask_;}
+
+        quint8 registerCout() const {return registerCount_;}
+        quint8 registerSize() const {return registerSize_;}
+        quint32 registerMask() const {return registerMask_;}
+
+        quint8 RFormalCount() const {return RFormalCount_;}
+        quint8 RUnusedSize() const {return RUnusedSize_;}
+
+        quint8 IImmediateSize() const {return IImmediateSize_;}
+        quint32 IImmediateMask() const {return IImmediateMask_;}
+        quint8 IUnusedSize() const {return IUnusedSize_;}
+
+        quint8 JImmediateSize() const {return JImmediateSize_;}
+        quint32 JImmediateMask() const {return JImmediateMask_;}
+        quint8 JUnusedSize() const {return JUnusedSize_;}
+    };
+
+    // const quint8 OPCODE_COUNT = 64;
+    // const quint8 OPCODE_SIZE = 6;       // log64 = 6 -> 6 bits needed for encoding
+    // const quint32 OPCODE_MASK = 0x3F;   // mask = b00111111 = 0x3F
+
+    // const quint8 REGISTER_COUNT = 32;
+    // const quint8 REGISTER_SIZE = 5;     // log32 = 5 -> 5 bits needed for encoding
+    // const quint32 REGISTER_MASK = 0x1F; // mask = b00011111 = 0x1F
+
+    // // R-type
+    // // OPCODE_SIZE + FORMAL_COUNT * REGISTER_SIZE <= 32
+    // const quint8 R_FORMAL_COUNT = 5;
+    // const quint8 R_UNUSED_SIZE = 32 - (OPCODE_SIZE + R_FORMAL_COUNT*REGISTER_SIZE); // == 1
+
+    // // I-type
+    // // OPCODE_SIZE + 2 * REGISTER_SIZE + I_IMMEDIATE_SIZE <= 32
+    // const quint8 I_IMMEDIATE_SIZE = 16;
+    // const quint32 I_IMMEDIATE_MASK = 0xFFFF;
+    // const quint8 I_UNUSED_SIZE = 32 - (OPCODE_SIZE + 2 * REGISTER_SIZE + I_IMMEDIATE_SIZE);
+
+    // // J-type
+    // // OPCODE_SIZE + J_IMMEDIATE_SIZE <= 32
+    // const quint8 J_IMMEDIATE_SIZE = 26;
+    // const quint32 J_IMMEDIATE_MASK = 0x03FFFFFF;
+    // const quint8 J_UNUSED_SIZE = 32 - (OPCODE_SIZE + J_IMMEDIATE_SIZE);
+
+    extern InstructionEncodingConig* encodingConfig;
+
+    enum class InstructionType{R, I, J, None};
 
     class Instruction{
 
@@ -66,7 +119,7 @@ namespace InstructionEditor{
     public:
         quint8 sourceRegister;
         quint8 destinationRegister;
-        quint16 immediate;
+        quint32 immediate;
 
         explicit IType() = default;
         explicit IType(const quint8 opcode, const quint8 source, const quint8 destination, const quint16 immediate);

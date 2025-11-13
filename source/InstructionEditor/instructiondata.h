@@ -7,7 +7,7 @@
 namespace InstructionEditor {
 
 const qsizetype MAX_LINES = 512;
-const quint32 BASE_ADRESS = 0;
+const quint32 BASE_ADDRESS = 0;
 
 struct InstructionEntry {
     QByteArray encoded = 0;
@@ -23,7 +23,7 @@ public:
     QList<InstructionEntry> instructions;
     const int maxLines;
     quint32 baseAddress;
-    explicit InstructionData(QObject *parent = nullptr, int maxLines = MAX_LINES, quint32 baseAddress = BASE_ADRESS);
+    explicit InstructionData(QObject *parent = nullptr, int maxLines = MAX_LINES, quint32 baseAddress = BASE_ADDRESS);
 
 signals:
 };

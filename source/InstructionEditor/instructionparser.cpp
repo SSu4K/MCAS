@@ -280,11 +280,11 @@ quint32 InstructionParser::parseJumpToken(const Token &token, const qsizetype bi
 ParseResult InstructionParser::parseRType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const{
     QList<quint8> regs = {};
     ParseStatus status;
-    for(qsizetype i=1; i<=R_FORMAL_COUNT; i++){
+    for(qsizetype i=1; i<=encodingConfig->RFormalCount(); i++){
         QString ftok = QString("r%1").arg(i, 0, 10);
         if(tokenMappings.contains(ftok)){
             Token atok = tokenMappings[ftok];
-            quint8 reg = parseRegisterToken(atok, REGISTER_SIZE, status);
+            quint8 reg = parseRegisterToken(atok, encodingConfig->registerSize(), status);
             if(!status.isOk()){
                 return {nullptr, status};
             }
@@ -305,7 +305,7 @@ ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappi
     quint8 r1 = 0;
     if(tokenMappings.contains("r1")){
         Token token = tokenMappings["r1"];
-        r1 = parseRegisterToken(token, REGISTER_SIZE, status);
+        r1 = parseRegisterToken(token, encodingConfig->registerSize(), status);
         if(!status.isOk()){
             return {nullptr, status};
         }
@@ -314,7 +314,7 @@ ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappi
     quint8 r2 = 0;
     if(tokenMappings.contains("r2")){
         Token token = tokenMappings["r2"];
-        r2 = parseRegisterToken(token, REGISTER_SIZE, status);
+        r2 = parseRegisterToken(token, encodingConfig->registerSize(), status);
         if(!status.isOk()){
             return {nullptr, status};
         }
@@ -325,7 +325,7 @@ ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappi
     // I-Type with hexadecimal immediate (example: ADDI R2, 0x0022(R1))
     if(definition.format.contains('i')){
         Token token = tokenMappings["i"];
-        immediate = parseHexToken(token, I_IMMEDIATE_SIZE, status);
+        immediate = parseHexToken(token, encodingConfig->IImmediateSize(), status);
         if(!status.isOk()){
             return {nullptr, status};
         }
@@ -333,7 +333,7 @@ ParseResult InstructionParser::parseIType(const QMap<QString, Token> &tokenMappi
     // I-Type with lebel immediate (example: BRZ R1, loop)
     else if(definition.format.contains('j')){
         Token token = tokenMappings["j"];
-        immediate = parseJumpToken(token, I_IMMEDIATE_SIZE, status);
+        immediate = parseJumpToken(token, encodingConfig->IImmediateSize(), status);
         if(!status.isOk()){
             return {nullptr, status};
         }
@@ -348,7 +348,7 @@ ParseResult InstructionParser::parseJType(const QMap<QString, Token> &tokenMappi
     uint32_t immediate = 0;
     if(tokenMappings.contains("j")){
         Token token = tokenMappings["j"];
-        immediate = parseJumpToken(token, J_IMMEDIATE_SIZE, status);
+        immediate = parseJumpToken(token, encodingConfig->JImmediateSize(), status);
         if(!status.isOk()){
             return {nullptr, status};
         }
