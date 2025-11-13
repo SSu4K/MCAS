@@ -3,14 +3,73 @@
 
 using namespace InstructionEditor;
 
+InstructionEncodingConig* InstructionEditor::encodingConfig = new InstructionEncodingConig(); // local for now
+
+void InstructionEncodingConig::updateValues(){
+    opcodeCount_ = 1 << opcodeSize_;
+    opcodeMask_ = opcodeCount_ - 1;
+
+    registerCount_ = 1 << registerSize_;
+    registerMask_ = registerCount_ - 1;
+
+    const quint8 argumentsSize = 32 - opcodeSize_;
+
+    RFormalCount_ = argumentsSize / registerSize_;
+    RUnusedSize_ = argumentsSize % registerSize_;
+
+    IImmediateSize_ = (argumentsSize - 2*registerSize_);
+    IImmediateMask_ = (1 << IImmediateSize_) - 1;
+    IUnusedSize_ = 0;
+
+    JImmediateSize_ = argumentsSize;
+    JImmediateMask_ = (1 << JImmediateSize_) - 1;
+    JUnusedSize_ = 0;
+}
+
+InstructionEncodingConig::InstructionEncodingConig(quint8 opcodeSize, quint8 registerSize)
+{
+    if(opcodeSize < 4 || opcodeSize > 8){
+        opcodeSize_ = opcodeSize;
+    }
+    else{
+        opcodeSize_ = DEFAULT_OPCODE_SIZE;
+    }
+
+    if(registerSize < 2 || registerSize > 8){
+        registerSize_ = registerSize;
+    }
+    else{
+        registerSize_ = DEFAULT_REGISTER_SIZE;
+    }
+
+    updateValues();
+
+}
+
+bool InstructionEncodingConig::setOpcodeSize(quint8 size){
+    if(size < 4 || size > 8) return false;
+    opcodeSize_ = size;
+    updateValues();
+
+    return true;
+}
+
+bool InstructionEncodingConig::setRegisterSize(quint8 size){
+    if(size < 2 || size > 8) return false;
+    registerSize_ = size;
+    updateValues();
+
+    return true;
+}
+
 RType::RType(){
     opcode_ = 0;
-    formals.fill(0, R_FORMAL_COUNT);
+    formals.fill(0, encodingConfig->RFormalCount());
 }
 
 RType::RType(const quint8 opcode, QList<quint8> formals){
     this->opcode_= opcode;
-    for(qsizetype i=0; i<R_FORMAL_COUNT; i++){
+    for(qsizetype i=0; i<encodingConfig->RFormalCount(); i++){
         if(i<formals.count()){
             this->formals.append(formals[i]);
         }
@@ -22,25 +81,25 @@ RType::RType(const quint8 opcode, QList<quint8> formals){
 
 quint32 RType::encode() const{
     quint32 result = 0;
-    result |= OPCODE_MASK & opcode_;
+    result |= encodingConfig->opcodeMask() & opcode_;
 
-    for(qsizetype i=0; i<R_FORMAL_COUNT; i++){
-        result = result << REGISTER_SIZE;
-        result |= REGISTER_MASK & formals[i];
+    for(qsizetype i=0; i<encodingConfig->RFormalCount(); i++){
+        result = result << encodingConfig->registerSize();
+        result |= encodingConfig->registerMask() & formals[i];
     }
-    return result << R_UNUSED_SIZE;
+    return result << encodingConfig->RUnusedSize();
 }
 
 RType RType::decode(quint32 in){
     RType result;
-    in = in >> R_UNUSED_SIZE;
-    for(qsizetype i = R_FORMAL_COUNT-1; i>=0; i--){
-        qint8 formal = in & REGISTER_MASK;
+    in = in >> encodingConfig->RUnusedSize();
+    for(qsizetype i = encodingConfig->RFormalCount()-1; i>=0; i--){
+        qint8 formal = in & encodingConfig->registerMask();
         result.formals[i] = formal;
-        in = in >> REGISTER_SIZE;
+        in = in >> encodingConfig->registerSize();
     }
 
-    result.opcode_= OPCODE_MASK & in;
+    result.opcode_= encodingConfig->opcodeMask() & in;
 
     return result;
 }
@@ -54,39 +113,39 @@ IType::IType(quint8 opcode, quint8 source, quint8 destination, quint16 immediate
 
 quint32 IType::encode() const{
     quint32 result = 0;
-    result |= OPCODE_MASK & opcode_;
+    result |= encodingConfig->opcodeMask() & opcode_;
 
-    result = result << REGISTER_SIZE;
-    result |= REGISTER_MASK & sourceRegister;
+    result = result << encodingConfig->registerSize();
+    result |= encodingConfig->registerMask() & sourceRegister;
 
-    result = result << REGISTER_SIZE;
-    result |= REGISTER_MASK & destinationRegister;
+    result = result << encodingConfig->registerSize();
+    result |= encodingConfig->registerMask() & destinationRegister;
 
-    result = result << I_IMMEDIATE_SIZE;
-    result |= I_IMMEDIATE_MASK & immediate;
+    result = result << encodingConfig->IImmediateSize();
+    result |= encodingConfig->IImmediateMask() & immediate;
 
-    return result << I_UNUSED_SIZE;
+    return result << encodingConfig->IUnusedSize();
 }
 
 IType IType::decode(quint32 in){
     IType result;
-    in = in >> I_UNUSED_SIZE;
+    in = in >> encodingConfig->IUnusedSize();
 
-    result.immediate = I_IMMEDIATE_MASK & in;
-    in = in >> I_IMMEDIATE_SIZE;
+    result.immediate = encodingConfig->IImmediateMask() & in;
+    in = in >> encodingConfig->IImmediateSize();
 
-    result.destinationRegister = REGISTER_MASK & in;
-    in = in >> REGISTER_SIZE;
+    result.destinationRegister = encodingConfig->registerMask() & in;
+    in = in >> encodingConfig->registerSize();
 
-    result.sourceRegister = REGISTER_MASK & in;
-    in = in >> REGISTER_SIZE;
+    result.sourceRegister = encodingConfig->registerMask() & in;
+    in = in >> encodingConfig->registerSize();
 
-    result.opcode_= OPCODE_MASK & in;
+    result.opcode_= encodingConfig->opcodeMask() & in;
     return result;
 }
 
 QString IType::toString() const{
-    QString hexImmediate = HexInt::intToString(immediate, true, qsizetype(I_IMMEDIATE_SIZE/4));
+    QString hexImmediate = HexInt::intToString(immediate, true, qsizetype(encodingConfig->IImmediateSize()/4));
     return QString("%1, %2, %3, ").arg(opcode_).arg(sourceRegister).arg(destinationRegister) + hexImmediate;
 }
 
@@ -97,22 +156,22 @@ JType::JType(const quint8 opcode, const quint32 immediate){
 
 quint32 JType::encode() const{
     quint32 result = 0;
-    result |= OPCODE_MASK & opcode_;
+    result |= encodingConfig->opcodeMask() & opcode_;
 
-    result = result << J_IMMEDIATE_SIZE;
-    result |= J_IMMEDIATE_MASK & immediate;
+    result = result << encodingConfig->JImmediateSize();
+    result |= encodingConfig->JImmediateMask() & immediate;
 
-    return result << I_UNUSED_SIZE;
+    return result << encodingConfig->JUnusedSize();
 }
 
 JType JType::decode(quint32 in){
     JType result;
-    in = in >> J_UNUSED_SIZE;
+    in = in >> encodingConfig->JUnusedSize();
 
-    result.immediate = J_IMMEDIATE_MASK & in;
-    in = in >> J_IMMEDIATE_SIZE;
+    result.immediate = encodingConfig->JImmediateMask() & in;
+    in = in >> encodingConfig->JImmediateSize();
 
-    result.opcode_= OPCODE_MASK & in;
+    result.opcode_= encodingConfig->opcodeMask() & in;
     return result;
 }
 

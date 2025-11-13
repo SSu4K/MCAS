@@ -1,5 +1,4 @@
 #include "microcodeeditorwidget.h"
-#include "microcode.h"
 #include "microcodeeditordelegate.h"
 #include <QHeaderView>
 #include <QVBoxLayout>
@@ -48,12 +47,5 @@ MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
     layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(2);
     setLayout(layout);
-
-    // Initial microcode
-    Microcode code;
-    Instruction instr;
-    code.instructions.append(instr);
-
-    m_model->setMicrocode(&code);
 }
 

@@ -1,8 +1,9 @@
-#include "microcodemodel.h"
-#include "Common/hexint.h"
-
 #include <QFile>
 #include <QTextStream>
+
+#include "microcodemodel.h"
+#include "Common/hexint.h"
+#include "Common/appcontext.h"
 
 using namespace MicrocodeEditor;
 
@@ -18,25 +19,27 @@ MicrocodeModel::MicrocodeModel(QObject* parent)
     headerPrefix = HEADER_PREFIX;
     commentPrefix = COMMENT_PREFIX;
     delimiter = DELIMITER;
+
+    microcodeData = AppContext::instance()->sharedData()->microcode().get();
 }
 
-void MicrocodeModel::setMicrocode(Microcode* code) {
-    beginResetModel();
-    if (code)
-        m_microcode = *code;
-    else
-        m_microcode.instructions.clear();
-    endResetModel();
-}
+// void MicrocodeModel::setMicrocode(Microcode* code) {
+//     beginResetModel();
+//     if (code)
+//         m_microcode = *code;
+//     else
+//         microcodeData->instructions.clear();
+//     endResetModel();
+// }
 
 void MicrocodeModel::setInstructions(const QList<Instruction> &instructions){
     beginResetModel();
-    m_microcode.instructions = instructions;
+    microcodeData->instructions = instructions;
     endResetModel();
 }
 
 int MicrocodeModel::rowCount(const QModelIndex&) const {
-    return m_microcode.instructions.size();
+    return microcodeData->instructions.size();
 }
 
 int MicrocodeModel::columnCount(const QModelIndex&) const {
@@ -46,7 +49,7 @@ int MicrocodeModel::columnCount(const QModelIndex&) const {
 QVariant MicrocodeModel::data(const QModelIndex& index, int role) const {
     if (!index.isValid()) return {};
 
-    const auto& instr = m_microcode.instructions[index.row()];
+    const auto& instr = microcodeData->instructions[index.row()];
 
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         return instr.getFieldValue(index.column());
@@ -58,7 +61,7 @@ QVariant MicrocodeModel::data(const QModelIndex& index, int role) const {
 
 bool MicrocodeModel::setData(const QModelIndex& index, const QVariant& value, int role) {
     if (role != Qt::EditRole) return false;
-    auto& instr = m_microcode.instructions[index.row()];
+    auto& instr = microcodeData->instructions[index.row()];
 
     if(!instr.setFieldValue(index.column(), value)){
         return false;
@@ -87,17 +90,17 @@ QVariant MicrocodeModel::headerData(int section, Qt::Orientation orientation, in
 
 bool MicrocodeModel::insertInstruction(int row, const Instruction& instr) {
     // Clamp row to valid range
-    if (row < 0 || row > m_microcode.instructions.size())
-        row = m_microcode.instructions.size();
+    if (row < 0 || row > microcodeData->instructions.size())
+        row = microcodeData->instructions.size();
 
     beginInsertRows(QModelIndex(), row, row);
-    m_microcode.instructions.insert(row, instr);
+    microcodeData->instructions.insert(row, instr);
     endInsertRows();
 
     // Reassign sequential string addresses after insertion
-    for (int i = 0; i < m_microcode.instructions.size(); ++i) {
+    for (int i = 0; i < microcodeData->instructions.size(); ++i) {
         QString addr = HexInt::intToString(i);
-        m_microcode.instructions[i].setFieldValue(InstructionField::address, addr);
+        microcodeData->instructions[i].setFieldValue(InstructionField::address, addr);
     }
 
     return true;
@@ -105,9 +108,9 @@ bool MicrocodeModel::insertInstruction(int row, const Instruction& instr) {
 
 void MicrocodeModel::clear(){
     beginResetModel();
-    m_microcode.instructions = {};
+    microcodeData->instructions = {};
     Instruction instr;
-    m_microcode.instructions.append(instr);
+    microcodeData->instructions.append(instr);
     endResetModel();
 }
 

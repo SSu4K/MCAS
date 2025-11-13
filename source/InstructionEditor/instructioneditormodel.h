@@ -4,24 +4,16 @@
 #include <QAbstractTableModel>
 #include <QColor>
 #include "instructionparser.h"
+#include "instructiondata.h"
 
 namespace InstructionEditor {
 
     const qsizetype INSTRUCTION_COLUMN_INDEX = 2;
 
-    struct InstructionEntry {
-        QByteArray encoded = 0;
-        QString text = "NOP";
-        bool valid = true;
-        QString errorMessage;
-    };
-
     class InstructionEditorModel : public QAbstractTableModel {
         Q_OBJECT
     public:
-        explicit InstructionEditorModel(QObject* parent = nullptr,
-                                  int maxLines = 512,
-                                  quint32 baseAddress = 0);
+        explicit InstructionEditorModel(QObject* parent = nullptr);
 
         int rowCount(const QModelIndex& parent = {}) const override;
         int columnCount(const QModelIndex& parent = {}) const override;
@@ -42,10 +34,8 @@ namespace InstructionEditor {
         int maxLines() const;
 
     private:
-        QList<InstructionEntry> m_instructions;
+        InstructionData *instructionData;
         InstructionParser m_parser;
-        const int m_maxLines;
-        quint32 m_baseAddress;
     };
 
 

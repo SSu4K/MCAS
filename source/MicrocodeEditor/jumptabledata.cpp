@@ -1,4 +1,4 @@
-#include "jumptable.h"
+#include "jumptabledata.h"
 
 using namespace MicrocodeEditor;
 
@@ -7,4 +7,4 @@ JumpTableEntry::JumpTableEntry(){
     targets = {"", ""}; // temporary, works only for 2 jump tables.
 }
 
-JumpTable::JumpTable() {}
+JumpTableData::JumpTableData() {}

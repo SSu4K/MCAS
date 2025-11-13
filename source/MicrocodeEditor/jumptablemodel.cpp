@@ -1,7 +1,8 @@
-#include "jumptablemodel.h"
-
 #include <QFile>
 #include <QTextStream>
+
+#include "jumptablemodel.h"
+#include "Common/appcontext.h"
 
 const static QString JUMP_TABLE_HEADER = "[Jump Tables]";
 const static QChar HEADER_PREFIX = '[';
@@ -17,11 +18,13 @@ JumpTableModel::JumpTableModel(QObject* parent)
     headerPrefix = HEADER_PREFIX;
     commentPrefix = COMMENT_PREFIX;
     delimiter = DELIMITER;
+
+    jumpTableData = AppContext::instance()->sharedData()->jumptable().get();
     clear();
 }
 
 int JumpTableModel::rowCount(const QModelIndex&) const {
-    return m_jumptable.entries.size();
+    return jumpTableData->entries.size();
 }
 
 int JumpTableModel::columnCount(const QModelIndex&) const {
@@ -32,7 +35,7 @@ QVariant JumpTableModel::data(const QModelIndex& index, int role) const {
     if (!index.isValid() || role != Qt::DisplayRole && role != Qt::EditRole)
         return {};
 
-    const auto& entry = m_jumptable.entries[index.row()];
+    const auto& entry = jumpTableData->entries[index.row()];
     if (index.column() == 0)
         return entry.opcode;
     else if (index.column() - 1 < entry.targets.size())
@@ -44,7 +47,7 @@ bool JumpTableModel::setData(const QModelIndex& index, const QVariant& value, in
     if (!index.isValid() || role != Qt::EditRole)
         return false;
 
-    auto& entry = m_jumptable.entries[index.row()];
+    auto& entry = jumpTableData->entries[index.row()];
     const QString text = value.toString();
 
     if (index.column() == 0)
@@ -73,12 +76,12 @@ Qt::ItemFlags JumpTableModel::flags(const QModelIndex& index) const {
 
 void JumpTableModel::setEntries(const QVector<JumpTableEntry>& entries) {
     beginResetModel();
-    m_jumptable.entries = entries;
+    jumpTableData->entries = entries;
     endResetModel();
 }
 
 QVector<JumpTableEntry> JumpTableModel::entries() const {
-    return m_jumptable.entries;
+    return jumpTableData->entries;
 }
 
 QStringList JumpTableModel::headers() const {
@@ -87,17 +90,17 @@ QStringList JumpTableModel::headers() const {
 
 void JumpTableModel::clear(){
     beginResetModel();
-    m_jumptable.entries = {JumpTableEntry()};
+    jumpTableData->entries = {JumpTableEntry()};
     endResetModel();
 }
 
 bool JumpTableModel::insertEntry(int row, const JumpTableEntry& entry) {
 
-    if (row < 0 || row > m_jumptable.entries.size())
-        row = m_jumptable.entries.size();
+    if (row < 0 || row > jumpTableData->entries.size())
+        row = jumpTableData->entries.size();
 
     beginInsertRows(QModelIndex(), row, row);
-    m_jumptable.entries.insert(row, entry);
+    jumpTableData->entries.insert(row, entry);
     endInsertRows();
 
     return true;

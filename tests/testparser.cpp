@@ -173,7 +173,7 @@ void TestParser::IType_Parse_Fail(){
 void TestParser::IType_Jumps(){
     InstructionParser parser;
 
-    const qint32 modulus = 1 << (I_IMMEDIATE_SIZE-1); // modulus for 2c
+    const qint32 modulus = 1 << (encodingConfig->IImmediateSize()-1); // modulus for 2c
 
     const qint32 minJump = -modulus;
     const qint32 maxJump = 4*((modulus - 1) >> 2);
