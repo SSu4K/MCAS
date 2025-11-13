@@ -5,7 +5,7 @@
 #include <QStringList>
 #include <QVector>
 
-#include "jumptable.h"
+#include "jumptabledata.h"
 #include "Common/texttablemodel.h"
 
 namespace MicrocodeEditor{
@@ -28,7 +28,7 @@ namespace MicrocodeEditor{
         bool insertEntry(int row, const JumpTableEntry& entry);
         \
     private:
-        JumpTable m_jumptable;
+        JumpTableData *jumpTableData;
         QStringList m_headers = {"Opcode", "Jump Table 1", "Jump Table 2"};
         void populateFromStringMatrix(const QList<QList<QString>> &rows) override;
     };

@@ -1,4 +1,4 @@
-#include "microcode.h"
+#include "microcodedata.h"
 #include "Common/hexint.h"
 
 using namespace MicrocodeEditor;
@@ -139,7 +139,7 @@ bool Instruction::setFieldValue(const size_t field, const QVariant &value){
     return true;
 }
 
-Microcode::Microcode() {
+MicrocodeData::MicrocodeData() {
     // You can initialize some default microinstructions if needed.
     // For now, it's just empty.
 }

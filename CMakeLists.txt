@@ -13,6 +13,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
 find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools Test)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 # Define version and build info
 set(APP_VERSION "v0.1.0-prealpha")
@@ -56,6 +59,9 @@ set(PROJECT_SOURCES
 qt_add_executable(MCAS
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+    source/MemoryEditor/memorydata.h source/MemoryEditor/memorydata.cpp
+    source/InstructionEditor/instructiondata.h source/InstructionEditor/instructiondata.cpp
+
 )
 
 add_executable(tests
@@ -74,6 +80,15 @@ add_executable(tests
 
 # Link Qt libraries
 target_link_libraries(MCAS PRIVATE Qt6::Widgets)
+target_link_libraries(MCAS PRIVATE Qt6::Core)
+target_link_libraries(MCAS PRIVATE Qt6::Core)
+target_link_libraries(MCAS PRIVATE Qt6::Core)
+
+
+target_link_libraries(tests PRIVATE
+    Qt6::Core
+    Qt6::Test
+)
 
 
 target_link_libraries(tests PRIVATE

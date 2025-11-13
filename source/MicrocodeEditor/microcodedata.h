@@ -1,5 +1,5 @@
-#ifndef MICROCODE_H
-#define MICROCODE_H
+#ifndef MICROCODEDATA_H
+#define MICROCODEDATA_H
 
 #include <QString>
 #include <QList>
@@ -62,12 +62,12 @@ namespace MicrocodeEditor{
         bool setFieldValue(const size_t field, const QVariant &value);
     };
 
-    class Microcode{
+    class MicrocodeData{
     public:
         QList<Instruction> instructions;
-        QList<QStringList> jumpTable;
-        Microcode();
+        //QList<QStringList> jumpTable;
+        MicrocodeData();
     };
 
 }
-#endif // MICROCODE_H
+#endif // MICROCODEDATA_H

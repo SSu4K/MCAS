@@ -13,8 +13,6 @@ namespace MicrocodeEditor{
     class MicrocodeEditorWidget : public ZoomWidget {
         Q_OBJECT
     public:
-        MicrocodeModel* m_model = nullptr;
-
         explicit MicrocodeEditorWidget(QWidget* parent = nullptr);
 
         MicrocodeModel* model() const { return m_model; }
@@ -25,7 +23,7 @@ namespace MicrocodeEditor{
 
     private:
         // void resizeColumnsToFit();
-
+        MicrocodeModel* m_model = nullptr;
         QTableView* m_tableView = nullptr;
         MicrocodeEditorDelegate* m_delegate = nullptr;
         const double baseFontSize = 10.0;

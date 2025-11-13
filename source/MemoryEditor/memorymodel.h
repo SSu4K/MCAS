@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QAbstractTableModel>
 
+#include "memorydata.h"
+
 const qsizetype MEMORY_SIZE = 512;
 
 namespace MemoryEditor {
@@ -42,7 +44,7 @@ namespace MemoryEditor {
         bool saveToTextStream(QTextStream &stream);
 
     private:
-        QByteArray m_memory;
+        MemoryData *memoryData;
         int m_cols = 8;
         MemoryUnitSize unitSize = MemoryUnitSize::Half;
     };

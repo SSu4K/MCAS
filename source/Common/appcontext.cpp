@@ -3,12 +3,18 @@
 
 QPointer<AppContext> AppContext::s_instance = nullptr;
 
+SharedData::SharedData(QObject* parent)
+    : //QObject(parent),
+    m_memory(std::make_shared<MemoryData>()),
+    m_instructions(std::make_shared<InstructionData>()),
+    m_microcode(std::make_shared<MicrocodeData>()),
+    m_jumptable(std::make_shared<JumpTableData>())
+{}
+
 AppContext::AppContext(QObject* parent)
-    : QObject(parent)
+    : QObject(parent), m_sharedData(std::make_shared<SharedData>())
 {
     m_settings = std::make_unique<QSettings>("SzymonSudak", "MCAS");
-    m_microcodeModel = nullptr;
-    m_jumpTableModel = nullptr;
     m_appVersion = QStringLiteral(APP_VERSION);
     m_buildType  = QStringLiteral(BUILD_TYPE);
     m_platform   = QStringLiteral(BUILD_PLATFORM);

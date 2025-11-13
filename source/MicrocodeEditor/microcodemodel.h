@@ -2,7 +2,7 @@
 #define MICROCODEMODEL_H
 
 #include <QAbstractTableModel>
-#include "microcode.h"
+#include "microcodedata.h"
 #include "Common/texttablemodel.h"
 
 namespace MicrocodeEditor{
@@ -14,9 +14,9 @@ class MicrocodeModel : public TextTableModel {
     public:
         explicit MicrocodeModel(QObject* parent = nullptr);
 
-        void setMicrocode(Microcode* code);
+        void setMicrocode(const QList<Instruction> instructions);
         void setInstructions(const QList<Instruction> &instructions);
-        Microcode* microcode() { return &m_microcode; }
+        //Microcode* microcode() { return &m_microcode; }
 
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
         int columnCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -29,7 +29,7 @@ class MicrocodeModel : public TextTableModel {
 
 
     private:
-        Microcode m_microcode;
+        MicrocodeData *microcodeData;
         void populateFromStringMatrix(const QList<QList<QString>> &rows) override;
     };
 
