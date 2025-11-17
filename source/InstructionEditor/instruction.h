@@ -3,12 +3,26 @@
 
 #include <QList>
 #include <QMap>
+#include <QHash>
 #include <qtypes.h>
 
 namespace InstructionEditor{
 
     inline const quint8 DEFAULT_OPCODE_SIZE = 6;
     inline const quint8 DEFAULT_REGISTER_SIZE = 5;
+
+    enum class InstructionType{R, I, J, None};
+
+    struct InstructionDefinition{
+        quint8 opcode;
+        InstructionType type;
+        QString format;
+    };
+
+    struct InstructionSet{
+        QHash<QString, InstructionDefinition> definitions;
+        QHash<quint8, QString> mnemonicLookup;
+    };
 
     class InstructionEncodingConig{
 
@@ -62,34 +76,7 @@ namespace InstructionEditor{
         quint8 JUnusedSize() const {return JUnusedSize_;}
     };
 
-    // const quint8 OPCODE_COUNT = 64;
-    // const quint8 OPCODE_SIZE = 6;       // log64 = 6 -> 6 bits needed for encoding
-    // const quint32 OPCODE_MASK = 0x3F;   // mask = b00111111 = 0x3F
-
-    // const quint8 REGISTER_COUNT = 32;
-    // const quint8 REGISTER_SIZE = 5;     // log32 = 5 -> 5 bits needed for encoding
-    // const quint32 REGISTER_MASK = 0x1F; // mask = b00011111 = 0x1F
-
-    // // R-type
-    // // OPCODE_SIZE + FORMAL_COUNT * REGISTER_SIZE <= 32
-    // const quint8 R_FORMAL_COUNT = 5;
-    // const quint8 R_UNUSED_SIZE = 32 - (OPCODE_SIZE + R_FORMAL_COUNT*REGISTER_SIZE); // == 1
-
-    // // I-type
-    // // OPCODE_SIZE + 2 * REGISTER_SIZE + I_IMMEDIATE_SIZE <= 32
-    // const quint8 I_IMMEDIATE_SIZE = 16;
-    // const quint32 I_IMMEDIATE_MASK = 0xFFFF;
-    // const quint8 I_UNUSED_SIZE = 32 - (OPCODE_SIZE + 2 * REGISTER_SIZE + I_IMMEDIATE_SIZE);
-
-    // // J-type
-    // // OPCODE_SIZE + J_IMMEDIATE_SIZE <= 32
-    // const quint8 J_IMMEDIATE_SIZE = 26;
-    // const quint32 J_IMMEDIATE_MASK = 0x03FFFFFF;
-    // const quint8 J_UNUSED_SIZE = 32 - (OPCODE_SIZE + J_IMMEDIATE_SIZE);
-
     extern InstructionEncodingConig* encodingConfig;
-
-    enum class InstructionType{R, I, J, None};
 
     class Instruction{
 

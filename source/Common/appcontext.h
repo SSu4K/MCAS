@@ -13,6 +13,7 @@
 #include "MicrocodeEditor/microcodedata.h"
 #include "MicrocodeEditor/jumptabledata.h"
 #include "MemoryEditor/memorydata.h"
+#include "MemoryEditor/memorymodel.h"
 #include "InstructionEditor/instructiondata.h"
 
 using namespace MicrocodeEditor;
@@ -24,7 +25,7 @@ class SharedData: public QObject{
 public:
     explicit SharedData(QObject* parent = nullptr);
 
-    std::shared_ptr<MemoryData> memory() const { return m_memory; }
+    std::shared_ptr<MemoryModel> memory() const { return m_memory; }
     std::shared_ptr<InstructionData> instructions() const { return m_instructions; }
     std::shared_ptr<MicrocodeData> microcode() const { return m_microcode; }
     std::shared_ptr<JumpTableData> jumptable() const { return m_jumptable; }
@@ -36,7 +37,7 @@ signals:
     void configChanged();
 
 private:
-    std::shared_ptr<MemoryData> m_memory;
+    std::shared_ptr<MemoryModel> m_memory;
     std::shared_ptr<InstructionData> m_instructions;
     std::shared_ptr<MicrocodeData> m_microcode;
     std::shared_ptr<JumpTableData> m_jumptable;

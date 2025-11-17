@@ -12,6 +12,7 @@
 #include "memorymodel.h"
 #include "filldialog.h"
 #include "Common/hexintdelegate.h"
+#include "Common/appcontext.h"
 
 namespace MemoryEditor {
 

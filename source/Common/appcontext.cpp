@@ -5,7 +5,7 @@ QPointer<AppContext> AppContext::s_instance = nullptr;
 
 SharedData::SharedData(QObject* parent)
     : //QObject(parent),
-    m_memory(std::make_shared<MemoryData>()),
+    m_memory(std::make_shared<MemoryModel>()),
     m_instructions(std::make_shared<InstructionData>()),
     m_microcode(std::make_shared<MicrocodeData>()),
     m_jumptable(std::make_shared<JumpTableData>())

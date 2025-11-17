@@ -59,19 +59,23 @@ QDebug InstructionEditor::operator<<(QDebug dbg, const ParseStatus &status)
     return dbg;
 }
 
-bool InstructionParser::addInstruction(const QString &mnemonic, const InstructionType type, const QString &format){
-    if(instructionSet.contains(mnemonic.toUpper())){
-        return false;
-    }
-    quint8 opcode = instructionSet.size();
-    InstructionDefinition definition = {opcode, type, format};
-    instructionSet[mnemonic.toUpper()] = definition;
-    return true;
+InstructionParser::InstructionParser(const InstructionSet &instructionSet){
+    this->instructionSet = std::make_shared<InstructionSet>(instructionSet);
 }
 
-bool InstructionParser::removeInstruction(const QString &mnemonic){
-    return instructionSet.remove(mnemonic);
-}
+// bool InstructionParser::addInstruction(const QString &mnemonic, const InstructionType type, const QString &format){
+//     if(instructionSet->definitions.contains(mnemonic.toUpper())){
+//         return false;
+//     }
+//     quint8 opcode = instructionSet->definitions.size();
+//     InstructionDefinition definition = {opcode, type, format};
+//     instructionSet->definitions[mnemonic.toUpper()] = definition;
+//     return true;
+// }
+
+// bool InstructionParser::removeInstruction(const QString &mnemonic){
+//     return instructionSet->definitions.remove(mnemonic);
+// }
 
 bool InstructionParser::addLabel(const QString &label, const qsizetype lineNumber){
     if(labelMap.contains(label)){
@@ -84,8 +88,6 @@ bool InstructionParser::addLabel(const QString &label, const qsizetype lineNumbe
 bool InstructionParser::removeLabel(const QString &label){
     return labelMap.remove(label);
 }
-
-InstructionParser::InstructionParser(): instructionSet(DEFAULT_INSTRUCTION_SET), separatorTokens(DEFAULT_SEPARATOR_TOKENS) {}
 
 void InstructionParser::flushCharBuffer(){
     if(!charBuffer.isEmpty()){
@@ -370,10 +372,10 @@ ParseResult InstructionParser::parseLine(const qsizetype lineNumber, const QStri
 
     // Recognize the instrucion
     QString mnemonic = argumentTokens[0].str;
-    if(!instructionSet.contains(mnemonic)){
+    if(!instructionSet->definitions.contains(mnemonic)){
         return {nullptr, ParseStatus::fail("Unknown instruction")};
     }
-    const auto &definition = instructionSet[mnemonic];
+    const auto &definition = instructionSet->definitions[mnemonic];
 
     // remove mnemonic from arguments for parsing
     argumentTokens.removeFirst();

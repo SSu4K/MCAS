@@ -2,30 +2,12 @@
 #define INSTRUCTIONPARSER_H
 
 #include <QList>
-#include <QMap>
+#include <QHash>
 #include <QSharedPointer>
 #include <qtypes.h>
 #include "InstructionEditor/instruction.h"
 
 namespace InstructionEditor {
-
-    struct InstructionDefinition{
-        quint8 opcode;
-        InstructionType type;
-        QString format;
-    };
-
-    typedef QMap<QString, InstructionDefinition> InstructionSet;
-
-    // list of instructions accepted, constant for now, make dynamic later
-    inline InstructionSet DEFAULT_INSTRUCTION_SET = {
-        { "NOP",    {0, InstructionType::R, ""} },
-        { "ADD",    {1, InstructionType::R, "r1, r2, r3"} },
-        { "LDH",    {2, InstructionType::I, "r2, i(r1)"} },
-        { "ADDI",   {3, InstructionType::I, "r1, i, r2"} },
-        { "JUMP",   {4, InstructionType::J, "j"} },
-        { "BRZ",    {5, InstructionType::I, "r1, j"} }
-    };
 
     inline QList<char> DEFAULT_SEPARATOR_TOKENS = {',', '(', ')'};
 
@@ -70,8 +52,9 @@ namespace InstructionEditor {
     class InstructionParser
     {
     private:
-        InstructionSet instructionSet;
+        std::shared_ptr<const InstructionSet> instructionSet;
         QList<char> separatorTokens;
+
         QMap<QString, qsizetype> labelMap;
 
         qsizetype currentLineNumber;
@@ -93,9 +76,9 @@ namespace InstructionEditor {
         ParseResult parseJType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition &definition) const;
     public:
 
-        InstructionParser();
-        bool addInstruction(const QString &mnemonic, const InstructionType type, const QString &format);
-        bool removeInstruction(const QString &mnemonic);
+        InstructionParser(const InstructionSet &instructionSet);
+        // bool addInstruction(const QString &mnemonic, const InstructionType type, const QString &format);
+        // bool removeInstruction(const QString &mnemonic);
         bool addLabel(const QString &label, const qsizetype lineNumber);
         bool removeLabel(const QString &label);
         // bool isValidLabel(const QString &label);

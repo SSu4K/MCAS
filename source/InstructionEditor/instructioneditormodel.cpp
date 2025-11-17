@@ -5,7 +5,7 @@
 using namespace InstructionEditor;
 
 InstructionEditorModel::InstructionEditorModel(QObject* parent)
-    : QAbstractTableModel(parent)
+    : QAbstractTableModel(parent), m_parser(DEFAULT_INSTRUCTION_SET)
 {
     instructionData = AppContext::instance()->sharedData()->instructions().get();
 }
@@ -99,12 +99,14 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
         entry.encoded = result.instruction->encode();
         entry.instruction = result.instruction;
 
-        auto memoryData = AppContext::instance()->sharedData()->memory().get();
+        auto memoryModel = AppContext::instance()->sharedData()->memory().get();
         const qsizetype addr = 4*lineNumber;
-        memoryData->memory[addr + 3] = static_cast<quint8>(entry.encoded & 0xFF);
-        memoryData->memory[addr + 2] = static_cast<quint8>((entry.encoded >> 8) & 0xFF);
-        memoryData->memory[addr + 1] = static_cast<quint8>((entry.encoded >> 16) & 0xFF);
-        memoryData->memory[addr + 0] = static_cast<quint8>((entry.encoded >> 24) & 0xFF);
+        // memoryData->memory[addr + 3] = static_cast<quint8>(entry.encoded & 0xFF);
+        // memoryData->memory[addr + 2] = static_cast<quint8>((entry.encoded >> 8) & 0xFF);
+        // memoryData->memory[addr + 1] = static_cast<quint8>((entry.encoded >> 16) & 0xFF);
+        // memoryData->memory[addr + 0] = static_cast<quint8>((entry.encoded >> 24) & 0xFF);
+
+        memoryModel->write(addr, entry.encoded, MemoryUnitSize::Word);
     }
 
     emit dataChanged(index, this->index(index.row(), 3)); // update row
@@ -153,3 +155,7 @@ void InstructionEditorModel::setBaseAddress(quint32 addr) {
 quint32 InstructionEditorModel::baseAddress() const { return instructionData->baseAddress; }
 
 int InstructionEditorModel::maxLines() const { return instructionData->maxLines; }
+
+void InstructionEditorModel::syncFromMemory(){
+    //
+}

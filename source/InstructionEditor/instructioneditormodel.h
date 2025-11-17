@@ -32,6 +32,7 @@ namespace InstructionEditor {
         quint32 baseAddress() const;
 
         int maxLines() const;
+        void syncFromMemory();
 
     private:
         InstructionData *instructionData;

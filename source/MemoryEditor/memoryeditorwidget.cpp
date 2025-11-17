@@ -5,7 +5,7 @@ MemoryEditorWidget::MemoryEditorWidget(QWidget* parent)
     : QWidget(parent)
 {
     m_tableView = new QTableView(this);
-    m_model = new MemoryModel(this);
+    m_model = AppContext::instance()->sharedData()->memory().get();
 
     m_tableView->setModel(m_model);
     m_tableView->verticalHeader()->setVisible(true);
