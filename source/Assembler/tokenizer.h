@@ -18,6 +18,8 @@ struct Token{
     qsizetype lineNumber;
 };
 
+inline Token EMPTY_TOKEN = {TokenType::NotClassified, "", 0, 0, 0};
+
 typedef QList<Token> TokenList;
 
 class Tokenizer
@@ -31,11 +33,10 @@ private:
     QSet<QChar> bracketChars = {'(', ')'}; // semantically meaningful
     QSet<QChar> commentChars = {';', '#'};
 
-    void flushCharBuffer();
-    Token classifyToken(const Token &token);
+    Token classifyToken(const Token &token) const;
 
 public:
-    TokenList tokenizeLine(const QString &line, const qsizetype lineNumber);
+    TokenList tokenizeLine(const QString &line, const qsizetype lineNumber) const;
     Tokenizer();
 };
 

@@ -65,21 +65,29 @@ qt_add_executable(MCAS
     source/Assembler/instructiondefinition.h source/Assembler/instructiondefinition.cpp
     source/Assembler/assembler.h source/Assembler/assembler.cpp
     source/Assembler/labeldata.h source/Assembler/labeldata.cpp
-
+    source/Assembler/assemblystatus.h source/Assembler/assemblystatus.cpp
+    source/Assembler/instruction.cpp source/Assembler/instruction.h
 )
 
 add_executable(tests
     tests/testrunner.cpp
-    tests/test_instructions.h
-    tests/test_instructions.cpp
-    source/InstructionEditor/instruction.h
-    source/InstructionEditor/instruction.cpp
-    source/InstructionEditor/instructionparser.h
-    source/InstructionEditor/instructionparser.cpp
-    tests/testparser.h
-    tests/testparser.cpp
+    # tests/test_instructions.h
+    # tests/test_instructions.cpp
+    # source/InstructionEditor/instruction.h
+    # source/InstructionEditor/instruction.cpp
+    # source/InstructionEditor/instructionparser.h
+    # source/InstructionEditor/instructionparser.cpp
+    # tests/testparser.h
+    # tests/testparser.cpp
     source/Common/hexint.h
     source/Common/hexint.cpp
+    source/Assembler/tokenizer.h source/Assembler/tokenizer.cpp
+    source/Assembler/instructiondefinition.h source/Assembler/instructiondefinition.cpp
+    source/Assembler/assembler.h source/Assembler/assembler.cpp
+    source/Assembler/labeldata.h source/Assembler/labeldata.cpp
+    source/Assembler/assemblystatus.h source/Assembler/assemblystatus.cpp
+    source/Assembler/instruction.cpp source/Assembler/instruction.h
+    tests/testassembler.h tests/testassembler.cpp
 )
 
 # Link Qt libraries

@@ -29,7 +29,7 @@ bool LabelData::removeLabel(const quint32 address){
     return true;
 }
 
-quint32 LabelData::getAddress(const QString &label, bool *okptr){
+quint32 LabelData::getAddress(const QString &label, bool *okptr) const {
     if(!addressLookup.contains(label)){
         *okptr = false;
         return 0;
@@ -39,7 +39,7 @@ quint32 LabelData::getAddress(const QString &label, bool *okptr){
     return addressLookup[label];
 }
 
-QString LabelData::getLabel(const quint32 address, bool *okptr){
+QString LabelData::getLabel(const quint32 address, bool *okptr) const {
     if(!labelLookup.contains(address)){
         *okptr = false;
         return 0;

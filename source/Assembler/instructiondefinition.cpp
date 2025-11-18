@@ -3,12 +3,12 @@
 static Tokenizer formatTokenizer;
 
 InstructionDefinition::InstructionDefinition()
-    : mnemonic(""), type(InstructionEditor::InstructionType::None), formatTokens({}) {}
+    : mnemonic(""), type(InstructionType::None), formatTokens({}) {}
 
-InstructionDefinition::InstructionDefinition(QString mnemonic, InstructionEditor::InstructionType type, TokenList formatTokens)
+InstructionDefinition::InstructionDefinition(QString mnemonic, InstructionType type, TokenList formatTokens)
     : mnemonic(mnemonic), type(type), formatTokens(formatTokens) {}
 
-InstructionDefinition::InstructionDefinition(QString mnemonic, InstructionEditor::InstructionType type, QString formatString)
+InstructionDefinition::InstructionDefinition(QString mnemonic, InstructionType type, QString formatString)
     : mnemonic(mnemonic), type(type)
 {
     auto tokens = formatTokenizer.tokenizeLine(formatString, 0);
@@ -16,7 +16,7 @@ InstructionDefinition::InstructionDefinition(QString mnemonic, InstructionEditor
     formatTokens = tokens;
 }
 
-InstructionDefinition::InstructionDefinition(QString definitionString, InstructionEditor::InstructionType type)
+InstructionDefinition::InstructionDefinition(QString definitionString, InstructionType type)
     : type(type)
 {
     auto tokens = formatTokenizer.tokenizeLine(definitionString, 0);
@@ -46,4 +46,13 @@ const InstructionDefinition *InstructionSet::getDefinition(QString mnemonic) con
     }
     quint8 opcode = opcodeLookup[mnemonic];
     return &definitions[opcode];
+}
+
+const quint8 InstructionSet::getOpcode(const QString &mnemonic, bool *okptr) const{
+    if(!opcodeLookup.contains(mnemonic)){
+        if(okptr) *okptr = false;
+        return 0;
+    }
+    if(okptr) *okptr = true;
+    return opcodeLookup[mnemonic];
 }
