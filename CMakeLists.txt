@@ -62,6 +62,9 @@ qt_add_executable(MCAS
     source/MemoryEditor/memorydata.h source/MemoryEditor/memorydata.cpp
     source/InstructionEditor/instructiondata.h source/InstructionEditor/instructiondata.cpp
     source/Assembler/tokenizer.h source/Assembler/tokenizer.cpp
+    source/Assembler/instructiondefinition.h source/Assembler/instructiondefinition.cpp
+    source/Assembler/assembler.h source/Assembler/assembler.cpp
+    source/Assembler/labeldata.h source/Assembler/labeldata.cpp
 
 )
 
