@@ -61,6 +61,7 @@ qt_add_executable(MCAS
     ${PROJECT_SOURCES}
     source/MemoryEditor/memorydata.h source/MemoryEditor/memorydata.cpp
     source/InstructionEditor/instructiondata.h source/InstructionEditor/instructiondata.cpp
+    source/Assembler/tokenizer.h source/Assembler/tokenizer.cpp
 
 )
 
