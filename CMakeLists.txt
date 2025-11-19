@@ -71,14 +71,7 @@ qt_add_executable(MCAS
 
 add_executable(tests
     tests/testrunner.cpp
-    # tests/test_instructions.h
-    # tests/test_instructions.cpp
-    # source/InstructionEditor/instruction.h
-    # source/InstructionEditor/instruction.cpp
-    # source/InstructionEditor/instructionparser.h
-    # source/InstructionEditor/instructionparser.cpp
-    # tests/testparser.h
-    # tests/testparser.cpp
+
     source/Common/hexint.h
     source/Common/hexint.cpp
     source/Assembler/tokenizer.h source/Assembler/tokenizer.cpp

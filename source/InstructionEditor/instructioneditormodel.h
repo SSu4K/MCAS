@@ -3,8 +3,8 @@
 
 #include <QAbstractTableModel>
 #include <QColor>
-#include "instructionparser.h"
 #include "instructiondata.h"
+#include "Assembler/assembler.h"
 
 namespace InstructionEditor {
 
@@ -35,8 +35,10 @@ namespace InstructionEditor {
         void syncFromMemory();
 
     private:
-        InstructionData *instructionData;
-        InstructionParser m_parser;
+        std::shared_ptr<Assembly::LabelData> labelData;
+        std::shared_ptr<Assembly::InstructionSet> instructionSet;
+        std::shared_ptr<InstructionData> instructionData;
+        Assembly::Assembler m_assembler;
     };
 
 

@@ -5,10 +5,11 @@
 using namespace InstructionEditor;
 
 InstructionEditorModel::InstructionEditorModel(QObject* parent)
-    : QAbstractTableModel(parent), m_parser(DEFAULT_INSTRUCTION_SET)
-{
-    instructionData = AppContext::instance()->sharedData()->instructions().get();
-}
+    : QAbstractTableModel(parent),
+    labelData(AppContext::instance()->sharedData()->labels()),
+    instructionSet(AppContext::instance()->sharedData()->instructionSet()),
+    instructionData(AppContext::instance()->sharedData()->instructions()),
+    m_assembler(instructionSet, labelData) {}
 
 int InstructionEditorModel::rowCount(const QModelIndex& parent) const  {
     Q_UNUSED(parent);
@@ -80,12 +81,13 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
     entry.text = value.toString();
 
     auto lineNumber = index.row();
-    auto result = m_parser.parseLine(lineNumber, entry.text);
-    entry.valid = result.status.isOk();
-    entry.errorMessage = result.status.msg;
+    AssemblyStatus status;
+    auto result = m_assembler.assembleLine(entry.text, lineNumber, status);
+    entry.valid = status.isOk();
+    entry.errorMessage = status.msg;
 
     if (entry.valid){
-        switch(result.instruction->type()){
+        switch(result->type()){
         case InstructionType::R:
             break;
         case InstructionType::I:
@@ -96,8 +98,8 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
             entry.encoded = 0;
             break;
         }
-        entry.encoded = result.instruction->encode();
-        entry.instruction = result.instruction;
+        entry.encoded = result->encode();
+        entry.instruction = result;
 
         auto memoryModel = AppContext::instance()->sharedData()->memory().get();
         const qsizetype addr = 4*lineNumber;

@@ -1,6 +1,8 @@
 #include "tokenizer.h"
 #include <qregularexpression.h>
 
+using namespace Assembly;
+
 // labels or mnemonics like: loop, _private_loop, ADD, LOAD_WORD
 static QRegularExpression reLabel("^[A-Za-z_][A-Za-z0-9_]*$");
 

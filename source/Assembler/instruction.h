@@ -6,6 +6,8 @@
 #include <QHash>
 #include <qtypes.h>
 
+namespace Assembly {
+
 inline const quint8 DEFAULT_OPCODE_SIZE = 6;
 inline const quint8 DEFAULT_REGISTER_SIZE = 5;
 
@@ -73,6 +75,7 @@ public:
     virtual quint8 opcode() const {return opcode_;}
     virtual InstructionType type() const {return InstructionType::None;}
     virtual quint32 encode() const {return 0;}
+    virtual QString toString() const {return "Instruction";}
 };
 
 class RType: public Instruction{
@@ -86,6 +89,8 @@ public:
     InstructionType type() const override {return InstructionType::R;}
     quint32 encode() const override;
     static RType decode(quint32 instruction);
+
+    QString toString() const override;
 };
 
 class IType: public Instruction{
@@ -102,7 +107,7 @@ public:
     quint32 encode() const override;
     static IType decode(quint32 instruction);
 
-    QString toString() const;
+    QString toString() const override;
 };
 
 class JType: public Instruction{
@@ -116,11 +121,14 @@ public:
     InstructionType type() const override {return InstructionType::J;}
     quint32 encode() const override;
     static JType decode(quint32 instruction);
+
+    QString toString() const override;
 };
 
 bool operator==(const RType &l, const RType &r);
 bool operator==(const IType &l, const IType &r);
 bool operator==(const JType &l, const JType &r);
 
+}
 
 #endif // INSTRUCTION_H

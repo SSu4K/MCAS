@@ -1,5 +1,7 @@
 #include "instructiondefinition.h"
 
+using namespace Assembly;
+
 static Tokenizer formatTokenizer;
 
 InstructionDefinition::InstructionDefinition()

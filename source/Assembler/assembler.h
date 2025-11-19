@@ -5,6 +5,8 @@
 #include "labeldata.h"
 #include "assemblystatus.h"
 
+namespace Assembly {
+
 class Assembler
 {
 private:
@@ -28,4 +30,5 @@ public:
     std::shared_ptr<Instruction> assembleLine(const QString &instruction, const qsizetype lineNumber, AssemblyStatus &status) const;
 };
 
+}
 #endif // ASSEMBLER_H

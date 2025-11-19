@@ -1,6 +1,16 @@
 #include "appcontext.h"
 #include <QCoreApplication>
 
+InstructionSet DEFAULT_INSTRUCTION_SET(
+    {
+        { "NOP",    InstructionType::R, ""},
+        { "ADD",    InstructionType::R, "r1, r2, r3"},
+        { "LDH",    InstructionType::I, "r2, i(r1)"},
+        { "ADDI",   InstructionType::I, "r1, i, r2"},
+        { "JUMP",   InstructionType::J, "j"},
+        { "BRZ",    InstructionType::I, "r1, j"},
+    });
+
 QPointer<AppContext> AppContext::s_instance = nullptr;
 
 SharedData::SharedData(QObject* parent)
@@ -8,7 +18,9 @@ SharedData::SharedData(QObject* parent)
     m_memory(std::make_shared<MemoryModel>()),
     m_instructions(std::make_shared<InstructionData>()),
     m_microcode(std::make_shared<MicrocodeData>()),
-    m_jumptable(std::make_shared<JumpTableData>())
+    m_jumptable(std::make_shared<JumpTableData>()),
+    m_labelData(std::make_shared<LabelData>()),
+    m_instructionSet(std::make_shared<InstructionSet>(DEFAULT_INSTRUCTION_SET))
 {}
 
 AppContext::AppContext(QObject* parent)

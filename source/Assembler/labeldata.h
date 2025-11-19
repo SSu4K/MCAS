@@ -3,6 +3,8 @@
 
 #include <QHash>
 
+namespace Assembly {
+
 class LabelData{
 private:
     QHash<QString, quint32> addressLookup;
@@ -16,4 +18,5 @@ public:
     QString getLabel(const quint32 address, bool *okptr) const;
 };
 
+}
 #endif // LABELDATA_H

@@ -15,10 +15,13 @@
 #include "MemoryEditor/memorydata.h"
 #include "MemoryEditor/memorymodel.h"
 #include "InstructionEditor/instructiondata.h"
+#include "Assembler/labeldata.h"
+#include "Assembler/instructiondefinition.h"
 
 using namespace MicrocodeEditor;
 using namespace MemoryEditor;
 using namespace InstructionEditor;
+using namespace Assembly;
 
 class SharedData: public QObject{
     Q_OBJECT
@@ -29,6 +32,8 @@ public:
     std::shared_ptr<InstructionData> instructions() const { return m_instructions; }
     std::shared_ptr<MicrocodeData> microcode() const { return m_microcode; }
     std::shared_ptr<JumpTableData> jumptable() const { return m_jumptable; }
+    std::shared_ptr<LabelData> labels() const { return m_labelData; }
+    std::shared_ptr<InstructionSet> instructionSet() const { return m_instructionSet;}
 
 signals:
     void memoryUpdated();
@@ -41,6 +46,8 @@ private:
     std::shared_ptr<InstructionData> m_instructions;
     std::shared_ptr<MicrocodeData> m_microcode;
     std::shared_ptr<JumpTableData> m_jumptable;
+    std::shared_ptr<LabelData> m_labelData;
+    std::shared_ptr<InstructionSet> m_instructionSet;
 };
 
 class AppContext : public QObject

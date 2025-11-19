@@ -1,5 +1,7 @@
 #include "assemblystatus.h"
 
+using namespace Assembly;
+
 AssemblyStatus::AssemblyStatus(const ErrorSeverity severity, const ErrorType type, const QString &msg, const Token &token):
     severity(severity), type(type), msg(msg), token(token) {}
 

@@ -4,6 +4,8 @@
 #include <QDebug>
 #include "tokenizer.h"
 
+namespace Assembly {
+
 enum class ErrorSeverity{
     Correct, Warning, Error
 };
@@ -32,5 +34,7 @@ public:
 };
 
 QDebug operator<<(QDebug dbg, const AssemblyStatus &status);
+
+}
 
 #endif // ASSEMBLYSTATUS_H

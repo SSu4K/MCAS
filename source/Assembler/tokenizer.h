@@ -8,6 +8,8 @@
 #include <qtypes.h>
 #include <QSet>
 
+namespace Assembly {
+
 enum TokenType{Identifier, Bracket, Register, Hex, Unknown, NotClassified};
 
 struct Token{
@@ -39,5 +41,7 @@ public:
     TokenList tokenizeLine(const QString &line, const qsizetype lineNumber) const;
     Tokenizer();
 };
+
+}
 
 #endif // TOKENIZER_H

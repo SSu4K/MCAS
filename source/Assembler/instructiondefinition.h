@@ -5,6 +5,8 @@
 #include "tokenizer.h"
 #include "instruction.h"
 
+namespace Assembly {
+
 class InstructionDefinition
 {
 public:
@@ -28,5 +30,7 @@ public:
     const InstructionDefinition *getDefinition(QString mnemonic) const;
     const quint8 getOpcode(const QString &mnemonic, bool *okptr) const;
 };
+
+}
 
 #endif // INSTRUCTIONDEFINITION_H

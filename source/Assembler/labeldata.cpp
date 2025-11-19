@@ -1,5 +1,7 @@
 #include "labeldata.h"
 
+using namespace Assembly;
+
 void LabelData::setLabel(const QString &label, const quint32 address){
     addressLookup[label] = address;
     labelLookup[address] = label;

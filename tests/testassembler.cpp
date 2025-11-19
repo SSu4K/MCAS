@@ -1,5 +1,7 @@
 #include "testassembler.h"
 
+using namespace Assembly;
+
 qsizetype TEST_LINE_NUMBER = 15;
 
 InstructionSet TEST_INSTRUCTION_SET(
@@ -37,12 +39,13 @@ void AssemblyStatusCase(QString instr, AssemblyStatus expected, Assembler &assem
 template <class T>
 void assembleresultCase(const qsizetype lineNumber, const QString &instr, const T &expectedInstr, const AssemblyStatus &expectedStatus, Assembler &assembler){
     AssemblyStatus status;
-    auto result = assembler.assembleLine(instr, TEST_LINE_NUMBER, status);
+    auto result = assembler.assembleLine(instr, lineNumber, status);
     auto instruction_ptr = std::static_pointer_cast<T>(result);
+    T instruction = *instruction_ptr;
 
     QCOMPARE(status.msg, expectedStatus.msg);
-    QCOMPARE(instruction_ptr->toString(), expectedInstr.toString());
-    QCOMPARE(*instruction_ptr, expectedInstr);
+    QCOMPARE(instruction.toString(), expectedInstr.toString());
+    QCOMPARE(instruction, expectedInstr);
 }
 
 void TestAssembler::General_Parse(){
@@ -76,7 +79,9 @@ void TestAssembler::RType_Parse_Done(){
     AssemblyStatus status;
     auto parsed = assembler.assembleLine(instr, TEST_LINE_NUMBER, status);
     auto result_ptr = std::static_pointer_cast<RType>(parsed);
+    QCOMPARE_NE(result_ptr, nullptr);
     auto expected = RType(6, {1, 2, 3, 4, 5});
+    // qDebug() << result_ptr->opcode() << result_ptr->formals[0] << result_ptr->formals[1] << result_ptr->formals[2] << result_ptr->formals[3] << result_ptr->formals[4];
     QCOMPARE(*result_ptr, expected);
 }
 

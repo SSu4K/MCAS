@@ -1,5 +1,7 @@
 #include "assembler.h"
 
+using namespace Assembly;
+
 Assembler::Assembler(const std::shared_ptr<InstructionSet> &instructionSet, const std::shared_ptr<LabelData> &labelData)
     : instructionSet(instructionSet), labelData(labelData) {}
 
@@ -136,6 +138,8 @@ quint32 Assembler::parseLabelToken(const Token &token, const qsizetype bitWidth,
         const qint32 modulus = 1 << (bitWidth-1); // modulus for 2c
         const qint32 minValue = -modulus;
         const qint32 maxValue = modulus - 1;
+
+        qDebug() << labelAdress << token.lineNumber << offset << modulus;
 
         // jump out of range
         if (offset < minValue || offset > maxValue) {
@@ -293,15 +297,15 @@ std::shared_ptr<Instruction> Assembler::assembleLine(const QString &instruction,
 
     if(definition->type == InstructionType::R){
         RType r = parseRType(tokenMappings, definition, status);
-        return std::make_shared<Instruction>(r);
+        return std::make_shared<RType>(r);
     }
     else if(definition->type == InstructionType::I){
         IType i = parseIType(tokenMappings, definition, status);
-        return std::make_shared<Instruction>(i);
+        return std::make_shared<IType>(i);
     }
     else if(definition->type == InstructionType::J){
         JType j = parseJType(tokenMappings, definition, status);
-        return std::make_shared<Instruction>(j);
+        return std::make_shared<JType>(j);
     }
 
     status = AssemblyStatus::fail(ErrorType::Unknown, "Unknown parse error occured");

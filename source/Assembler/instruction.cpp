@@ -1,8 +1,9 @@
 #include "instruction.h"
 #include "Common/hexint.h"
 
+using namespace Assembly;
 
-InstructionEncodingConig* encodingConfig = new InstructionEncodingConig(); // local for now
+InstructionEncodingConig* Assembly::encodingConfig = new InstructionEncodingConig(); // local for now
 
 void InstructionEncodingConig::updateValues(){
     opcodeCount_ = 1 << opcodeSize_;
@@ -103,6 +104,15 @@ RType RType::decode(quint32 in){
     return result;
 }
 
+QString RType::toString() const{
+    //QString hexImmediate = HexInt::intToString(immediate, true, qsizetype(encodingConfig->IImmediateSize()/4));
+    auto result = QString("%1").arg(opcode_);
+    for(auto r : formals){
+        result += ", " + QString(QChar(('0'+r)));
+    }
+    return result;
+}
+
 IType::IType(quint8 opcode, quint8 source, quint8 destination, quint16 immediate){
     this->opcode_= opcode;
     this->sourceRegister = source;
@@ -174,7 +184,12 @@ JType JType::decode(quint32 in){
     return result;
 }
 
-bool operator==(const RType &l, const RType &r){
+QString JType::toString() const{
+    QString hexImmediate = HexInt::intToString(immediate, true, qsizetype(encodingConfig->IImmediateSize()/4));
+    return QString("%1, ").arg(opcode_) + (hexImmediate);
+}
+
+bool Assembly::operator==(const RType &l, const RType &r){
     if(l.opcode_!= r.opcode_){
         return false;
     }
@@ -191,7 +206,7 @@ bool operator==(const RType &l, const RType &r){
     return true;
 }
 
-bool operator==(const IType &l, const IType &r){
+bool Assembly::operator==(const IType &l, const IType &r){
     if(l.opcode_!= r.opcode_){
         return false;
     }
@@ -205,7 +220,7 @@ bool operator==(const IType &l, const IType &r){
     return l.immediate == r.immediate;
 }
 
-bool operator==(const JType &l, const JType &r){
+bool Assembly::operator==(const JType &l, const JType &r){
     if(l.opcode_!= r.opcode_){
         return false;
     }
