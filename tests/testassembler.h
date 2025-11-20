@@ -21,6 +21,7 @@ private slots:
 
     void JType_Parse_Done();
     void JType_Parse_Fail();
+    void JType_Jumps();
 
     void cleanupTestCase();
 };

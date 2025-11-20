@@ -2,20 +2,20 @@
 
 using namespace Assembly;
 
-QString Disassembler::assembleRType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const {
+QString Disassembler::disassembleRType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const {
     RType r = RType::decode(instruction);
     auto definition = instructionSet->getDefinition(r.opcode());
     QString result  = definition->mnemonic;
 
     for(auto &token : definition->formatTokens){
-        int registerIndex = token.text.sliced(1).toInt();
+        int registerIndex = token.text.sliced(1).toInt()-1; // format register number starts ar r1 therefore: -1
         result += QString(" R%1").arg(r.formals[registerIndex]);
     }
 
     return result;
 }
 
-QString Disassembler::assembleIType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const {
+QString Disassembler::disassembleIType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const {
     IType i = IType::decode(instruction);
     auto definition = instructionSet->getDefinition(i.opcode());
     QString result  = definition->mnemonic;
@@ -64,7 +64,7 @@ QString Disassembler::assembleIType(const quint32 instruction, const qsizetype l
     return result;
 }
 
-QString Disassembler::assembleJType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const {
+QString Disassembler::disassembleJType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const {
     JType j = JType::decode(instruction);
     auto definition = instructionSet->getDefinition(j.opcode());
     QString result  = definition->mnemonic;
@@ -93,7 +93,7 @@ QString Disassembler::assembleJType(const quint32 instruction, const qsizetype l
 Disassembler::Disassembler(const std::shared_ptr<InstructionSet> &instructionSet, const std::shared_ptr<LabelData> &labelData)
     : instructionSet(instructionSet), labelData(labelData) {}
 
-QString Disassembler::assembleLine(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const{
+QString Disassembler::disassembleLine(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const{
     quint32 opcode = encodingConfig->opcodeMask() & (instruction >> (32 - encodingConfig->opcodeSize()));
     auto definition = instructionSet->getDefinition(opcode);
 
@@ -105,9 +105,9 @@ QString Disassembler::assembleLine(const quint32 instruction, const qsizetype li
 
     QString result;
     switch(type){
-    case InstructionType::R: result = assembleRType(instruction, lineNumber, status); break;
-    case InstructionType::I: result = assembleIType(instruction, lineNumber, status); break;
-    case InstructionType::J: result = assembleJType(instruction, lineNumber, status); break;
+    case InstructionType::R: result = disassembleRType(instruction, lineNumber, status); break;
+    case InstructionType::I: result = disassembleIType(instruction, lineNumber, status); break;
+    case InstructionType::J: result = disassembleJType(instruction, lineNumber, status); break;
     case InstructionType::None: result = ""; break;
     }
 

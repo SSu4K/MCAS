@@ -2,9 +2,9 @@
 
 using namespace Assembly;
 
-qsizetype TEST_LINE_NUMBER = 15;
+static qsizetype TEST_LINE_NUMBER = 15;
 
-InstructionSet TEST_INSTRUCTION_SET(
+static InstructionSet TEST_INSTRUCTION_SET(
     {
         { "NOP",    InstructionType::R, ""},
         { "ADD",    InstructionType::R, "r1, r2, r3"},
@@ -15,10 +15,10 @@ InstructionSet TEST_INSTRUCTION_SET(
         { "ADD4",   InstructionType::R, "r1, r2, r3, r4, r5"}
     });
 
-LabelData TEST_LABEL_DATA;
+static LabelData TEST_LABEL_DATA;
 
-auto TEST_INSTRUCTION_SET_SPTR = std::make_shared<InstructionSet>(TEST_INSTRUCTION_SET);
-auto TEST_LABEL_DATA_SPTR = std::make_shared<LabelData>(TEST_LABEL_DATA);
+static auto TEST_INSTRUCTION_SET_SPTR = std::make_shared<InstructionSet>(TEST_INSTRUCTION_SET);
+static auto TEST_LABEL_DATA_SPTR = std::make_shared<LabelData>(TEST_LABEL_DATA);
 
 void TestAssembler::initTestCase() {
     qDebug() << "Starting Instruction assembler tests...";
@@ -196,13 +196,11 @@ void TestAssembler::IType_Jumps(){
     auto labelDataStpr = std::make_shared<LabelData>();
     Assembler assembler(TEST_INSTRUCTION_SET_SPTR, labelDataStpr);
 
-    const qint32 modulus = 1 << (encodingConfig->IImmediateSize()-1); // modulus for 2c
+    const qint32 minImmediateValue = TwoC::getMin(encodingConfig->IImmediateSize());
+    const qint32 maxImmediateValue = TwoC::getMax(encodingConfig->IImmediateSize());
 
-    const qint32 minJump = -modulus;
-    const qint32 maxJump = 4*((modulus - 1) >> 2);
-
-    const qint32 minLineJump = minJump / 4;
-    const quint32 maxLineJump = maxJump / 4;
+    const qint32 minLineJump = minImmediateValue / 4;
+    const quint32 maxLineJump = maxImmediateValue / 4;
 
     const qint32 baseLineNumber = maxLineJump + 0xF000; // just a high value some in the middle of memory
     labelDataStpr->setLabel("label_zero", 4*(baseLineNumber+1));
@@ -224,17 +222,24 @@ void TestAssembler::IType_Jumps(){
         );
     assembleresultCase<IType>(
         baseLineNumber, "BRZ R1, label_minus",
-        IType(5, 1, 0, modulus-4), AssemblyStatus::done("Parsed IType instruction"),
+        IType(5, 1, 0, TwoC::toComplement(-4, TwoC::getMin(encodingConfig->IImmediateSize()))),
+        AssemblyStatus::done("Parsed IType instruction"),
         assembler
         );
+
+    // Bacause of alignment the minimum jump is not the minimum value possible to write there,
+    // It's the smallest value that fits and is also divisible by 4
+    // Therefore here i use 4*minLineJump (necessary) and 4*maxLineJump (just in case)
     assembleresultCase<IType>(
         baseLineNumber, "BRZ R1, label_max",
-        IType(5, 1, 0, maxJump), AssemblyStatus::done("Parsed IType instruction"),
+        IType(5, 1, 0, TwoC::toComplement(4*maxLineJump, TwoC::getMin(encodingConfig->IImmediateSize()))),
+        AssemblyStatus::done("Parsed IType instruction"),
         assembler
         );
     assembleresultCase<IType>(
         baseLineNumber, "BRZ R1, label_min",
-        IType(5, 1, 0, modulus+minJump), AssemblyStatus::done("Parsed IType instruction"),
+        IType(5, 1, 0, TwoC::toComplement(4*minLineJump, TwoC::getMin(encodingConfig->IImmediateSize()))),
+        AssemblyStatus::done("Parsed IType instruction"),
         assembler
         );
 
@@ -243,12 +248,12 @@ void TestAssembler::IType_Jumps(){
 
     AssemblyStatusCase(
         "BRZ R1, label_gt_max",
-        AssemblyStatus::fail(ErrorType::InvalidToken, "Jump to label: label_gt_max out of range for I-Type encoding", {TokenType::Identifier, "label_gt_max", 8, 2, TEST_LINE_NUMBER}),
+        AssemblyStatus::fail(ErrorType::InvalidToken, "Jump to label: label_gt_max out of range for 16-bit encoding", {TokenType::Identifier, "label_gt_max", 8, 2, TEST_LINE_NUMBER}),
         assembler
         );
     AssemblyStatusCase(
         "BRZ R1, label_gt_min",
-        AssemblyStatus::fail(ErrorType::InvalidToken, "Jump to label: label_gt_min out of range for I-Type encoding", {TokenType::Identifier, "label_gt_min", 8, 2, TEST_LINE_NUMBER}),
+        AssemblyStatus::fail(ErrorType::InvalidToken, "Jump to label: label_gt_min out of range for 16-bit encoding", {TokenType::Identifier, "label_gt_min", 8, 2, TEST_LINE_NUMBER}),
         assembler
         );
 }
@@ -285,6 +290,47 @@ void TestAssembler::JType_Parse_Fail(){
     AssemblyStatusCase(
         "JUMP loop, R1",
         AssemblyStatus::fail(ErrorType::WrongToken, "Too many tokens for the format", {TokenType::Register, "R1", 11, 2, TEST_LINE_NUMBER}),
+        assembler
+        );
+}
+
+void TestAssembler::JType_Jumps(){
+    auto labelDataStpr = std::make_shared<LabelData>();
+    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, labelDataStpr);
+
+    const quint32 maxImmediateValue = (1u << encodingConfig->JImmediateSize()) - 1;
+    const quint32 maxLineNumber = maxImmediateValue / 4;
+
+    labelDataStpr->setLabel("label_zero", 0);
+    labelDataStpr->setLabel("label_plus", 4);
+    labelDataStpr->setLabel("label_max", 4*(maxLineNumber));
+
+    assembleresultCase<JType>(
+        TEST_LINE_NUMBER, "JUMP label_zero",
+        JType(4, 0), AssemblyStatus::done("Parsed JType instruction"),
+        assembler
+        );
+    assembleresultCase<JType>(
+        TEST_LINE_NUMBER, "JUMP label_plus",
+        JType(4, 4), AssemblyStatus::done("Parsed JType instruction"),
+        assembler
+        );
+
+    // Bacause of alignment the minimum jump is not the minimum value possible to write there,
+    // It's the smallest value that fits and is also divisible by 4
+    // Therefore here i use 4*maxLineNumber (just in case)
+    assembleresultCase<JType>(
+        TEST_LINE_NUMBER, "JUMP label_max",
+        JType(4, 4*maxLineNumber),
+        AssemblyStatus::done("Parsed JType instruction"),
+        assembler
+        );
+
+    labelDataStpr->setLabel("label_gt_max", 4*(maxLineNumber+1));
+
+    AssemblyStatusCase(
+        "JUMP label_gt_max",
+        AssemblyStatus::fail(ErrorType::InvalidToken, "Jump to label: label_gt_max out of range for 26-bit encoding", {TokenType::Identifier, "label_gt_max", 5, 1, TEST_LINE_NUMBER}),
         assembler
         );
 }

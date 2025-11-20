@@ -19,8 +19,8 @@ private:
 
     quint32 parseRegisterToken(const Token &token, const qsizetype bitWidth, AssemblyStatus &status) const;
     quint32 parseHexToken(const Token &token, const qsizetype bitWidth, AssemblyStatus &status) const;
-    quint32 parseLabelToken(const Token &token, const qsizetype bitWidth, AssemblyStatus &status) const;
-    quint32 parseJumpToken(const Token &token, const qsizetype bitWidth, AssemblyStatus &status) const;
+    quint32 parseLabelToken(const Token &token, const qsizetype bitWidth, const bool isRelative, AssemblyStatus &status) const;
+    quint32 parseJumpToken(const Token &token, const qsizetype bitWidth, const bool isRelative, AssemblyStatus &status) const;
 
     RType parseRType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition *definition, AssemblyStatus &status) const;
     IType parseIType(const QMap<QString, Token> &tokenMappings, const InstructionDefinition *definition, AssemblyStatus &status) const;

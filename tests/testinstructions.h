@@ -1,5 +1,5 @@
-#ifndef TEST_INSTRUCTIONS_H
-#define TEST_INSTRUCTIONS_H
+#ifndef TESTINSTRUCTIONS_H
+#define TESTINSTRUCTIONS_H
 
 #include <QtTest/QTest>
 
@@ -22,4 +22,4 @@ private slots:
     void cleanupTestCase();
 };
 
-#endif // TEST_INSTRUCTIONS_H
+#endif // TESTINSTRUCTIONS_H

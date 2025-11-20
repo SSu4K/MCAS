@@ -120,7 +120,7 @@ quint32 Assembler::parseHexToken(const Token &token, const qsizetype bitWidth, A
     return bitMask & value;
 }
 
-quint32 Assembler::parseLabelToken(const Token &token, const qsizetype bitWidth, AssemblyStatus &status) const{
+quint32 Assembler::parseLabelToken(const Token &token, const qsizetype bitWidth, const bool isRelative, AssemblyStatus &status) const{
     if(token.type != TokenType::Identifier){
         status = AssemblyStatus::fail(ErrorType::WrongToken, "Not a label", token);
         return 0;
@@ -132,29 +132,40 @@ quint32 Assembler::parseLabelToken(const Token &token, const qsizetype bitWidth,
         status = AssemblyStatus::fail(ErrorType::InvalidToken, msg, token);
         return 0;
     }
-    else {
+
+    if(isRelative){
         const qint32 offset = labelAdress - 4*(token.lineNumber+1); // next line is offset = 0
 
         // jump out of range
         if (offset < TwoC::getMin(bitWidth) || offset > TwoC::getMax(bitWidth)) {
-            QString msg = "Jump to label: " + token.text + " out of range for I-Type encoding";
+            QString msg = "Jump to label: " + token.text + " out of range for " + QString("%1-bit encoding").arg(bitWidth);
             status = AssemblyStatus::fail(ErrorType::InvalidToken, msg, token);
             return 0;
         }
 
         status = AssemblyStatus::done("Parsed label token");
-        // save immediate in 2c
-        return TwoC::toComplement(offset, bitWidth);
+        // save immediate in 2c but masked
+        const quint32 bitMask = (1u << bitWidth) - 1u;
+        return bitMask & TwoC::toComplement(offset, bitWidth);
+    }
+    else{
+        const qint32 bitMask = (1u << bitWidth) - 1u;
+        if (labelAdress > bitMask){
+            QString msg = "Jump to label: " + token.text + " out of range for " + QString("%1-bit encoding").arg(bitWidth);
+            status = AssemblyStatus::fail(ErrorType::InvalidToken, msg, token);
+            return 0;
+        }
+        return bitMask & labelAdress;
     }
 }
 
-quint32 Assembler::parseJumpToken(const Token &token, const qsizetype bitWidth, AssemblyStatus &status) const{
+quint32 Assembler::parseJumpToken(const Token &token, const qsizetype bitWidth, const bool isRelative, AssemblyStatus &status) const{
     quint32 result = 0;
     if(token.type == TokenType::Hex){
         result = parseHexToken(token, bitWidth, status);
     }
     else if(token.type == TokenType::Identifier){
-        result = parseLabelToken(token, bitWidth, status);
+        result = parseLabelToken(token, bitWidth, isRelative, status);
     }
     else{
         status = AssemblyStatus::fail(ErrorType::WrongToken, "Incorrect jump token", token);
@@ -217,7 +228,7 @@ IType Assembler::parseIType(const QMap<QString, Token> &tokenMappings, const Ins
     // I-Type with lebel immediate (example: BRZ R1, loop)
     else if(tokenMappings.contains("j")){
         Token token = tokenMappings["j"];
-        immediate = parseJumpToken(token, encodingConfig->IImmediateSize(), status);
+        immediate = parseJumpToken(token, encodingConfig->IImmediateSize(), true, status);
         if(!status.isOk()){
             return IType();
         }
@@ -232,7 +243,7 @@ JType Assembler::parseJType(const QMap<QString, Token> &tokenMappings, const Ins
     uint32_t immediate = 0;
     if(tokenMappings.contains("j")){
         Token token = tokenMappings["j"];
-        immediate = parseJumpToken(token, encodingConfig->JImmediateSize(), status);
+        immediate = parseJumpToken(token, encodingConfig->JImmediateSize(), false, status);
         if(!status.isOk()){
             return JType();
         }

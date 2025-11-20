@@ -62,30 +62,29 @@ qt_add_executable(MCAS
 )
 
 add_executable(tests
-    tests/testrunner.cpp
-
     source/Common/hexint.h
     source/Common/hexint.cpp
+    source/Common/twoscomplement.h
+    source/Common/twoscomplement.cpp
+
     source/Assembler/tokenizer.h source/Assembler/tokenizer.cpp
     source/Assembler/instructiondefinition.h source/Assembler/instructiondefinition.cpp
-    source/Assembler/assembler.h source/Assembler/assembler.cpp
     source/Assembler/labeldata.h source/Assembler/labeldata.cpp
     source/Assembler/assemblystatus.h source/Assembler/assemblystatus.cpp
-    source/Assembler/instruction.cpp source/Assembler/instruction.h
+    source/Assembler/instruction.h source/Assembler/instruction.cpp
+
+    source/Assembler/assembler.h source/Assembler/assembler.cpp
+    source/Assembler/disassembler.h source/Assembler/disassembler.cpp
+
+    tests/testinstructions.h tests/testinstructions.cpp
     tests/testassembler.h tests/testassembler.cpp
+    tests/testdisassembler.h tests/testdisassembler.cpp
+    tests/testrunner.cpp
 )
 
 # Link Qt libraries
 target_link_libraries(MCAS PRIVATE Qt6::Widgets)
 target_link_libraries(MCAS PRIVATE Qt6::Core)
-target_link_libraries(MCAS PRIVATE Qt6::Core)
-target_link_libraries(MCAS PRIVATE Qt6::Core)
-
-
-target_link_libraries(tests PRIVATE
-    Qt6::Core
-    Qt6::Test
-)
 
 
 target_link_libraries(tests PRIVATE

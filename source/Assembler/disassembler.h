@@ -15,13 +15,13 @@ private:
     std::shared_ptr<const InstructionSet> instructionSet;
     std::shared_ptr<const LabelData> labelData;
 
-    QString assembleRType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const;
-    QString assembleIType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const;
-    QString assembleJType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const;
+    QString disassembleRType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const;
+    QString disassembleIType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const;
+    QString disassembleJType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const;
 
 public:
     Disassembler(const std::shared_ptr<InstructionSet> &instructionSet, const std::shared_ptr<LabelData> &labelData);
-    QString assembleLine(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const;
+    QString disassembleLine(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const;
 };
 
 } // namespace Assembly
