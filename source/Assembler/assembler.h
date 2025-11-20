@@ -4,6 +4,7 @@
 #include "instructiondefinition.h"
 #include "labeldata.h"
 #include "assemblystatus.h"
+#include "Common/twoscomplement.h"
 
 namespace Assembly {
 

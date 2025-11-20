@@ -59,14 +59,6 @@ set(PROJECT_SOURCES
 qt_add_executable(MCAS
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    source/MemoryEditor/memorydata.h source/MemoryEditor/memorydata.cpp
-    source/InstructionEditor/instructiondata.h source/InstructionEditor/instructiondata.cpp
-    source/Assembler/tokenizer.h source/Assembler/tokenizer.cpp
-    source/Assembler/instructiondefinition.h source/Assembler/instructiondefinition.cpp
-    source/Assembler/assembler.h source/Assembler/assembler.cpp
-    source/Assembler/labeldata.h source/Assembler/labeldata.cpp
-    source/Assembler/assemblystatus.h source/Assembler/assemblystatus.cpp
-    source/Assembler/instruction.cpp source/Assembler/instruction.h
 )
 
 add_executable(tests

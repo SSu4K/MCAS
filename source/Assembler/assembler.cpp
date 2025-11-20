@@ -133,16 +133,10 @@ quint32 Assembler::parseLabelToken(const Token &token, const qsizetype bitWidth,
         return 0;
     }
     else {
-        const quint32 bitMask = (1u << bitWidth) - 1u;
         const qint32 offset = labelAdress - 4*(token.lineNumber+1); // next line is offset = 0
-        const qint32 modulus = 1 << (bitWidth-1); // modulus for 2c
-        const qint32 minValue = -modulus;
-        const qint32 maxValue = modulus - 1;
-
-        qDebug() << labelAdress << token.lineNumber << offset << modulus;
 
         // jump out of range
-        if (offset < minValue || offset > maxValue) {
+        if (offset < TwoC::getMin(bitWidth) || offset > TwoC::getMax(bitWidth)) {
             QString msg = "Jump to label: " + token.text + " out of range for I-Type encoding";
             status = AssemblyStatus::fail(ErrorType::InvalidToken, msg, token);
             return 0;
@@ -150,12 +144,7 @@ quint32 Assembler::parseLabelToken(const Token &token, const qsizetype bitWidth,
 
         status = AssemblyStatus::done("Parsed label token");
         // save immediate in 2c
-        if(offset >= 0){
-            return bitMask & offset;
-        }
-        else{
-            return bitMask & (offset+modulus);
-        }
+        return TwoC::toComplement(offset, bitWidth);
     }
 }
 
