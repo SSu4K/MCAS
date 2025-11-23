@@ -2,12 +2,12 @@
 #define DISASSEMBLER_H
 
 #include "assemblystatus.h"
-#include "instructiondefinition.h"
-#include "labeldata.h"
-#include "Common/hexint.h"
-#include "Common/twoscomplement.h"
 
 namespace Assembly {
+
+// forward declarations
+class InstructionSet;
+class LabelData;
 
 class Disassembler
 {

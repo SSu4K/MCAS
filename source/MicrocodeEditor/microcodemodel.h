@@ -1,9 +1,8 @@
 #ifndef MICROCODEMODEL_H
 #define MICROCODEMODEL_H
 
-#include <QAbstractTableModel>
-#include "microcodedata.h"
 #include "Common/texttablemodel.h"
+#include "microcodedata.h"
 
 namespace MicrocodeEditor{
 

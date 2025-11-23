@@ -1,11 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QMenuBar>
-#include <QActionGroup>
-#include <QEvent>
-
 #include "MicrocodeEditor/microcodeeditorwindow.h"
 #include "MemoryEditor/memoryeditorwindow.h"
 #include "InstructionEditor/instructioneditorwindow.h"

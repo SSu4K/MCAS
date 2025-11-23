@@ -1,12 +1,12 @@
 #ifndef INSTRUCTIONEDITORMODEL_H
 #define INSTRUCTIONEDITORMODEL_H
 
-#include <QAbstractTableModel>
-#include <QColor>
-#include "instructiondata.h"
 #include "Assembler/assembler.h"
 
 namespace InstructionEditor {
+
+    // forward declarations
+    class InstructionData;
 
     const qsizetype INSTRUCTION_COLUMN_INDEX = 2;
 

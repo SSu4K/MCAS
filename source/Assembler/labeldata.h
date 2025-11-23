@@ -1,8 +1,6 @@
 #ifndef LABELDATA_H
 #define LABELDATA_H
 
-#include <QHash>
-
 namespace Assembly {
 
 class LabelData{

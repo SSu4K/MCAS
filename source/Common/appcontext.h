@@ -1,39 +1,28 @@
 #ifndef APPCONTEXT_H
 #define APPCONTEXT_H
 
-#include <QObject>
-#include <QPointer>
-#include <QSettings>
-#include <memory>
-#include <QString>
-#include <QSysInfo>
-#include <QVersionNumber>
-#include <qtranslator.h>
-
-#include "MicrocodeEditor/microcodedata.h"
-#include "MicrocodeEditor/jumptabledata.h"
-#include "MemoryEditor/memorydata.h"
-#include "MemoryEditor/memorymodel.h"
-#include "InstructionEditor/instructiondata.h"
-#include "Assembler/labeldata.h"
-#include "Assembler/instructiondefinition.h"
-
-using namespace MicrocodeEditor;
-using namespace MemoryEditor;
-using namespace InstructionEditor;
-using namespace Assembly;
+namespace MicrocodeEditor{
+    class MicrocodeData;
+    class JumpTableData;
+}
+namespace MemoryEditor{ class MemoryModel; }
+namespace InstructionEditor{ class InstructionData; }
+namespace Assembly{
+    class LabelData;
+    class InstructionSet;
+}
 
 class SharedData: public QObject{
     Q_OBJECT
 public:
     explicit SharedData(QObject* parent = nullptr);
 
-    std::shared_ptr<MemoryModel> memory() const { return m_memory; }
-    std::shared_ptr<InstructionData> instructions() const { return m_instructions; }
-    std::shared_ptr<MicrocodeData> microcode() const { return m_microcode; }
-    std::shared_ptr<JumpTableData> jumptable() const { return m_jumptable; }
-    std::shared_ptr<LabelData> labels() const { return m_labelData; }
-    std::shared_ptr<InstructionSet> instructionSet() const { return m_instructionSet;}
+    std::shared_ptr<MemoryEditor::MemoryModel> memory() const { return m_memory; }
+    std::shared_ptr<InstructionEditor::InstructionData> instructions() const { return m_instructions; }
+    std::shared_ptr<MicrocodeEditor::MicrocodeData> microcode() const { return m_microcode; }
+    std::shared_ptr<MicrocodeEditor::JumpTableData> jumptable() const { return m_jumptable; }
+    std::shared_ptr<Assembly::LabelData> labels() const { return m_labelData; }
+    std::shared_ptr<Assembly::InstructionSet> instructionSet() const { return m_instructionSet;}
 
 signals:
     void memoryUpdated();
@@ -42,12 +31,12 @@ signals:
     void configChanged();
 
 private:
-    std::shared_ptr<MemoryModel> m_memory;
-    std::shared_ptr<InstructionData> m_instructions;
-    std::shared_ptr<MicrocodeData> m_microcode;
-    std::shared_ptr<JumpTableData> m_jumptable;
-    std::shared_ptr<LabelData> m_labelData;
-    std::shared_ptr<InstructionSet> m_instructionSet;
+    std::shared_ptr<MemoryEditor::MemoryModel> m_memory;
+    std::shared_ptr<InstructionEditor::InstructionData> m_instructions;
+    std::shared_ptr<MicrocodeEditor::MicrocodeData> m_microcode;
+    std::shared_ptr<MicrocodeEditor::JumpTableData> m_jumptable;
+    std::shared_ptr<Assembly::LabelData> m_labelData;
+    std::shared_ptr<Assembly::InstructionSet> m_instructionSet;
 };
 
 class AppContext : public QObject

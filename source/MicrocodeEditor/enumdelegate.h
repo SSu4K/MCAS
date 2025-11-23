@@ -2,9 +2,6 @@
 #define ENUMDELEGATE_H
 
 #include <QStyledItemDelegate>
-#include <QComboBox>
-#include <QCompleter>
-#include <QStringListModel>
 
 class EnumDelegate : public QStyledItemDelegate {
     Q_OBJECT

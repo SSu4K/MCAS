@@ -1,4 +1,7 @@
 #include "assembler.h"
+#include "instructiondefinition.h"
+#include "labeldata.h"
+#include "Common/twoscomplement.h"
 
 using namespace Assembly;
 

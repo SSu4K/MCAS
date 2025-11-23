@@ -1,20 +1,15 @@
-#include "microcodeeditordelegate.h"
-#include "MicrocodeEditor/enumdelegate.h"
-#include "microcodeeditorwidget.h"
-#include "Common/hexintdelegate.h"
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QPainter>
-#include <QStyleOptionViewItem>
-#include <QStyledItemDelegate>
-#include <QSpinBox>
+#include <QKeyEvent>
 #include <QLineEdit>
 #include <QComboBox>
-#include <QEvent>
-#include <QKeyEvent>
-#include <QAbstractItemView>
-#include <QtLogging>
-#include <qtimer.h>
+
+#include "microcodeeditordelegate.h"
+
+#include "enumdelegate.h"
+#include "microcodedata.h"
+#include "microcodeeditorwidget.h"
+#include "microcodemodel.h"
+
+#include "Common/hexintdelegate.h"
 
 using namespace MicrocodeEditor;
 

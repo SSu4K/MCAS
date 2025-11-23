@@ -1,5 +1,20 @@
+#include <QSettings>
+#include <QSysInfo>
+#include <QVersionNumber>
+
 #include "appcontext.h"
-#include <QCoreApplication>
+
+#include "MicrocodeEditor/microcodedata.h"
+#include "MicrocodeEditor/jumptabledata.h"
+#include "MemoryEditor/memorymodel.h"
+#include "InstructionEditor/instructiondata.h"
+#include "Assembler/labeldata.h"
+#include "Assembler/instructiondefinition.h"
+
+using namespace MicrocodeEditor;
+using namespace MemoryEditor;
+using namespace InstructionEditor;
+using namespace Assembly;
 
 InstructionSet DEFAULT_INSTRUCTION_SET(
     {

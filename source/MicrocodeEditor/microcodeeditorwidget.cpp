@@ -1,8 +1,8 @@
-#include "microcodeeditorwidget.h"
-#include "microcodeeditordelegate.h"
 #include <QHeaderView>
 #include <QVBoxLayout>
-#include <QTimer>
+
+#include "microcodeeditorwidget.h"
+#include "microcodemodel.h"
 
 using namespace MicrocodeEditor;
 

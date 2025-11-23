@@ -1,9 +1,6 @@
 #ifndef MEMORYEDITORWINDOW_H
 #define MEMORYEDITORWINDOW_H
 
-#include <QMainWindow>
-#include <QMenu>
-#include <QActionGroup>
 #include "Common/editorwindow.h"
 #include "memoryeditorwidget.h"
 

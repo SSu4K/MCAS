@@ -1,7 +1,6 @@
 #ifndef INSTRUCTIONDEFINITION_H
 #define INSTRUCTIONDEFINITION_H
 
-#include <QString>
 #include "tokenizer.h"
 #include "instruction.h"
 

@@ -1,11 +1,6 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-#include <QList>
-#include <QMap>
-#include <QHash>
-#include <qtypes.h>
-
 namespace Assembly {
 
 inline const quint8 DEFAULT_OPCODE_SIZE = 6;

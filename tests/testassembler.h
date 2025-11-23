@@ -2,7 +2,6 @@
 #define TESTASSEMBLER_H
 
 #include <QtTest/QTest>
-#include "Assembler/assembler.h"
 
 class TestAssembler: public QObject
 {

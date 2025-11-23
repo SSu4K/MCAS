@@ -1,9 +1,7 @@
 #ifndef INSTRUCTIONDATA_H
 #define INSTRUCTIONDATA_H
 
-#include <QObject>
-#include <QHash>
-#include "Assembler/instructiondefinition.h"
+#include "Assembler/instruction.h"
 
 namespace InstructionEditor {
 

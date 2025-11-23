@@ -2,7 +2,6 @@
 #define INSTRUCTIONEDITORDELEGATE_H
 
 #include <QStyledItemDelegate>
-#include <QLineEdit>
 
 namespace InstructionEditor {
 

@@ -1,12 +1,12 @@
 #ifndef INSTRUCTIONEDITORWINDOW_H
 #define INSTRUCTIONEDITORWINDOW_H
 
-#include <QMainWindow>
-
 #include "Common/editorwindow.h"
-#include "instructioneditorwidget.h"
 
 namespace InstructionEditor{
+
+    // forward declarations
+    class InstructionEditorWidget;
 
     class InstructionEditorWindow : public EditorWindow
     {

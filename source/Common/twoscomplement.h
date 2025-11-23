@@ -1,8 +1,6 @@
 #ifndef TWOSCOMPLEMENT_H
 #define TWOSCOMPLEMENT_H
 
-#include <qtypes.h>
-
 namespace TwoC{
 qint32 getModulus(const qsizetype bitWidth);
 qint32 getMin(const qsizetype bitWidth);

@@ -1,7 +1,6 @@
 #ifndef ASSEMBLYSTATUS_H
 #define ASSEMBLYSTATUS_H
 
-#include <QDebug>
 #include "tokenizer.h"
 
 namespace Assembly {

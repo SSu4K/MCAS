@@ -1,13 +1,6 @@
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
 
-#include <QList>
-#include <QHash>
-#include <QSharedPointer>
-#include <QVariant>
-#include <qtypes.h>
-#include <QSet>
-
 namespace Assembly {
 
 enum TokenType{Identifier, Bracket, Register, Hex, Unknown, NotClassified};

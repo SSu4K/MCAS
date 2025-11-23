@@ -2,6 +2,7 @@
 #include <QTextStream>
 
 #include "jumptablemodel.h"
+#include "jumptabledata.h"
 #include "Common/appcontext.h"
 
 const static QString JUMP_TABLE_HEADER = "[Jump Tables]";

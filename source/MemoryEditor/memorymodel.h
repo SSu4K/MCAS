@@ -1,9 +1,6 @@
 #ifndef MEMORYMODEL_H
 #define MEMORYMODEL_H
 
-#include <QObject>
-#include <QAbstractTableModel>
-
 #include "memorydata.h"
 
 const qsizetype MEMORY_SIZE = 512;

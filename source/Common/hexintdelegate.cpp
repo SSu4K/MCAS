@@ -1,12 +1,9 @@
-#include "hexintdelegate.h"
+#include <QLineEdit>
+#include <QPainter>
+#include <QStyleOptionViewItem>
 
 #include "hexintdelegate.h"
 #include "hexint.h"
-#include <QLineEdit>
-#include <QRegularExpression>
-#include <QPainter>
-#include <QStyleOptionViewItem>
-#include <QDebug>
 
 HexIntDelegate::HexIntDelegate(QObject* parent)
     : QStyledItemDelegate(parent) {}

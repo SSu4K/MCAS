@@ -1,4 +1,9 @@
+#include <QtTest/QTest>
 #include "testassembler.h"
+#include "Assembler/assembler.h"
+#include "Assembler/instructiondefinition.h"
+#include "Assembler/labeldata.h"
+#include "Common/twoscomplement.h"
 
 using namespace Assembly;
 

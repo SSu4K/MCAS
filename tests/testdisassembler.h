@@ -2,7 +2,6 @@
 #define TESTDISASSEMBLER_H
 
 #include <QtTest/QTest>
-#include <QObject>
 
 class TestDisassembler: public QObject
 {

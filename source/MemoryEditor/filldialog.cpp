@@ -3,6 +3,8 @@
 #include <QRegularExpressionValidator>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QLabel>
+#include <QLineEdit>
 #include "filldialog.h"
 
 using namespace MemoryEditor;

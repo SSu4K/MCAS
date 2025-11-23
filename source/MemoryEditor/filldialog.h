@@ -2,13 +2,9 @@
 #define FILLDIALOG_H
 
 #include <QDialog>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QDialogButtonBox>
-#include <QVBoxLayout>
-#include <QLabel>
 
-#include "Common/hexint.h"
+// forward declare
+class QLineEdit;
 
 namespace MemoryEditor {
 

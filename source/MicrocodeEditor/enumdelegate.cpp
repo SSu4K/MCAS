@@ -2,11 +2,7 @@
 #include <QComboBox>
 #include <QCompleter>
 #include <QLineEdit>
-#include <QTimer>
-#include <QKeyEvent>
-#include <QStringListModel>
-#include <qabstractitemview.h>
-#include <qsortfilterproxymodel.h>
+
 #include "enumdelegate.h"
 
 void EnumDelegate::setItems(const QStringList& items) {

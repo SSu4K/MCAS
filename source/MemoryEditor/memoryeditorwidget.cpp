@@ -1,4 +1,13 @@
+#include <QTableView>
+#include <QHeaderView>
+#include <QVBoxLayout>
+
 #include "memoryeditorwidget.h"
+
+#include "memorymodel.h"
+#include "filldialog.h"
+#include "Common/hexintdelegate.h"
+#include "Common/appcontext.h"
 
 using namespace MemoryEditor;
 MemoryEditorWidget::MemoryEditorWidget(QWidget* parent)

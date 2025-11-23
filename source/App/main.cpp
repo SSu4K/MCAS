@@ -1,4 +1,5 @@
 #include "mcasapp.h"
+#include "Common/appcontext.h"
 
 int main(int argc, char *argv[])
 {

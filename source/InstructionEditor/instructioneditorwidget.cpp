@@ -1,4 +1,9 @@
+#include <QVBoxLayout>
+#include <QHeaderView>
+
 #include "instructioneditorwidget.h"
+#include "instructioneditordelegate.h"
+#include "instructioneditormodel.h"
 
 using namespace InstructionEditor;
 

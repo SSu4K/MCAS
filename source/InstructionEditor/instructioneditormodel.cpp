@@ -1,6 +1,15 @@
+#include <QLineEdit>
+
 #include "instructioneditormodel.h"
+#include "instructiondata.h"
+
+#include "MemoryEditor/memorymodel.h"
+
+#include "Assembler/assemblystatus.h"
 #include "Common/appcontext.h"
 #include "Common/hexint.h"
+
+using namespace Assembly;
 
 using namespace InstructionEditor;
 
@@ -108,7 +117,7 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
         // memoryData->memory[addr + 1] = static_cast<quint8>((entry.encoded >> 16) & 0xFF);
         // memoryData->memory[addr + 0] = static_cast<quint8>((entry.encoded >> 24) & 0xFF);
 
-        memoryModel->write(addr, entry.encoded, MemoryUnitSize::Word);
+        memoryModel->write(addr, entry.encoded, MemoryEditor::MemoryUnitSize::Word);
     }
 
     emit dataChanged(index, this->index(index.row(), 3)); // update row

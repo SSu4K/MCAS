@@ -1,5 +1,8 @@
+#include <QMenuBar>
+#include <QActionGroup>
+
+#include "memorymodel.h"
 #include "memoryeditorwindow.h"
-#include <qmenubar.h>
 
 using namespace MemoryEditor;
 

@@ -1,12 +1,19 @@
 #ifndef ASSEMBLER_H
 #define ASSEMBLER_H
 
-#include "instructiondefinition.h"
-#include "labeldata.h"
 #include "assemblystatus.h"
-#include "Common/twoscomplement.h"
+#include "tokenizer.h"
 
 namespace Assembly {
+
+class Instruction;
+class InstructionSet;
+class LabelData;
+class InstructionDefinition;
+class RType;
+class IType;
+class JType;
+class Token;
 
 class Assembler
 {

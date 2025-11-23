@@ -2,10 +2,6 @@
 #define MICROCODEEDITORDELEGATE_H
 
 #include <QStyledItemDelegate>
-#include <QStyledItemDelegate>
-#include <QSpinBox>
-#include <QLineEdit>
-#include <QComboBox>
 
 namespace MicrocodeEditor{
 

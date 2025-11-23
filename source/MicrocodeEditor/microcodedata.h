@@ -1,12 +1,6 @@
 #ifndef MICROCODEDATA_H
 #define MICROCODEDATA_H
 
-#include <QString>
-#include <QList>
-#include <QStringList>
-#include <QMap>
-#include <QVariant>
-
 namespace MicrocodeEditor{
     namespace InstructionField{
         enum {address=0, label, alu, s1, s2, dest, extir, constant, jcond, adr, mem, madr, mdest, regs, fieldCount};

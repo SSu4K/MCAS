@@ -2,12 +2,11 @@
 #define MCASAPP_H
 
 #include <QApplication>
-#include <QStyleFactory>
-#include <QPalette>
-#include <QTranslator>
+#include <QIcon>
 
-#include "Common/appcontext.h"
-#include "mainwindow.h"
+// forward declaration
+class AppContext;
+class MainWindow;
 
 class MCASApp : public QApplication
 {
