@@ -1,8 +1,6 @@
 #ifndef JUMPTABLEDATA_H
 #define JUMPTABLEDATA_H
 
-#include <QStringList>
-
 namespace MicrocodeEditor{
 
 class JumpTableEntry {

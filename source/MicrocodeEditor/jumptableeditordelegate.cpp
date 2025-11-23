@@ -1,8 +1,11 @@
+#include <QKeyEvent>
+#include <QLineEdit>
+#include <QTableView>
+
 #include "jumptableeditordelegate.h"
+#include "jumptabledata.h"
 #include "jumptablemodel.h"
 #include "jumptableeditorwidget.h"
-#include <QKeyEvent>
-#include <qlineedit.h>
 
 using namespace MicrocodeEditor;
 

@@ -4,9 +4,6 @@
 #pragma once
 
 #include <QAbstractTableModel>
-#include <QTextStream>
-#include <QChar>
-#include <QDebug>
 
 class TextTableModel : public QAbstractTableModel
 {

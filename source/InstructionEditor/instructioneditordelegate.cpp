@@ -1,3 +1,5 @@
+#include <QLineEdit>
+
 #include "instructioneditordelegate.h"
 #include "InstructionEditor/instructioneditormodel.h"
 

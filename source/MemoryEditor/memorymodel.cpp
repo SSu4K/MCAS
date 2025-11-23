@@ -1,5 +1,4 @@
 #include "memorymodel.h"
-#include "Common/appcontext.h"
 
 const static QString MEMORRY_HEADER = "[Memory]";
 const static QChar HEADER_PREFIX = '[';
@@ -13,7 +12,7 @@ const static qsizetype HORIZONTAL_HEADER_PRECISION = 2;
 using namespace MemoryEditor;
 
 MemoryModel::MemoryModel(QObject* parent) : QAbstractTableModel(parent) {
-    memoryData = AppContext::instance()->sharedData()->memory().get();
+    //memoryData = AppContext::instance()->sharedData()->memory().get();
 }
 
 QVariant MemoryModel::headerData(int section, Qt::Orientation orientation, int role) const {
@@ -33,13 +32,13 @@ QVariant MemoryModel::headerData(int section, Qt::Orientation orientation, int r
 }
 
 void MemoryModel::setMemory(const QByteArray& mem) {
-    memoryData->memory = mem;
+    memoryData.memory = mem;
     emit layoutChanged();
 }
 
 int MemoryModel::rowCount(const QModelIndex& parent) const {
     Q_UNUSED(parent);
-    return (memoryData->memory.size() / (int)unitSize + m_cols - 1) / m_cols;
+    return (memoryData.memory.size() / (int)unitSize + m_cols - 1) / m_cols;
 }
 
 int MemoryModel::columnCount(const QModelIndex& parent) const {
@@ -53,7 +52,7 @@ QVariant MemoryModel::data(const QModelIndex& index, int role) const
 
     qsizetype i = index.row() * m_cols + index.column();
     qsizetype byteIndex = i * (qsizetype)unitSize;
-    if (byteIndex + (qsizetype)unitSize > memoryData->memory.size()) {
+    if (byteIndex + (qsizetype)unitSize > memoryData.memory.size()) {
         if (role == Qt::DisplayRole) return QString();
         if (role == Qt::EditRole) return QVariant();
         return {};
@@ -62,7 +61,7 @@ QVariant MemoryModel::data(const QModelIndex& index, int role) const
     quint32 val = 0;
     for(qsizetype i=0; i<(int)unitSize; i++){
         val = val << 8;
-        val |= quint8(memoryData->memory[byteIndex+i]);
+        val |= quint8(memoryData.memory[byteIndex+i]);
     }
 
     if (role == Qt::DisplayRole) {
@@ -88,7 +87,7 @@ MemoryUnitSize MemoryModel::getUnitSize(){
 }
 
 void MemoryModel::clear(){
-    memoryData->memory.fill(0);
+    memoryData.memory.fill(0);
 }
 
 void MemoryModel::setUnitSize(MemoryUnitSize size){
@@ -119,14 +118,16 @@ bool MemoryModel::setData(const QModelIndex& index, const QVariant& value, int r
 
     qsizetype i = index.row() * m_cols + index.column();
     qsizetype byteIndex = i * (qsizetype)unitSize;
-    if (byteIndex + (qsizetype)unitSize > memoryData->memory.size()) return false;
+    // if (byteIndex + (qsizetype)unitSize > memoryData.memory.size()) return false;
 
-    for(qsizetype i=(int)unitSize-1; i>=0; i--){
-        memoryData->memory[byteIndex+i] = val & 0xFF;
-        val = val >> 8;
-    }
+    // for(qsizetype i=(int)unitSize-1; i>=0; i--){
+    //     memoryData.memory[byteIndex+i] = val & 0xFF;
+    //     val = val >> 8;
+    // }
+    write(byteIndex, val, unitSize, &ok);
+    if (!ok) return false;
 
-    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+    //emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
     return true;
 }
 
@@ -140,7 +141,7 @@ bool MemoryModel::saveToTextStream(QTextStream &stream){
     if (!MEMORRY_HEADER.isEmpty())
         stream << MEMORRY_HEADER << "\n";
 
-    QByteArray hex = memoryData->memory.toHex();
+    QByteArray hex = memoryData.memory.toHex();
     qsizetype slice_size = 2*MEMORY_SLICE_SIZE;
     qsizetype slice_count = hex.size() / slice_size;
 
@@ -185,9 +186,42 @@ bool MemoryModel::loadFromTextStream(QTextStream &stream){
         hexEncoded.append(line.toLocal8Bit());
     }
 
-    memoryData->memory = QByteArray::fromHex(hexEncoded);
+    memoryData.memory = QByteArray::fromHex(hexEncoded);
 
     endResetModel();
     return true;
+}
+
+void MemoryModel::write(const quint32 address, const quint32 value, const MemoryUnitSize unit, bool* okptr){
+    qsizetype unitSize = (qsizetype)unit;
+    if(address % unitSize != 0 || address + unitSize >= memoryData.memory.size()){
+        if(okptr) *okptr = false;
+        return;
+    }
+    quint32 v = value;
+
+    for(qsizetype i=unitSize-1; i>=0; i--){
+        memoryData.memory[address+i] = v & 0xFF;
+        v = v >> 8;
+    }
+    if(okptr) *okptr = true;
+    emit dataChanged({}, {}, {Qt::DisplayRole, Qt::EditRole});
+    return;
+}
+
+quint32 MemoryModel::read(quint32 address, MemoryUnitSize unit, bool* okptr){
+    qsizetype unitSize = (qsizetype)unit;
+    if(address % unitSize != 0 || address + unitSize >= memoryData.memory.size()){
+        if(okptr) *okptr = false;
+        return 0;
+    }
+    quint32 result=0;
+
+    for(qsizetype i=0; i<unitSize; i++){
+        result = result << 8;
+        result |= memoryData.memory[address+i];
+    }
+    if(okptr) *okptr = true;
+    return result;
 }
 

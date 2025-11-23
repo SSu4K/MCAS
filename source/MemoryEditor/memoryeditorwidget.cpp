@@ -1,11 +1,20 @@
+#include <QTableView>
+#include <QHeaderView>
+#include <QVBoxLayout>
+
 #include "memoryeditorwidget.h"
+
+#include "memorymodel.h"
+#include "filldialog.h"
+#include "Common/hexintdelegate.h"
+#include "Common/appcontext.h"
 
 using namespace MemoryEditor;
 MemoryEditorWidget::MemoryEditorWidget(QWidget* parent)
     : QWidget(parent)
 {
     m_tableView = new QTableView(this);
-    m_model = new MemoryModel(this);
+    m_model = AppContext::instance()->sharedData()->memory().get();
 
     m_tableView->setModel(m_model);
     m_tableView->verticalHeader()->setVisible(true);

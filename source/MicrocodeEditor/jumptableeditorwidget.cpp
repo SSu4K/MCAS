@@ -1,7 +1,10 @@
+#include <QTableView>
+#include <QVBoxLayout>
+#include <QHeaderView>
+
 #include "jumptableeditorwidget.h"
-#include "MicrocodeEditor/jumptableeditordelegate.h"
-#include <qheaderview.h>
-#include <QTimer>
+#include "jumptableeditordelegate.h"
+#include "jumptablemodel.h"
 
 using namespace MicrocodeEditor;
 

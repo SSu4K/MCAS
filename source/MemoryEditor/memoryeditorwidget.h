@@ -1,19 +1,17 @@
 #ifndef MEMORYEDITORWIDGET_H
 #define MEMORYEDITORWIDGET_H
 
-#include <QTableView>
-#include <QResizeEvent>
-#include <QHeaderView>
-#include <QBoxLayout>
-#include <QTimer>
-#include <QRandomGenerator>
-#include <QTime>
+#include <QWidget>
 
-#include "memorymodel.h"
-#include "filldialog.h"
-#include "Common/hexintdelegate.h"
+// forward declarations
+class QTableView;
+class HexIntDelegate;
 
 namespace MemoryEditor {
+
+    // forward declarations
+    class MemoryModel;
+    enum class MemoryUnitSize;
 
     class MemoryEditorWidget : public QWidget {
         Q_OBJECT

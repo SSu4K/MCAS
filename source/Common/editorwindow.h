@@ -2,7 +2,6 @@
 #define EDITORWINDOW_H
 
 #include <QMainWindow>
-#include <QFile>
 
 static const char* FILE_MENU_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "&File");
 static const char* NEW_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "&New");

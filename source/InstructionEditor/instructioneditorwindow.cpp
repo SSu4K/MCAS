@@ -1,5 +1,6 @@
+#include <QMenuBar>
 #include "instructioneditorwindow.h"
-#include <qmenubar.h>
+#include "instructioneditorwidget.h"
 
 using namespace InstructionEditor;
 

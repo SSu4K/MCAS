@@ -1,9 +1,6 @@
 #ifndef MEMORYMODEL_H
 #define MEMORYMODEL_H
 
-#include <QObject>
-#include <QAbstractTableModel>
-
 #include "memorydata.h"
 
 const qsizetype MEMORY_SIZE = 512;
@@ -43,8 +40,11 @@ namespace MemoryEditor {
         bool loadFromTextStream(QTextStream &stream);
         bool saveToTextStream(QTextStream &stream);
 
+        void write(quint32 address, quint32 value, MemoryUnitSize unit = MemoryUnitSize::Word, bool* okptr = nullptr);
+        quint32 read(quint32 address, MemoryUnitSize unit = MemoryUnitSize::Word, bool* okptr = nullptr);
+
     private:
-        MemoryData *memoryData;
+        MemoryData memoryData;
         int m_cols = 8;
         MemoryUnitSize unitSize = MemoryUnitSize::Half;
     };

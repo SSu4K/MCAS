@@ -1,9 +1,11 @@
+#include <QMenuBar>
+
 #include "microcodeeditorwindow.h"
+
 #include "microcodeeditorwidget.h"
 #include "microcodemodel.h"
-
-#include <QMenuBar>
-#include <QFileDialog>
+#include "jumptableeditorwidget.h"
+#include "jumptablemodel.h"
 
 using namespace MicrocodeEditor;
 

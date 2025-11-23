@@ -1,14 +1,13 @@
 #ifndef JUMPTABLEMODEL_H
 #define JUMPTABLEMODEL_H
 
-#include <QAbstractTableModel>
-#include <QStringList>
-#include <QVector>
-
-#include "jumptabledata.h"
 #include "Common/texttablemodel.h"
 
 namespace MicrocodeEditor{
+    // forward declarations
+    class JumpTableEntry;
+    class JumpTableData;
+
     class JumpTableModel : public TextTableModel {
         Q_OBJECT
     public:

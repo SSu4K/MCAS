@@ -1,3 +1,6 @@
+#include <QMenuBar>
+#include <QActionGroup>
+
 #include "mainwindow.h"
 #include "Common/appcontext.h"
 #include "mcasapp.h"

@@ -1,12 +1,12 @@
 #ifndef INSTRUCTIONEDITORMODEL_H
 #define INSTRUCTIONEDITORMODEL_H
 
-#include <QAbstractTableModel>
-#include <QColor>
-#include "instructionparser.h"
-#include "instructiondata.h"
+#include "Assembler/assembler.h"
 
 namespace InstructionEditor {
+
+    // forward declarations
+    class InstructionData;
 
     const qsizetype INSTRUCTION_COLUMN_INDEX = 2;
 
@@ -27,15 +27,18 @@ namespace InstructionEditor {
         bool addInstruction(const QString& text = QString());
         bool removeInstruction(int row);
 
-        QList<QByteArray> encodedInstructions() const;
+        QList<quint32> encodedInstructions() const;
         void setBaseAddress(quint32 addr);
         quint32 baseAddress() const;
 
         int maxLines() const;
+        void syncFromMemory();
 
     private:
-        InstructionData *instructionData;
-        InstructionParser m_parser;
+        std::shared_ptr<Assembly::LabelData> labelData;
+        std::shared_ptr<Assembly::InstructionSet> instructionSet;
+        std::shared_ptr<InstructionData> instructionData;
+        Assembly::Assembler m_assembler;
     };
 
 

@@ -1,14 +1,15 @@
 #ifndef JUMPTABLEEDITORWIDGET_H
 #define JUMPTABLEEDITORWIDGET_H
 
-#include <QWidget>
-#include <QTableView>
-#include <QVBoxLayout>
 #include "MicrocodeEditor/jumptableeditordelegate.h"
 #include "Common/zoomwidget.h"
-#include "jumptablemodel.h"
+
+// forward declarations
+class QTableView;
 
 namespace MicrocodeEditor {
+    // forward declarations
+    class JumpTableModel;
 
     class JumpTableEditorWidget : public ZoomWidget {
         Q_OBJECT

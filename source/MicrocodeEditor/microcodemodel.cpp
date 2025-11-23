@@ -1,6 +1,3 @@
-#include <QFile>
-#include <QTextStream>
-
 #include "microcodemodel.h"
 #include "Common/hexint.h"
 #include "Common/appcontext.h"

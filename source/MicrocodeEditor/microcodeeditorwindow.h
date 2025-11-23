@@ -2,10 +2,11 @@
 #define MICROCODEEDITORWINDOW_H
 
 #include "Common/editorwindow.h"
-#include "microcodeeditorwidget.h"
-#include "jumptableeditorwidget.h"
 
 namespace MicrocodeEditor{
+    // forward declarations
+    class MicrocodeEditorWidget;
+    class JumpTableEditorWidget;
 
     class MicrocodeEditorWindow : public EditorWindow
     {

@@ -1,7 +1,7 @@
-#include "test_instructions.h"
-#include "InstructionEditor/instruction.h"
+#include "testinstructions.h"
+#include "Assembler/instruction.h"
 
-using namespace InstructionEditor;
+using namespace Assembly;
 
 void TestInstructions::initTestCase() {
     qDebug() << "Starting Instruction tests...";
@@ -66,4 +66,4 @@ void TestInstructions::cleanupTestCase() {
 }
 
 //QTEST_MAIN(TestInstructions)
-#include "test_instructions.moc"
+#include "testinstructions.moc"

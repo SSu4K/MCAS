@@ -1,3 +1,5 @@
+#include <QShortcut>
+
 #include "zoomwidget.h"
 
 ZoomWidget::ZoomWidget(QWidget *parent)

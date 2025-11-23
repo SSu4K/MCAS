@@ -3,14 +3,12 @@
 
 #include <QWidget>
 #include <QTableView>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QHeaderView>
-
-#include "instructioneditormodel.h"
-#include "instructioneditordelegate.h"
 
 namespace InstructionEditor {
+
+// forward declarations
+class InstructionEditorModel;
+class InstructionEditorDelegate;
 
 class InstructionEditorWidget : public QWidget {
     Q_OBJECT

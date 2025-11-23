@@ -2,9 +2,6 @@
 #define ZOOMWIDGET_H
 
 #include <QWidget>
-#include <QShortcut>
-#include <QKeySequence>
-#include <QEvent>
 
 class ZoomWidget : public QWidget {
     Q_OBJECT

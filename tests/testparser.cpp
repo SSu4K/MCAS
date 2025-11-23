@@ -1,8 +1,32 @@
 #include "testparser.h"
+#include "InstructionEditor/instructiondata.h"
 
 using namespace InstructionEditor;
 
 qsizetype TEST_LINE_NUMBER = 15;
+
+inline InstructionSet TEST_INSTRUCTION_SET = {
+    {
+        { "NOP",    {0, InstructionType::R, ""} },
+        { "ADD",    {1, InstructionType::R, "r1, r2, r3"} },
+        { "LDH",    {2, InstructionType::I, "r2, i(r1)"} },
+        { "ADDI",   {3, InstructionType::I, "r1, i, r2"} },
+        { "JUMP",   {4, InstructionType::J, "j"} },
+        { "BRZ",    {5, InstructionType::I, "r1, j"} },
+        {"ADD4",    {6, InstructionType::R, "r1, r2, r3, r4, r5"}}
+    },
+
+    // opcode lookup
+    {
+        {0, "NOP"},
+        {1, "ADD"},
+        {2, "LDH"},
+        {3, "ADDI"},
+        {4, "JUMP"},
+        {5, "BRZ"},
+        {6, "ADD4"}
+    }
+};
 
 void TestParser::initTestCase() {
     qDebug() << "Starting Instruction Parser tests...";
@@ -21,7 +45,7 @@ void parseStatusCase(QString instr, ParseStatus expected, InstructionParser &par
 template <class T>
 void parseResultCase(const qsizetype lineNumber, const QString &instr, const T &expectedInstr, const ParseStatus &expectedStatus, InstructionParser &parser){
     auto parsed = parser.parseLine(lineNumber, instr);
-    auto result_ptr = qSharedPointerCast<T>(parsed.instruction);
+    auto result_ptr = std::static_pointer_cast<T>(parsed.instruction);
 
     QCOMPARE(parsed.status.msg, expectedStatus.msg);
     QCOMPARE(result_ptr->toString(), expectedInstr.toString());
@@ -29,7 +53,7 @@ void parseResultCase(const qsizetype lineNumber, const QString &instr, const T &
 }
 
 void TestParser::General_Parse(){
-    InstructionParser parser;
+    InstructionParser parser(DEFAULT_INSTRUCTION_SET);
     parseStatusCase(
         "", ParseStatus::fail("Empty line"), parser
     );
@@ -42,30 +66,25 @@ void TestParser::General_Parse(){
 }
 
 void TestParser::RType_Parse_Done(){
-    InstructionParser parser;
-
-    bool addedInsruction = parser.addInstruction("ADD4", InstructionType::R, "r1, r2, r3, r4, r5");
-    QCOMPARE(addedInsruction, true);
+    InstructionParser parser(DEFAULT_INSTRUCTION_SET);
 
     parseStatusCase(
         "ADD R1, R2, R3", ParseStatus::done("Parsed RType instruction"), parser
     );
 
-    if(parser.addInstruction("ADD4", InstructionType::R, "r1, r2, r3, r4, r5")){
-        parseStatusCase(
-            "ADD4 R1, R2, R3, R4, R5", ParseStatus::done("Parsed RType instruction"), parser
-        );
+    parseStatusCase(
+        "ADD4 R1, R2, R3, R4, R5", ParseStatus::done("Parsed RType instruction"), parser
+    );
 
-        QString instr = "ADD4 R1, R2, R3, R4, R5";
-        auto parsed = parser.parseLine(0xF, instr);
-        auto result_ptr = qSharedPointerCast<RType>(parsed.instruction);
-        auto expected = RType(6, {1, 2, 3, 4, 5});
-        QCOMPARE(*result_ptr, expected);
-    }
+    QString instr = "ADD4 R1, R2, R3, R4, R5";
+    auto parsed = parser.parseLine(0xF, instr);
+    auto result_ptr = std::static_pointer_cast<RType>(parsed.instruction);
+    auto expected = RType(6, {1, 2, 3, 4, 5});
+    QCOMPARE(*result_ptr, expected);
 }
 
 void TestParser::RType_Parse_Fail(){
-    InstructionParser parser;
+    InstructionParser parser(DEFAULT_INSTRUCTION_SET);
 
     parseStatusCase(
         "ADD R1, R2, 0xABCD",
@@ -95,7 +114,7 @@ void TestParser::RType_Parse_Fail(){
 }
 
 void TestParser::IType_Parse_Done(){
-    InstructionParser parser;
+    InstructionParser parser(DEFAULT_INSTRUCTION_SET);
 
     parser.addLabel("label", 0xFF);
 
@@ -122,7 +141,7 @@ void TestParser::IType_Parse_Done(){
 }
 
 void TestParser::IType_Parse_Fail(){
-    InstructionParser parser;
+    InstructionParser parser(DEFAULT_INSTRUCTION_SET);
     parseStatusCase(
         "ADDI R1, 0x10000, R2",
         ParseStatus::fail("Immediate out of range for 16-bit hex immediate field", {"0x10000", 9, 4, 15}),
@@ -171,7 +190,7 @@ void TestParser::IType_Parse_Fail(){
 }
 
 void TestParser::IType_Jumps(){
-    InstructionParser parser;
+    InstructionParser parser(DEFAULT_INSTRUCTION_SET);
 
     const qint32 modulus = 1 << (encodingConfig->IImmediateSize()-1); // modulus for 2c
 
@@ -231,7 +250,7 @@ void TestParser::IType_Jumps(){
 }
 
 void TestParser::JType_Parse_Done(){
-    InstructionParser parser;
+    InstructionParser parser(DEFAULT_INSTRUCTION_SET);
     parser.addLabel("label", 32);
 
     parseStatusCase(
@@ -247,7 +266,7 @@ void TestParser::JType_Parse_Done(){
 }
 
 void TestParser::JType_Parse_Fail(){
-    InstructionParser parser;
+    InstructionParser parser(DEFAULT_INSTRUCTION_SET);
     parseStatusCase(
         "JUMP loop1",
         ParseStatus::fail("Unknown label: loop1", {"loop1", 5, 2, 15}),

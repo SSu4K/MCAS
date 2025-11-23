@@ -1,4 +1,9 @@
+#include <QStyleFactory>
+#include <QStyle>
+
 #include "mcasapp.h"
+#include "mainwindow.h"
+#include "Common/appcontext.h"
 
 static QPalette getDarkPalette(){
     QPalette palette;

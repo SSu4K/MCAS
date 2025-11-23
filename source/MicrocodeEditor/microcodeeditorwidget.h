@@ -1,14 +1,14 @@
 #ifndef MICROCODEEDITORWIDGET_H
 #define MICROCODEEDITORWIDGET_H
 
-#include <QWidget>
 #include <QTableView>
-#include <QHeaderView>
-#include "microcodemodel.h"
+
 #include "microcodeeditordelegate.h"
 #include "Common/zoomwidget.h"
 
 namespace MicrocodeEditor{
+    // forward declarations
+    class MicrocodeModel;
 
     class MicrocodeEditorWidget : public ZoomWidget {
         Q_OBJECT

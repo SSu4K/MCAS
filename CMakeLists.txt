@@ -2,30 +2,23 @@ cmake_minimum_required(VERSION 3.16)
 
 project(MCAS VERSION 0.1 LANGUAGES CXX)
 
-# Enable automatic Qt processing
+# Qt Setup
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find Qt 6 modules
-find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
-find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools Test)
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
-find_package(Qt6 REQUIRED COMPONENTS Core)
-find_package(Qt6 REQUIRED COMPONENTS Core)
-find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets LinguistTools Test)
 
-# Define version and build info
+# Build info macros
 set(APP_VERSION "v0.1.0-prealpha")
-set(BUILD_TYPE ${CMAKE_BUILD_TYPE})
-set(BUILD_PLATFORM ${CMAKE_SYSTEM_NAME})
 
 add_compile_definitions(
     APP_VERSION="${APP_VERSION}"
-    BUILD_TYPE="${BUILD_TYPE}"
-    BUILD_PLATFORM="${BUILD_PLATFORM}"
+    BUILD_TYPE="$<CONFIG>"
+    BUILD_PLATFORM="${CMAKE_SYSTEM_NAME}"
 )
 
 if (MSVC)
@@ -36,61 +29,62 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_definitions(COMPILER_NAME="GCC")
 endif()
 
-# Include the source directory
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
+add_library(pch INTERFACE)
+target_precompile_headers(pch INTERFACE source/pch.h)
 
-# Translation files (optional)
-file(GLOB TS_FILES translations/*.ts)
-
-# Source files
-file(GLOB_RECURSE CPP_FILES source/*.cpp)
+# Project sources
+file(GLOB_RECURSE CPP_FILES   source/*.cpp)
 file(GLOB_RECURSE HEADER_FILES source/*.h)
-file(GLOB_RECURSE UI_FILES source/*.ui)
-file(GLOB_RECURSE QRC_FILES source/*.qrc)
+file(GLOB_RECURSE UI_FILES    source/*.ui)
+file(GLOB_RECURSE QRC_FILES   source/*.qrc)
 
-set(PROJECT_SOURCES
+# Main Application
+qt_add_executable(MCAS
+    MANUAL_FINALIZATION
     ${CPP_FILES}
     ${HEADER_FILES}
     ${UI_FILES}
     ${QRC_FILES}
 )
 
-# Add executable
-qt_add_executable(MCAS
-    MANUAL_FINALIZATION
-    ${PROJECT_SOURCES}
-    source/MemoryEditor/memorydata.h source/MemoryEditor/memorydata.cpp
-    source/InstructionEditor/instructiondata.h source/InstructionEditor/instructiondata.cpp
-
+target_link_libraries(MCAS PRIVATE
+    Qt6::Core
+    Qt6::Widgets
+    pch
 )
 
+target_include_directories(MCAS PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/source
+)
+
+# Tests
 add_executable(tests
-    tests/testrunner.cpp
-    tests/test_instructions.h
-    tests/test_instructions.cpp
-    source/InstructionEditor/instruction.h
-    source/InstructionEditor/instruction.cpp
-    source/InstructionEditor/instructionparser.h
-    source/InstructionEditor/instructionparser.cpp
-    tests/testparser.h
-    tests/testparser.cpp
-    source/Common/hexint.h
     source/Common/hexint.cpp
+    source/Common/twoscomplement.cpp
+    source/Assembler/tokenizer.cpp
+    source/Assembler/instructiondefinition.cpp
+    source/Assembler/labeldata.cpp
+    source/Assembler/assemblystatus.cpp
+    source/Assembler/instruction.cpp
+    source/Assembler/assembler.cpp
+    source/Assembler/disassembler.cpp
+
+    tests/testinstructions.cpp tests/testinstructions.h
+    tests/testassembler.cpp tests/testassembler.h
+    tests/testdisassembler.cpp tests/testdisassembler.h
+    tests/testrunner.cpp
 )
 
-# Link Qt libraries
-target_link_libraries(MCAS PRIVATE Qt6::Widgets)
-target_link_libraries(MCAS PRIVATE Qt6::Core)
-target_link_libraries(MCAS PRIVATE Qt6::Core)
-target_link_libraries(MCAS PRIVATE Qt6::Core)
-
+target_include_directories(tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/source ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 target_link_libraries(tests PRIVATE
     Qt6::Core
     Qt6::Test
+    pch
 )
 
-# Create translations if they exist
+# Translations
+file(GLOB TS_FILES translations/*.ts)
 if(TS_FILES)
     qt_add_translations(MCAS
         TS_FILES ${TS_FILES}
@@ -98,21 +92,11 @@ if(TS_FILES)
     )
 endif()
 
-target_include_directories(MCAS PRIVATE
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/src/Common
-    ${CMAKE_SOURCE_DIR}/src/MicrocodeEditor
-    ${CMAKE_SOURCE_DIR}/src/MemoryEditor
-    ${CMAKE_SOURCE_DIR}/src/App
-)
-
-# Install target
+# Install
 include(GNUInstallDirs)
 install(TARGETS MCAS
     BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Finalize executable
 qt_finalize_executable(MCAS)
