@@ -12,8 +12,8 @@ class LabelData;
 class Disassembler
 {
 private:
-    std::shared_ptr<const InstructionSet> instructionSet;
-    std::shared_ptr<const LabelData> labelData;
+    const InstructionSet* instructionSet;
+    const LabelData* labelData;
 
     QString disassembleRType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const;
     QString disassembleIType(const quint32 instruction, const qsizetype lineNumber, AssemblyStatus &status) const;

@@ -29,5 +29,11 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_definitions(COMPILER_NAME="GCC")
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Enabling AddressSanitizer for Debug build")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+    set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address")
+endif()
+
 add_subdirectory(src)
 add_subdirectory(tests)
