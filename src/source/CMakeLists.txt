@@ -19,7 +19,7 @@ target_link_libraries(uiLib PUBLIC
 
 target_include_directories(uiLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-file(GLOB TS_FILES ${CMAKE_SOURCE_DIR}/translations/*.ts)
+file(GLOB TS_FILES ${CMAKE_SOURCE_DIR}/resources/translations/*.ts)
 if(TS_FILES)
     qt_add_translations(uiLib
         TS_FILES ${TS_FILES}

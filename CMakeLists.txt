@@ -12,7 +12,7 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets LinguistTools Test)
 
 add_library(project_pch INTERFACE)
-target_precompile_headers(project_pch INTERFACE source/pch.h)
+target_precompile_headers(project_pch INTERFACE src/source/pch.h)
 
 set(APP_VERSION "v0.1.0-prealpha")
 add_compile_definitions(
@@ -29,7 +29,5 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_definitions(COMPILER_NAME="GCC")
 endif()
 
-add_subdirectory(core)
-add_subdirectory(source)
+add_subdirectory(src)
 add_subdirectory(tests)
-add_subdirectory(app)
