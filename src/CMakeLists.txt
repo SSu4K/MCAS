@@ -1,7 +1,5 @@
-add_subdirectory(core)
-add_subdirectory(source)
-add_subdirectory(app)
-
-# for future
-#add_subdirectory(models)
-#add_subdirectory(ui)
+add_subdirectory(Core)
+add_subdirectory(Context)
+add_subdirectory(App)
+add_subdirectory(Model)
+add_subdirectory(Ui)

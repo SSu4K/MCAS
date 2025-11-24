@@ -12,7 +12,7 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets LinguistTools Test)
 
 add_library(project_pch INTERFACE)
-target_precompile_headers(project_pch INTERFACE src/source/pch.h)
+target_precompile_headers(project_pch INTERFACE src/pch.h)
 
 set(APP_VERSION "v0.1.0-prealpha")
 add_compile_definitions(
