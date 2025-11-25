@@ -1,5 +1,0 @@
-add_subdirectory(Core)
-add_subdirectory(Context)
-add_subdirectory(App)
-add_subdirectory(Model)
-add_subdirectory(Ui)
