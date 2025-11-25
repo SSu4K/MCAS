@@ -9,29 +9,23 @@ using namespace MemoryEditor;
 using namespace InstructionEditor;
 using namespace Assembly;
 
-InstructionSet DEFAULT_INSTRUCTION_SET(
-    {
+QPointer<AppContext> AppContext::s_instance = nullptr;
+
+SharedData::SharedData(QObject* parent)
+    : QObject(parent),
+    m_memory(),
+    m_instructions(),
+    m_microcode(),
+    m_jumptable(),
+    m_labelData(),
+    m_instructionSet({
         { "NOP",    InstructionType::R, ""},
         { "ADD",    InstructionType::R, "r1, r2, r3"},
         { "LDH",    InstructionType::I, "r2, i(r1)"},
         { "ADDI",   InstructionType::I, "r1, i, r2"},
         { "JUMP",   InstructionType::J, "j"},
         { "BRZ",    InstructionType::I, "r1, j"},
-    });
-
-QPointer<AppContext> AppContext::s_instance = nullptr;
-
-SharedData::SharedData(QObject* parent)
-    : //QObject(parent),
-    m_memory(),
-    m_instructions(),
-    m_microcode(),
-    m_jumptable(),
-    m_labelData(),
-    m_instructionSet(DEFAULT_INSTRUCTION_SET)
-{
-    m_instructionSet = DEFAULT_INSTRUCTION_SET;
-}
+    }){}
 
 AppContext::AppContext(QObject* parent)
     : QObject(parent), m_settings("SzymonSudak", "MCAS"), m_sharedData()
