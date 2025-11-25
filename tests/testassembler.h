@@ -2,10 +2,19 @@
 #define TESTASSEMBLER_H
 
 #include <QtTest/QTest>
+#include "Assembler/instructiondefinition.h"
+#include "Assembler/labeldata.h"
 
 class TestAssembler: public QObject
 {
     Q_OBJECT
+
+private:
+    Assembly::InstructionSet testInstructionSet;
+    Assembly::LabelData testLabelData;
+
+public:
+    TestAssembler(QObject* parent = nullptr);
 
 private slots:
     void initTestCase();

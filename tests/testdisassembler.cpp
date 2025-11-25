@@ -1,39 +1,38 @@
 #include <QtTest/QTest>
 
 #include "testdisassembler.h"
+#include <QtTest/QTest>
 #include "Assembler/assembler.h"
 #include "Assembler/disassembler.h"
 #include "Assembler/instructiondefinition.h"
 #include "Assembler/labeldata.h"
 #include "Common/twoscomplement.h"
 
+#define TEST_LINE_NUMBER 15
+
 using namespace Assembly;
 
-static qsizetype TEST_LINE_NUMBER = 15;
-
-static InstructionSet TEST_INSTRUCTION_SET(
-    {
-        { "NOP",    InstructionType::R, ""},
-        { "ADD",    InstructionType::R, "r1, r2, r3"},
-        { "LDH",    InstructionType::I, "r2, i(r1)"},
-        { "ADDI",   InstructionType::I, "r1, i, r2"},
-        { "JUMP",   InstructionType::J, "j"},
-        { "BRZ",    InstructionType::I, "r1, j"},
-        { "ADD4",   InstructionType::R, "r1, r2, r3, r4, r5"}
-    });
-
-static LabelData TEST_LABEL_DATA;
-
-static auto TEST_INSTRUCTION_SET_SPTR = std::make_shared<InstructionSet>(TEST_INSTRUCTION_SET);
-static auto TEST_LABEL_DATA_SPTR = std::make_shared<LabelData>(TEST_LABEL_DATA);
+TestDisassembler::TestDisassembler(QObject* parent)
+    : QObject(parent),
+    testInstructionSet({
+        InstructionDefinition("NOP",    InstructionType::R, ""),
+        InstructionDefinition("ADD",    InstructionType::R, "r1, r2, r3"),
+        InstructionDefinition("LDH",    InstructionType::I, "r2, i(r1)"),
+        InstructionDefinition("ADDI",   InstructionType::I, "r1, i, r2"),
+        InstructionDefinition("JUMP",   InstructionType::J, "j"),
+        InstructionDefinition("BRZ",    InstructionType::I, "r1, j"),
+        InstructionDefinition("ADD4",   InstructionType::R, "r1, r2, r3, r4, r5")
+    }),
+    testLabelData()
+{}
 
 void TestDisassembler::initTestCase() {
     qDebug() << "Starting Instruction disassembler tests...";
 }
 
 void TestDisassembler::RType_Done() {
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, TEST_LABEL_DATA_SPTR);
-    Disassembler disassembler(TEST_INSTRUCTION_SET_SPTR, TEST_LABEL_DATA_SPTR);
+    Assembler assembler(&testInstructionSet, &testLabelData);
+    Disassembler disassembler(&testInstructionSet, &testLabelData);
     AssemblyStatus status;
     std::shared_ptr<Instruction> instr_ptr = nullptr;
     QString instr_str;
@@ -70,9 +69,9 @@ void TestDisassembler::RType_Done() {
 }
 
 void TestDisassembler::IType_Done() {
-    auto labelDataStpr = std::make_shared<LabelData>();
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, labelDataStpr);
-    Disassembler disassembler(TEST_INSTRUCTION_SET_SPTR, labelDataStpr);
+    LabelData labelData;
+    Assembler assembler(&testInstructionSet, &labelData);
+    Disassembler disassembler(&testInstructionSet, &labelData);
     AssemblyStatus status;
     std::shared_ptr<Instruction> instr_ptr = nullptr;
     QString instr_str;
@@ -114,12 +113,12 @@ void TestDisassembler::IType_Done() {
     const quint32 maxLineJump = maxImmediateValue / 4;
 
     const qint32 baseLineNumber = maxLineJump + 0xF000; // just a high value some in the middle of memory
-    labelDataStpr->setLabel("label_zero", 4*(baseLineNumber+1));
-    labelDataStpr->setLabel("label_plus", 4*(baseLineNumber+2));
-    labelDataStpr->setLabel("label_minus", 4*(baseLineNumber));
+    labelData.setLabel("label_zero", 4*(baseLineNumber+1));
+    labelData.setLabel("label_plus", 4*(baseLineNumber+2));
+    labelData.setLabel("label_minus", 4*(baseLineNumber));
 
-    labelDataStpr->setLabel("label_max", 4*(baseLineNumber+1+maxLineJump));
-    labelDataStpr->setLabel("label_min", 4*(baseLineNumber+1+minLineJump));
+    labelData.setLabel("label_max", 4*(baseLineNumber+1+maxLineJump));
+    labelData.setLabel("label_min", 4*(baseLineNumber+1+minLineJump));
 
     instr_str = "BRZ R1 label_zero";
     instr_ptr = assembler.assembleLine(instr_str, baseLineNumber, status);
@@ -158,9 +157,9 @@ void TestDisassembler::IType_Done() {
 }
 
 void TestDisassembler::JType_Done() {
-    auto labelDataStpr = std::make_shared<LabelData>();
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, labelDataStpr);
-    Disassembler disassembler(TEST_INSTRUCTION_SET_SPTR, labelDataStpr);
+    LabelData labelData;
+    Assembler assembler(&testInstructionSet, &labelData);
+    Disassembler disassembler(&testInstructionSet, &labelData);
     AssemblyStatus status;
     std::shared_ptr<Instruction> instr_ptr = nullptr;
     QString instr_str;
@@ -177,9 +176,9 @@ void TestDisassembler::JType_Done() {
     const quint32 maxImmediateValue = (1u << encodingConfig->JImmediateSize()) - 1;
     const quint32 maxLineNumber = maxImmediateValue / 4;
 
-    labelDataStpr->setLabel("label_zero", 0);
-    labelDataStpr->setLabel("label_plus", 4);
-    labelDataStpr->setLabel("label_max", 4*(maxLineNumber));
+    labelData.setLabel("label_zero", 0);
+    labelData.setLabel("label_plus", 4);
+    labelData.setLabel("label_max", 4*(maxLineNumber));
 
     instr_str = "JUMP label_zero";
     instr_ptr = assembler.assembleLine(instr_str, TEST_LINE_NUMBER, status);
