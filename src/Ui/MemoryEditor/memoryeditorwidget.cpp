@@ -11,7 +11,7 @@
 
 using namespace MemoryEditor;
 MemoryEditorWidget::MemoryEditorWidget(QWidget* parent)
-    : QWidget(parent), m_model(AppContext::instance()->sharedData()->memory())
+    : QWidget(parent), m_model(AppContext::instance()->sharedData()->editorMachineState())
 {
     m_tableView = new QTableView(this);
 
@@ -42,10 +42,6 @@ MemoryEditorWidget::MemoryEditorWidget(QWidget* parent)
     setLayout(layout);
 
     QTimer::singleShot(0, this, [this]{ updateColumnCount(); });
-}
-
-void MemoryEditorWidget::setMemory(const QByteArray& memory) {
-    m_model.setMemory(memory);
 }
 
 void MemoryEditorWidget::resizeEvent(QResizeEvent* event)
@@ -107,7 +103,6 @@ void MemoryEditorWidget::clearSelected(){
     for (qsizetype i=0; i<indexes.size(); i++) {
         if (indexes[i].flags() & Qt::ItemIsEditable) {
             m_model.setData(indexes[i], 0, Qt::EditRole);
-            emit m_model.dataChanged(indexes[i], indexes[i], {Qt::EditRole});
         }
     }
 
@@ -127,12 +122,11 @@ void MemoryEditorWidget::randomSelected(){
     m_model.blockSignals(true);
 
     for (qsizetype i=0; i<indexes.size(); i++) {
-        quint32 max = unitMasks[(int)m_model.getUnitSize()];
-        quint32 value = QRandomGenerator::global()->bounded(max);
+        // Generate 32-bit, will be truncated to the correct size by the model
+        quint32 value = QRandomGenerator::global()->generate();
 
         if (indexes[i].flags() & Qt::ItemIsEditable) {
             m_model.setData(indexes[i], value, Qt::EditRole);
-            emit m_model.dataChanged(indexes[i], indexes[i], {Qt::EditRole});
         }
     }
 
@@ -158,10 +152,10 @@ void MemoryEditorWidget::fillSelected()
 
     m_model.blockSignals(true);
 
-    for (const QModelIndex& idx : indexes) {
-        if (!(idx.flags() & Qt::ItemIsEditable))
-            continue;
-        m_model.setData(idx, value, Qt::EditRole);
+    for (qsizetype i=0; i<indexes.size(); i++) {
+        if (indexes[i].flags() & Qt::ItemIsEditable) {
+            m_model.setData(indexes[i], value, Qt::EditRole);
+        }
     }
 
     m_model.blockSignals(false);

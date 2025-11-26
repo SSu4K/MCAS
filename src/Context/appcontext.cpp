@@ -5,7 +5,6 @@
 #include "appcontext.h"
 
 using namespace MicrocodeEditor;
-using namespace MemoryEditor;
 using namespace InstructionEditor;
 using namespace Assembly;
 
@@ -13,7 +12,6 @@ QPointer<AppContext> AppContext::s_instance = nullptr;
 
 SharedData::SharedData(QObject* parent)
     : QObject(parent),
-    m_memory(),
     m_instructions(),
     m_microcode(),
     m_jumptable(),
@@ -25,7 +23,10 @@ SharedData::SharedData(QObject* parent)
         { "ADDI",   InstructionType::I, "r1, i, r2"},
         { "JUMP",   InstructionType::J, "j"},
         { "BRZ",    InstructionType::I, "r1, j"},
-    }){}
+    }),
+    m_machineConfig(),
+    m_editorMachineState(m_machineConfig)
+{}
 
 AppContext::AppContext(QObject* parent)
     : QObject(parent), m_settings("SzymonSudak", "MCAS"), m_sharedData()

@@ -12,13 +12,11 @@ namespace MemoryEditor {
 
     // forward declarations
     class MemoryModel;
-    enum class MemoryUnitSize;
 
     class MemoryEditorWidget : public QWidget {
         Q_OBJECT
     public:
         explicit MemoryEditorWidget(QWidget* parent = nullptr);
-        void setMemory(const QByteArray& memory);
 
         MemoryModel *model() {return &m_model;}
 

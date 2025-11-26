@@ -7,6 +7,8 @@ typedef uint32_t word;
 typedef uint16_t half;
 typedef uint8_t byte;
 
+enum class MemoryUnitSize{Byte=1, Half=2, Word=4};
+
 struct MachineConfig{
     word memorySize = 4096;
     word instructionMemorySize = 512;

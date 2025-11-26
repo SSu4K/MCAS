@@ -3,8 +3,6 @@
 #include "instructioneditormodel.h"
 #include "instructiondata.h"
 
-#include "Memory/memorymodel.h"
-
 #include "Assembler/assemblystatus.h"
 #include "Common/hexint.h"
 
