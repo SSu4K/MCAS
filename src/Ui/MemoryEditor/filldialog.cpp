@@ -38,9 +38,9 @@ void FillDialog::validateInput()
 {
     QString text = m_input->text().trimmed();
     bool ok = false;
-    int value = text.toInt(&ok, 16);
-    if (!ok)
-        value = text.toInt(&ok, 10);
+    text.toUInt(&ok, 16);
+    if(!ok)
+        text.toInt(&ok, 10);
 
     m_okButton->setEnabled(ok);
 }
@@ -49,9 +49,9 @@ int FillDialog::value() const
 {
     QString text = m_input->text().trimmed();
     bool ok = false;
-    int value = text.toInt(&ok, 16);
+    quint32 value = text.toUInt(&ok, 16);
     if (!ok)
-        value = text.toInt(&ok, 10);
+        value = static_cast<quint32>(text.toInt(&ok, 10));
 
     return ok ? value : 0;
 }
