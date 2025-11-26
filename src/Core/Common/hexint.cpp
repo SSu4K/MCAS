@@ -16,9 +16,9 @@ quint32 HexInt::hexStringToInt(const QString &string, bool* okptr)
     QString s = string.trimmed();
 
     if (s.startsWith("0x", Qt::CaseInsensitive)) {
-        value = s.mid(2).toUShort(okptr, 16);
+        value = s.mid(2).toULong(okptr, 16);
     } else {
-        value = s.toUShort(okptr, 16);
+        value = s.toULong(okptr, 16);
     }
 
     return *okptr ? value : 0;

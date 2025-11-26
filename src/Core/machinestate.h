@@ -2,7 +2,6 @@
 #define MACHINESTATE_H
 
 #include <stdint.h>
-#include <vector>
 
 typedef uint32_t word;
 typedef uint16_t half;
@@ -43,6 +42,13 @@ public:
 
     word loadWord(const word address) const;
     void storeWord(const word address, const word value);
+
+    word getMemorySize() const;
+    word getInstructionMemorySize() const;
+
+    void clearInstructionMemory();
+    void clearDataMemory();
+    void clearMemory();
 };
 
 #endif // MACHINESTATE_H

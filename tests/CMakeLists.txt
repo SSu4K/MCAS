@@ -1,4 +1,6 @@
-file(GLOB TEST_SOURCES *.cpp *.h)
+file(GLOB_RECURSE TEST_SOURCES *.cpp *.h)
+
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 add_executable(tests ${TEST_SOURCES})
 
@@ -13,3 +15,4 @@ target_link_libraries(tests PRIVATE
     Qt6::Core
     Qt6::Test
 )
+target_link_libraries(tests PRIVATE Qt6::Core)
