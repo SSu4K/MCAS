@@ -2,6 +2,7 @@
 #define MEMORYMODEL_H
 
 #include "machinestate.h"
+// #include "Common/memoryobserver.h"
 
 namespace MemoryEditor {
 
@@ -29,10 +30,17 @@ namespace MemoryEditor {
         bool loadFromTextStream(QTextStream &stream);
         bool saveToTextStream(QTextStream &stream);
 
+    signals:
+        void memoryRegionChanged(quint32 startAddress, quint32 endAddress);
+
+    public slots:
+        void onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress);
+
     private:
         MachineState* machineState;
 
-        int m_cols = 8;
+        int m_cols;
+        int m_rows;
         MemoryUnitSize unitSize = MemoryUnitSize::Half;
     };
 

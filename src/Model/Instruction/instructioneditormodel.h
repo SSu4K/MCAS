@@ -2,6 +2,11 @@
 #define INSTRUCTIONEDITORMODEL_H
 
 #include "Assembler/assembler.h"
+#include "Assembler/disassembler.h"
+// #include "Common/memoryobserver.h"
+
+// forward declare
+class MachineState;
 
 namespace InstructionEditor {
 
@@ -13,7 +18,7 @@ namespace InstructionEditor {
     class InstructionEditorModel : public QAbstractTableModel {
         Q_OBJECT
     public:
-        explicit InstructionEditorModel(Assembly::LabelData* labelData, Assembly::InstructionSet* instructionSet, InstructionData* instructionData, QObject* parent = nullptr);
+        explicit InstructionEditorModel(MachineState* machineState, Assembly::LabelData* labelData, Assembly::InstructionSet* instructionSet, InstructionData* instructionData, QObject* parent = nullptr);
 
         int rowCount(const QModelIndex& parent = {}) const override;
         int columnCount(const QModelIndex& parent = {}) const override;
@@ -32,13 +37,21 @@ namespace InstructionEditor {
         quint32 baseAddress() const;
 
         int maxLines() const;
-        void syncFromMemory();
+
+    signals:
+        void memoryRegionChanged(quint32 startAddress, quint32 endAddress);
+
+    public slots:
+        void onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress);
 
     private:
+        MachineState* machineState;
         Assembly::LabelData* labelData;
         Assembly::InstructionSet* instructionSet;
         InstructionData* instructionData;
+
         Assembly::Assembler m_assembler;
+        Assembly::Disassembler m_disassembler;
     };
 
 

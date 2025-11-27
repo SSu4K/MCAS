@@ -10,7 +10,8 @@ using namespace InstructionEditor;
 
  InstructionEditorWidget::InstructionEditorWidget(QWidget* parent)
     : QWidget(parent),
-    model(AppContext::instance()->sharedData()->labels(),
+    model(AppContext::instance()->sharedData()->editorMachineState(),
+          AppContext::instance()->sharedData()->labels(),
             AppContext::instance()->sharedData()->instructionSet(),
             AppContext::instance()->sharedData()->instructions())
     {

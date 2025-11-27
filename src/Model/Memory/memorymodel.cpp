@@ -19,6 +19,7 @@ MemoryModel::MemoryModel(MachineState* machineState, QObject* parent) :
 
 {
     machineState->clearMemory();
+    setColumns(8);
 }
 
 QVariant MemoryModel::headerData(int section, Qt::Orientation orientation, int role) const {
@@ -39,7 +40,7 @@ QVariant MemoryModel::headerData(int section, Qt::Orientation orientation, int r
 
 int MemoryModel::rowCount(const QModelIndex& parent) const {
     Q_UNUSED(parent);
-    return (machineState->getMemorySize() / (int)unitSize + m_cols - 1) / m_cols;
+    return m_rows;
 }
 
 int MemoryModel::columnCount(const QModelIndex& parent) const {
@@ -89,6 +90,7 @@ void MemoryModel::setColumns(int cols) {
     if (m_cols == cols) return;
     beginResetModel();
     m_cols = cols;
+    m_rows = (machineState->getMemorySize() / (int)unitSize + m_cols - 1) / m_cols;
     endResetModel();
 }
 
@@ -127,7 +129,8 @@ bool MemoryModel::setData(const QModelIndex& index, const QVariant& value, int r
             machineState->storeWord(address, val); // implicit truncation of quint32 to word
             break;
         }
-        emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+        //emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+        emit memoryRegionChanged(address, address + (qsizetype)unitSize - 1);
         return true;
     }
     catch(std::exception e){
@@ -192,5 +195,15 @@ bool MemoryModel::loadFromTextStream(QTextStream &stream){
 
     endResetModel();
     return true;
+}
+
+void MemoryModel::onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress){
+    qsizetype firstIndex = startAddress / (int)unitSize;
+    qsizetype lastIndex = endAddress / (int)unitSize;
+
+    QModelIndex first = index(firstIndex / m_rows, firstIndex % m_rows);
+    QModelIndex last = index(lastIndex / m_rows, lastIndex % m_rows);
+
+    emit dataChanged(first, last, {Qt::DisplayRole, Qt::EditRole});
 }
 

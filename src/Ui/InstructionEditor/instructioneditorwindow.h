@@ -7,12 +7,14 @@ namespace InstructionEditor{
 
     // forward declarations
     class InstructionEditorWidget;
+    class InstructionEditorModel;
 
     class InstructionEditorWindow : public EditorWindow
     {
         Q_OBJECT
     public:
         explicit InstructionEditorWindow(QWidget *parent = nullptr);
+        InstructionEditorModel* getModel();
 
     protected:
         QString windowTitle() const override { return tr("Instruction Editor"); }

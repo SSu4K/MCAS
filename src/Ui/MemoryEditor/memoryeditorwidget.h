@@ -18,7 +18,7 @@ namespace MemoryEditor {
     public:
         explicit MemoryEditorWidget(QWidget* parent = nullptr);
 
-        MemoryModel *model() {return &m_model;}
+        MemoryModel *getModel() {return &m_model;}
 
         MemoryUnitSize getUnitSize();
         void setUnitSize(MemoryUnitSize size);

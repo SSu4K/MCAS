@@ -20,14 +20,19 @@ MemoryEditorWindow::MemoryEditorWindow(QWidget *parent)
     createMenu();
 }
 
+MemoryEditor::MemoryModel* MemoryEditorWindow::getModel(){
+    return m_memoryEditorWidget->getModel();
+}
+
+
 bool MemoryEditorWindow::serializeToFile(QFile &file) const {
     QTextStream out(&file);
-    return m_memoryEditorWidget->model()->saveToTextStream(out);
+    return m_memoryEditorWidget->getModel()->saveToTextStream(out);
 }
 
 bool MemoryEditorWindow::serializeFromFile(QFile &file){
     QTextStream in(&file);
-    return m_memoryEditorWidget->model()->loadFromTextStream(in);
+    return m_memoryEditorWidget->getModel()->loadFromTextStream(in);
 }
 
 void MemoryEditorWindow::clearData(){

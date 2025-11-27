@@ -6,11 +6,14 @@
 
 namespace MemoryEditor{
 
+    class MemoryModel;
+
     class MemoryEditorWindow : public EditorWindow
     {
         Q_OBJECT
     public:
         explicit MemoryEditorWindow(QWidget *parent = nullptr);
+        MemoryModel* getModel();
 
     protected:
         QString windowTitle() const override { return tr("Memory Editor"); }
