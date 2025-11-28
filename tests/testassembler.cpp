@@ -5,25 +5,23 @@
 #include "Assembler/labeldata.h"
 #include "Common/twoscomplement.h"
 
+#define TEST_LINE_NUMBER 15
+
 using namespace Assembly;
 
-static qsizetype TEST_LINE_NUMBER = 15;
-
-static InstructionSet TEST_INSTRUCTION_SET(
-    {
-        { "NOP",    InstructionType::R, ""},
-        { "ADD",    InstructionType::R, "r1, r2, r3"},
-        { "LDH",    InstructionType::I, "r2, i(r1)"},
-        { "ADDI",   InstructionType::I, "r1, i, r2"},
-        { "JUMP",   InstructionType::J, "j"},
-        { "BRZ",    InstructionType::I, "r1, j"},
-        { "ADD4",   InstructionType::R, "r1, r2, r3, r4, r5"}
-    });
-
-static LabelData TEST_LABEL_DATA;
-
-static auto TEST_INSTRUCTION_SET_SPTR = std::make_shared<InstructionSet>(TEST_INSTRUCTION_SET);
-static auto TEST_LABEL_DATA_SPTR = std::make_shared<LabelData>(TEST_LABEL_DATA);
+TestAssembler::TestAssembler(QObject* parent)
+    : QObject(parent),
+    testInstructionSet({
+        InstructionDefinition("NOP",    InstructionType::R, ""),
+        InstructionDefinition("ADD",    InstructionType::R, "r1, r2, r3"),
+        InstructionDefinition("LDH",    InstructionType::I, "r2, i(r1)"),
+        InstructionDefinition("ADDI",   InstructionType::I, "r1, i, r2"),
+        InstructionDefinition("JUMP",   InstructionType::J, "j"),
+        InstructionDefinition("BRZ",    InstructionType::I, "r1, j"),
+        InstructionDefinition("ADD4",   InstructionType::R, "r1, r2, r3, r4, r5")
+    }),
+    testLabelData()
+{}
 
 void TestAssembler::initTestCase() {
     qDebug() << "Starting Instruction assembler tests...";
@@ -54,7 +52,7 @@ void assembleresultCase(const qsizetype lineNumber, const QString &instr, const 
 }
 
 void TestAssembler::General_Parse(){
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, TEST_LABEL_DATA_SPTR);
+    Assembler assembler(&testInstructionSet, &testLabelData);
     AssemblyStatusCase(
         "", AssemblyStatus::fail(ErrorType::MissingToken, "Empty line"), assembler
         );
@@ -70,7 +68,7 @@ void TestAssembler::General_Parse(){
 }
 
 void TestAssembler::RType_Parse_Done(){
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, TEST_LABEL_DATA_SPTR);
+    Assembler assembler(&testInstructionSet, &testLabelData);
 
     AssemblyStatusCase(
         "ADD R1, R2, R3", AssemblyStatus::done("Parsed RType instruction"), assembler
@@ -91,7 +89,7 @@ void TestAssembler::RType_Parse_Done(){
 }
 
 void TestAssembler::RType_Parse_Fail(){
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, TEST_LABEL_DATA_SPTR);
+    Assembler assembler(&testInstructionSet, &testLabelData);
 
     AssemblyStatusCase(
         "ADD R1, R2, 0xABCD",
@@ -121,10 +119,10 @@ void TestAssembler::RType_Parse_Fail(){
 }
 
 void TestAssembler::IType_Parse_Done(){
-    auto labelDataStpr = std::make_shared<LabelData>();
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, labelDataStpr);
+    LabelData labelData;
+    Assembler assembler(&testInstructionSet, &labelData);
 
-    labelDataStpr->setLabel("label", 0xFF);
+    labelData.setLabel("label", 0xFF);
 
     AssemblyStatusCase(
         "LDH R2, 0x0022(R1)",
@@ -149,7 +147,7 @@ void TestAssembler::IType_Parse_Done(){
 }
 
 void TestAssembler::IType_Parse_Fail(){
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, TEST_LABEL_DATA_SPTR);
+    Assembler assembler(&testInstructionSet, &testLabelData);
     AssemblyStatusCase(
         "ADDI R1, 0x10000, R2",
         AssemblyStatus::fail(ErrorType::InvalidToken, "Immediate out of range for 16-bit hex immediate field", {TokenType::Hex, "0x10000", 9, 2, TEST_LINE_NUMBER}),
@@ -198,8 +196,8 @@ void TestAssembler::IType_Parse_Fail(){
 }
 
 void TestAssembler::IType_Jumps(){
-    auto labelDataStpr = std::make_shared<LabelData>();
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, labelDataStpr);
+    LabelData labelData;
+    Assembler assembler(&testInstructionSet, &labelData);
 
     const qint32 minImmediateValue = TwoC::getMin(encodingConfig->IImmediateSize());
     const qint32 maxImmediateValue = TwoC::getMax(encodingConfig->IImmediateSize());
@@ -208,12 +206,12 @@ void TestAssembler::IType_Jumps(){
     const quint32 maxLineJump = maxImmediateValue / 4;
 
     const qint32 baseLineNumber = maxLineJump + 0xF000; // just a high value some in the middle of memory
-    labelDataStpr->setLabel("label_zero", 4*(baseLineNumber+1));
-    labelDataStpr->setLabel("label_plus", 4*(baseLineNumber+2));
-    labelDataStpr->setLabel("label_minus", 4*(baseLineNumber));
+    labelData.setLabel("label_zero", 4*(baseLineNumber+1));
+    labelData.setLabel("label_plus", 4*(baseLineNumber+2));
+    labelData.setLabel("label_minus", 4*(baseLineNumber));
 
-    labelDataStpr->setLabel("label_max", 4*(baseLineNumber+1+maxLineJump));
-    labelDataStpr->setLabel("label_min", 4*(baseLineNumber+1+minLineJump));
+    labelData.setLabel("label_max", 4*(baseLineNumber+1+maxLineJump));
+    labelData.setLabel("label_min", 4*(baseLineNumber+1+minLineJump));
 
     assembleresultCase<IType>(
         baseLineNumber, "BRZ R1, label_zero",
@@ -248,8 +246,8 @@ void TestAssembler::IType_Jumps(){
         assembler
         );
 
-    labelDataStpr->setLabel("label_gt_max", 4*(baseLineNumber+1+maxLineJump+1));
-    labelDataStpr->setLabel("label_gt_min", 4*(baseLineNumber+1+minLineJump-1));
+    labelData.setLabel("label_gt_max", 4*(baseLineNumber+1+maxLineJump+1));
+    labelData.setLabel("label_gt_min", 4*(baseLineNumber+1+minLineJump-1));
 
     AssemblyStatusCase(
         "BRZ R1, label_gt_max",
@@ -264,9 +262,11 @@ void TestAssembler::IType_Jumps(){
 }
 
 void TestAssembler::JType_Parse_Done(){
-    auto labelDataStpr = std::make_shared<LabelData>();
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, labelDataStpr);
-    labelDataStpr->setLabel("label", 0xFF);
+    LabelData labelData;
+    Assembler assembler(&testInstructionSet, &labelData);
+
+    labelData.setLabel("label", 0xFF);
+
 
     AssemblyStatusCase(
         "JUMP 0x0022",
@@ -281,7 +281,7 @@ void TestAssembler::JType_Parse_Done(){
 }
 
 void TestAssembler::JType_Parse_Fail(){
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, TEST_LABEL_DATA_SPTR);
+    Assembler assembler(&testInstructionSet, &testLabelData);
     AssemblyStatusCase(
         "JUMP loop1",
         AssemblyStatus::fail(ErrorType::InvalidToken, "Unknown label: loop1", {TokenType::Identifier, "loop1", 5, 1, TEST_LINE_NUMBER}),
@@ -300,15 +300,18 @@ void TestAssembler::JType_Parse_Fail(){
 }
 
 void TestAssembler::JType_Jumps(){
-    auto labelDataStpr = std::make_shared<LabelData>();
-    Assembler assembler(TEST_INSTRUCTION_SET_SPTR, labelDataStpr);
+    LabelData labelData;
+    Assembler assembler(&testInstructionSet, &labelData);
+
+    labelData.setLabel("label", 0xFF);
+
 
     const quint32 maxImmediateValue = (1u << encodingConfig->JImmediateSize()) - 1;
     const quint32 maxLineNumber = maxImmediateValue / 4;
 
-    labelDataStpr->setLabel("label_zero", 0);
-    labelDataStpr->setLabel("label_plus", 4);
-    labelDataStpr->setLabel("label_max", 4*(maxLineNumber));
+    labelData.setLabel("label_zero", 0);
+    labelData.setLabel("label_plus", 4);
+    labelData.setLabel("label_max", 4*(maxLineNumber));
 
     assembleresultCase<JType>(
         TEST_LINE_NUMBER, "JUMP label_zero",
@@ -331,7 +334,7 @@ void TestAssembler::JType_Jumps(){
         assembler
         );
 
-    labelDataStpr->setLabel("label_gt_max", 4*(maxLineNumber+1));
+    labelData.setLabel("label_gt_max", 4*(maxLineNumber+1));
 
     AssemblyStatusCase(
         "JUMP label_gt_max",

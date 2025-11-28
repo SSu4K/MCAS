@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/i18n">
+        <file alias="MCAS_pl.ts">translations/MCAS_pl.ts</file>
+        <file alias="MCAS_en.ts">translations/MCAS_en.ts</file>
+    </qresource>
+</RCC>
