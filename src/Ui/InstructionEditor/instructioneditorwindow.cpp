@@ -20,6 +20,8 @@ InstructionEditorWindow::InstructionEditorWindow(QWidget *parent)
     }
 }
 
+InstructionEditor::InstructionEditorModel* InstructionEditorWindow::getModel() {return m_widget->getModel();}
+
 bool InstructionEditorWindow::serializeToFile(QFile& file) const {
     // do nothing for now
     return true;

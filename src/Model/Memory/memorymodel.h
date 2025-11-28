@@ -1,28 +1,17 @@
 #ifndef MEMORYMODEL_H
 #define MEMORYMODEL_H
 
-#include "memorydata.h"
-
-const qsizetype MEMORY_SIZE = 512;
+#include "machinestate.h"
 
 namespace MemoryEditor {
-
-    const quint32 BYTE_MASK = 0xFF;
-    const quint32 HALF_MASK = 0xFFFF;
-    const quint32 WORD_MASK = 0xFFFFFFFF;
-
-    enum class MemoryUnitSize{Byte=1, Half=2, Word=4};
-
-    const quint32 unitMasks[3] = {BYTE_MASK, HALF_MASK, WORD_MASK};
 
     class MemoryModel : public QAbstractTableModel {
         Q_OBJECT
     public:
-        explicit MemoryModel(MemoryData* memoryData, QObject* parent = nullptr);
+        explicit MemoryModel(MachineState* machineState, QObject* parent = nullptr);
 
         QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-        void setMemory(const QByteArray& mem);
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
         int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
@@ -40,13 +29,18 @@ namespace MemoryEditor {
         bool loadFromTextStream(QTextStream &stream);
         bool saveToTextStream(QTextStream &stream);
 
-        void write(quint32 address, quint32 value, MemoryUnitSize unit = MemoryUnitSize::Word, bool* okptr = nullptr);
-        quint32 read(quint32 address, MemoryUnitSize unit = MemoryUnitSize::Word, bool* okptr = nullptr);
+    signals:
+        void memoryRegionChanged(quint32 startAddress, quint32 endAddress);
+
+    public slots:
+        void onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress);
 
     private:
-        MemoryData* memoryData;
-        int m_cols = 8;
-        MemoryUnitSize unitSize = MemoryUnitSize::Half;
+        MachineState* machineState;
+
+        int m_cols;
+        int m_rows;
+        MemoryUnitSize unitSize;
     };
 
 

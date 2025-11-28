@@ -3,23 +3,26 @@
 #include "instructioneditormodel.h"
 #include "instructiondata.h"
 
-#include "Memory/memorymodel.h"
-
 #include "Assembler/assemblystatus.h"
 #include "Common/hexint.h"
+#include "machinestate.h"
 
 using namespace Assembly;
 
 using namespace InstructionEditor;
 
 InstructionEditorModel::InstructionEditorModel(
+                        MachineState* machineState,
                         Assembly::LabelData* labelData, Assembly::InstructionSet* instructionSet,
                         InstructionData* instructionData, QObject* parent)
     : QAbstractTableModel(parent),
+    machineState(machineState),
     labelData(labelData),
     instructionSet(instructionSet),
     instructionData(instructionData),
-    m_assembler(instructionSet, labelData) {}
+    m_assembler(instructionSet, labelData),
+    m_disassembler(instructionSet, labelData)
+{}
 
 int InstructionEditorModel::rowCount(const QModelIndex& parent) const  {
     Q_UNUSED(parent);
@@ -95,6 +98,7 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
     auto result = m_assembler.assembleLine(entry.text, lineNumber, status);
     entry.valid = status.isOk();
     entry.errorMessage = status.msg;
+    entry.encoded = 0;
 
     if (entry.valid){
         switch(result->type()){
@@ -112,32 +116,11 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
         entry.instruction = result;
     }
 
+    quint32 address = 4*lineNumber;
+    machineState->storeWord(address, entry.encoded);
+    emit memoryRegionChanged(address, address+3);
+
     emit dataChanged(index, this->index(index.row(), 3)); // update row
-    return true;
-}
-
-bool InstructionEditorModel::addInstruction(const QString& text) {
-    if (instructionData->instructions.size() >= instructionData->maxLines)
-        return false;
-
-    beginInsertRows({}, instructionData->instructions.size(), instructionData->instructions.size());
-    if(!text.isEmpty()){
-        instructionData->instructions.append({0, text});
-    }
-    else{
-        instructionData->instructions.append(InstructionEntry());
-    }
-    endInsertRows();
-    return true;
-}
-
-bool InstructionEditorModel::removeInstruction(int row) {
-    if (row < 0 || row >= instructionData->instructions.size())
-        return false;
-
-    beginRemoveRows({}, row, row);
-    instructionData->instructions.removeAt(row);
-    endRemoveRows();
     return true;
 }
 
@@ -159,6 +142,31 @@ quint32 InstructionEditorModel::baseAddress() const { return instructionData->ba
 
 int InstructionEditorModel::maxLines() const { return instructionData->maxLines; }
 
-void InstructionEditorModel::syncFromMemory(){
-    //
+void InstructionEditorModel::onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress){
+    qsizetype firstline = startAddress / 4;
+    qsizetype lastline = endAddress / 4;
+
+    for (qsizetype i = firstline; i <= lastline; i++){
+        AssemblyStatus status = AssemblyStatus::done();
+        quint32 instruction = machineState->loadWord(4*i);
+        QString disassembled = m_disassembler.disassembleLine(instruction, i, status);
+
+        auto& entry = instructionData->instructions[i];
+        if(status.isOk()){
+            entry.valid = true;
+            entry.encoded = instruction;
+            entry.errorMessage = "";
+            entry.text = disassembled;
+        }
+        else{
+            entry.valid = false;
+            entry.encoded = instruction;
+            entry.errorMessage = "Failed to disassemble from memory";
+            entry.text = "";
+        }
+    }
+
+    QModelIndex firstIndex = this->index(firstline, 0);
+    QModelIndex lastIndex = this->index(lastline, 3);
+    emit dataChanged(firstIndex, lastIndex);
 }

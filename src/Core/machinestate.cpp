@@ -36,7 +36,7 @@ void MachineState::setReg(const size_t index, const word value){
 }
 
 void MachineState::checkMemoryAccess(const word address, const size_t size) const{
-    if(address + size > config.memorySize)
+    if(address > config.memorySize - size)
         throw std::out_of_range("Memory access out of range");
 }
 
@@ -66,7 +66,7 @@ word MachineState::loadWord(const word address) const{
 
     return (memory[address]     << 24) |
            (memory[address+1]   << 16) |
-           (memory[address+2]   << 16) |
+           (memory[address+2]   << 8) |
            memory[address+3];
 }
 
@@ -76,4 +76,30 @@ void MachineState::storeWord(const word address, const word value){
     memory[address+1]   = (value >> 16) & 0xFF;
     memory[address+2]   = (value >> 8) & 0xFF;
     memory[address+3]   = value & 0xFF;
+}
+
+word MachineState::getMemorySize() const{
+    return config.memorySize;
+}
+
+word MachineState::getInstructionMemorySize() const{
+    return config.instructionMemorySize;
+}
+
+void MachineState::clearInstructionMemory(){
+    for(size_t i=0; i<config.instructionMemorySize; i++){
+        memory[i] = 0;
+    }
+}
+
+void MachineState::clearDataMemory(){
+    for(size_t i=config.instructionMemorySize; i<config.memorySize; i++){
+        memory[i] = 0;
+    }
+}
+
+void MachineState::clearMemory(){
+    for(size_t i=0; i<config.memorySize; i++){
+        memory[i] = 0;
+    }
 }

@@ -4,21 +4,23 @@
 #include "Assembler/instructiondefinition.h"
 #include "Assembler/labeldata.h"
 #include "Instruction/instructiondata.h"
-#include "Memory/memorydata.h"
 #include "Microcode/jumptabledata.h"
 #include "Microcode/microcodedata.h"
+#include "machinestate.h"
 
 class SharedData: public QObject{
     Q_OBJECT
 public:
     explicit SharedData(QObject* parent = nullptr);
 
-    MemoryEditor::MemoryData* memory() { return &m_memory; }
     InstructionEditor::InstructionData* instructions() { return &m_instructions; }
     MicrocodeEditor::MicrocodeData* microcode() { return &m_microcode; }
     MicrocodeEditor::JumpTableData* jumptable() { return &m_jumptable; }
     Assembly::LabelData* labels() { return &m_labelData; }
     Assembly::InstructionSet* instructionSet() { return &m_instructionSet;}
+
+    MachineState* editorMachineState() {return &m_editorMachineState;}
+    MachineConfig* machineConfig() {return &m_machineConfig;}
 
 signals:
     void memoryUpdated();
@@ -27,12 +29,14 @@ signals:
     void configChanged();
 
 private:
-    MemoryEditor::MemoryData m_memory;
-    InstructionEditor::InstructionData m_instructions;
     MicrocodeEditor::MicrocodeData m_microcode;
     MicrocodeEditor::JumpTableData m_jumptable;
     Assembly::LabelData m_labelData;
     Assembly::InstructionSet m_instructionSet;
+
+    MachineConfig m_machineConfig;
+    MachineState m_editorMachineState;
+    InstructionEditor::InstructionData m_instructions;
 };
 
 class AppContext : public QObject

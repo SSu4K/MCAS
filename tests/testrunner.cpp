@@ -1,8 +1,8 @@
 #include <QTest>
 #include "testinstructions.h"
-//#include "testparser.h"
 #include "testassembler.h"
 #include "testdisassembler.h"
+#include "testmemory.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,11 +12,15 @@ int main(int argc, char *argv[])
         status |= QTest::qExec(&t1, argc, argv);
     }
     {
-        TestAssembler t3;
+        TestAssembler t2;
+        status |= QTest::qExec(&t2, argc, argv);
+    }
+    {
+        TestDisassembler t3;
         status |= QTest::qExec(&t3, argc, argv);
     }
     {
-        TestDisassembler t4;
+        TestMemory t4;
         status |= QTest::qExec(&t4, argc, argv);
     }
     return status;

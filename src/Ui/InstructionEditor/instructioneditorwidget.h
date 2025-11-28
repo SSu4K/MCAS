@@ -15,6 +15,7 @@ class InstructionEditorWidget : public QWidget {
     Q_OBJECT
 public:
     explicit InstructionEditorWidget(QWidget* parent = nullptr);
+    InstructionEditorModel* getModel() {return &model;}
 
 private:
     QTableView* tableView;

@@ -2,11 +2,12 @@
 #define MACHINESTATE_H
 
 #include <stdint.h>
-#include <vector>
 
 typedef uint32_t word;
 typedef uint16_t half;
 typedef uint8_t byte;
+
+enum class MemoryUnitSize{Byte=1, Half=2, Word=4};
 
 struct MachineConfig{
     word memorySize = 4096;
@@ -43,6 +44,13 @@ public:
 
     word loadWord(const word address) const;
     void storeWord(const word address, const word value);
+
+    word getMemorySize() const;
+    word getInstructionMemorySize() const;
+
+    void clearInstructionMemory();
+    void clearDataMemory();
+    void clearMemory();
 };
 
 #endif // MACHINESTATE_H

@@ -2,6 +2,7 @@
 #include <QActionGroup>
 
 #include "memoryeditorwindow.h"
+#include "Memory/memorymodel.h"
 
 using namespace MemoryEditor;
 
@@ -19,14 +20,19 @@ MemoryEditorWindow::MemoryEditorWindow(QWidget *parent)
     createMenu();
 }
 
+MemoryEditor::MemoryModel* MemoryEditorWindow::getModel(){
+    return m_memoryEditorWidget->getModel();
+}
+
+
 bool MemoryEditorWindow::serializeToFile(QFile &file) const {
     QTextStream out(&file);
-    return m_memoryEditorWidget->model()->saveToTextStream(out);
+    return m_memoryEditorWidget->getModel()->saveToTextStream(out);
 }
 
 bool MemoryEditorWindow::serializeFromFile(QFile &file){
     QTextStream in(&file);
-    return m_memoryEditorWidget->model()->loadFromTextStream(in);
+    return m_memoryEditorWidget->getModel()->loadFromTextStream(in);
 }
 
 void MemoryEditorWindow::clearData(){
@@ -65,15 +71,15 @@ void MemoryEditorWindow::createCustomMenu(){
 
     connect(viewMenu, &QMenu::aboutToShow, this, [=]() {
         switch (m_memoryEditorWidget->getUnitSize()) {
-            case MemoryEditor::MemoryUnitSize::Byte:  byteAction->setChecked(true); break;
-            case MemoryEditor::MemoryUnitSize::Half:  halfAction->setChecked(true); break;
-            case MemoryEditor::MemoryUnitSize::Word:  wordAction->setChecked(true); break;
+            case MemoryUnitSize::Byte:  byteAction->setChecked(true); break;
+            case MemoryUnitSize::Half:  halfAction->setChecked(true); break;
+            case MemoryUnitSize::Word:  wordAction->setChecked(true); break;
         }
     });
 
     connect(group, &QActionGroup::triggered, this, [=](QAction *action) {
-        if (action == byteAction) m_memoryEditorWidget->setUnitSize(MemoryEditor::MemoryUnitSize::Byte);
-        if (action == halfAction) m_memoryEditorWidget->setUnitSize(MemoryEditor::MemoryUnitSize::Half);
-        if (action == wordAction) m_memoryEditorWidget->setUnitSize(MemoryEditor::MemoryUnitSize::Word);
+        if (action == byteAction) m_memoryEditorWidget->setUnitSize(MemoryUnitSize::Byte);
+        if (action == halfAction) m_memoryEditorWidget->setUnitSize(MemoryUnitSize::Half);
+        if (action == wordAction) m_memoryEditorWidget->setUnitSize(MemoryUnitSize::Word);
     });
 }

@@ -5,6 +5,8 @@
 #include "appcontext.h"
 #include "mcasapp.h"
 
+#include "Instruction/instructioneditormodel.h"
+
 using namespace MicrocodeEditor;
 using namespace MemoryEditor;
 using namespace InstructionEditor;
@@ -23,6 +25,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(AppContext::instance(), &AppContext::languageChanged,
             this, &MainWindow::retranslateUi);
+
+    m_memoryEditorWindow = new MemoryEditorWindow(this);
+    m_instructionEditorWindow = new InstructionEditorWindow(this);
+
+    auto memoryModel = m_memoryEditorWindow->getModel();
+    auto instructionModel = m_instructionEditorWindow->getModel();
+    connect(memoryModel, &MemoryModel::memoryRegionChanged, instructionModel, &InstructionEditorModel::onMemoryRegionChanged);
+    connect(instructionModel, &InstructionEditorModel::memoryRegionChanged, memoryModel, &MemoryModel::onMemoryRegionChanged);
+}
+
+MainWindow::~MainWindow(){
+    closeInstructionEditorWindow();
+    closeMemoryEditorWindow();
+    closeMicrocodeEditorWindow();
+    QMainWindow::~QMainWindow();
 }
 
 void MainWindow::openMicrocodeEditorWindow()
@@ -38,6 +55,7 @@ void MainWindow::openMicrocodeEditorWindow()
 }
 
 void MainWindow::closeMicrocodeEditorWindow(){
+    m_microcodeEditorWindow->close();
     m_microcodeEditorWindow = nullptr;
 }
 
@@ -53,6 +71,7 @@ void MainWindow::openMemoryEditorWindow(){
 }
 
 void MainWindow::closeMemoryEditorWindow(){
+    m_memoryEditorWindow->close();
     m_memoryEditorWindow = nullptr;
 }
 
@@ -68,6 +87,7 @@ void MainWindow::openInstructionEditorWindow(){
 }
 
 void MainWindow::closeInstructionEditorWindow(){
+    m_instructionEditorWindow->close();
     m_instructionEditorWindow = nullptr;
 }
 
@@ -175,6 +195,11 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     }
     else if (obj == m_memoryEditorWindow && event->type() == QEvent::Close) {
         m_memoryEditorWindow->hide();
+        event->ignore();
+        return true;
+    }
+    else if (obj == m_instructionEditorWindow && event->type() == QEvent::Close) {
+        m_instructionEditorWindow->hide();
         event->ignore();
         return true;
     }
