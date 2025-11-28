@@ -1,5 +1,6 @@
 #include <QMenuBar>
 #include <QActionGroup>
+#include <QLayout>
 
 #include "mainwindow.h"
 #include "appcontext.h"
@@ -27,7 +28,11 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::retranslateUi);
 
     m_memoryEditorWindow = new MemoryEditorWindow(this);
+    m_memoryEditorWindow->installEventFilter(this);
+
     m_instructionEditorWindow = new InstructionEditorWindow(this);
+    m_instructionEditorWindow->installEventFilter(this);
+
 
     auto memoryModel = m_memoryEditorWindow->getModel();
     auto instructionModel = m_instructionEditorWindow->getModel();
@@ -66,9 +71,7 @@ void MainWindow::openMemoryEditorWindow(){
         m_memoryEditorWindow->installEventFilter(this);
     }
 
-    m_memoryEditorWindow->show();
-    m_memoryEditorWindow->raise();
-    m_memoryEditorWindow->activateWindow();
+    m_memoryEditorWindow->openWindow();
 }
 
 void MainWindow::closeMemoryEditorWindow(){

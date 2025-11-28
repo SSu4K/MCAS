@@ -24,6 +24,13 @@ MemoryEditor::MemoryModel* MemoryEditorWindow::getModel(){
     return m_memoryEditorWidget->getModel();
 }
 
+void MemoryEditorWindow::openWindow(){
+    show();
+    // m_memoryEditorWidget->updateColumnCount();
+    raise();
+    activateWindow();
+}
+
 
 bool MemoryEditorWindow::serializeToFile(QFile &file) const {
     QTextStream out(&file);

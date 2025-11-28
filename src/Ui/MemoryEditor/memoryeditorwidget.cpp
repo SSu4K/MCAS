@@ -1,6 +1,7 @@
 #include <QTableView>
 #include <QHeaderView>
 #include <QVBoxLayout>
+#include <qevent.h>
 
 #include "memoryeditorwidget.h"
 
@@ -13,6 +14,7 @@ using namespace MemoryEditor;
 MemoryEditorWidget::MemoryEditorWidget(QWidget* parent)
     : QWidget(parent), m_model(AppContext::instance()->sharedData()->editorMachineState())
 {
+    qDebug() << "Begin memory widget init";
     m_tableView = new QTableView(this);
 
     m_tableView->setModel(&m_model);
@@ -41,7 +43,7 @@ MemoryEditorWidget::MemoryEditorWidget(QWidget* parent)
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
 
-    QTimer::singleShot(0, this, [this]{ setUnitSize(MemoryUnitSize::Half); });
+    qDebug() << "End memory widget init";
 }
 
 void MemoryEditorWidget::resizeEvent(QResizeEvent* event)
@@ -50,11 +52,22 @@ void MemoryEditorWidget::resizeEvent(QResizeEvent* event)
     updateColumnCount();
 }
 
+bool MemoryEditorWidget::event(QEvent *e)
+{
+    if (e->type() == QEvent::Show) {
+        // polish widget just before showing it
+        qDebug() << "Polishing widget";
+        updateColumnCount();
+    }
+    return QWidget::event(e);
+}
+
 
 void MemoryEditorWidget::updateColumnCount()
 {
     if (!m_tableView->model()) return;
-
+    qDebug() << "Begin updateColumnCount";
+    qDebug() << "unitSize:" << (int)m_model.getUnitSize();
     QFontMetrics fm(m_tableView->font());
     int charW = fm.horizontalAdvance('F') + 1;
     int hexChars = 2 * (int)m_model.getUnitSize();
@@ -64,11 +77,15 @@ void MemoryEditorWidget::updateColumnCount()
     int available = m_tableView->viewport()->width();
     int cols = qMax(1, available / cellWidth);
 
+    qDebug() << "cols:" << cols;
+
     if (m_model.columnCount() != cols) {
         m_model.setColumns(cols);
         m_tableView->horizontalHeader()->setDefaultSectionSize(cellWidth);
         m_tableView->verticalHeader()->setDefaultSectionSize(fm.height() + 8);
     }
+
+    qDebug() << "End updateColumnCount";
 }
 
 MemoryUnitSize MemoryEditorWidget::getUnitSize(){
