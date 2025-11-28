@@ -12,7 +12,6 @@ QPointer<AppContext> AppContext::s_instance = nullptr;
 
 SharedData::SharedData(QObject* parent)
     : QObject(parent),
-    m_instructions(),
     m_microcode(),
     m_jumptable(),
     m_labelData(),
@@ -25,7 +24,8 @@ SharedData::SharedData(QObject* parent)
         { "BRZ",    InstructionType::I, "r1, j"},
     }),
     m_machineConfig(),
-    m_editorMachineState(m_machineConfig)
+    m_editorMachineState(m_machineConfig),
+    m_instructions(this, m_machineConfig.memorySize, 0)
 {}
 
 AppContext::AppContext(QObject* parent)

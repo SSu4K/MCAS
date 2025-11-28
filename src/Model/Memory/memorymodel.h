@@ -2,7 +2,6 @@
 #define MEMORYMODEL_H
 
 #include "machinestate.h"
-// #include "Common/memoryobserver.h"
 
 namespace MemoryEditor {
 
@@ -41,7 +40,7 @@ namespace MemoryEditor {
 
         int m_cols;
         int m_rows;
-        MemoryUnitSize unitSize = MemoryUnitSize::Half;
+        MemoryUnitSize unitSize;
     };
 
 

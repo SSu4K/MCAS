@@ -29,7 +29,6 @@ signals:
     void configChanged();
 
 private:
-    InstructionEditor::InstructionData m_instructions;
     MicrocodeEditor::MicrocodeData m_microcode;
     MicrocodeEditor::JumpTableData m_jumptable;
     Assembly::LabelData m_labelData;
@@ -37,6 +36,7 @@ private:
 
     MachineConfig m_machineConfig;
     MachineState m_editorMachineState;
+    InstructionEditor::InstructionData m_instructions;
 };
 
 class AppContext : public QObject

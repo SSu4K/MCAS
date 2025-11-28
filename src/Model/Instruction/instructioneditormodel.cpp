@@ -124,31 +124,6 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
     return true;
 }
 
-bool InstructionEditorModel::addInstruction(const QString& text) {
-    if (instructionData->instructions.size() >= instructionData->maxLines)
-        return false;
-
-    beginInsertRows({}, instructionData->instructions.size(), instructionData->instructions.size());
-    if(!text.isEmpty()){
-        instructionData->instructions.append({0, text});
-    }
-    else{
-        instructionData->instructions.append(InstructionEntry());
-    }
-    endInsertRows();
-    return true;
-}
-
-bool InstructionEditorModel::removeInstruction(int row) {
-    if (row < 0 || row >= instructionData->instructions.size())
-        return false;
-
-    beginRemoveRows({}, row, row);
-    instructionData->instructions.removeAt(row);
-    endRemoveRows();
-    return true;
-}
-
 QList<quint32> InstructionEditorModel::encodedInstructions() const {
     QList<quint32> list;
     for (const auto& e : instructionData->instructions)

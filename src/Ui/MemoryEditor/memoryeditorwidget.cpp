@@ -41,7 +41,7 @@ MemoryEditorWidget::MemoryEditorWidget(QWidget* parent)
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
 
-    QTimer::singleShot(0, this, [this]{ updateColumnCount(); });
+    QTimer::singleShot(0, this, [this]{ setUnitSize(MemoryUnitSize::Half); });
 }
 
 void MemoryEditorWidget::resizeEvent(QResizeEvent* event)
