@@ -13,7 +13,8 @@ namespace InstructionEditor {
     // forward declarations
     class InstructionData;
 
-    const qsizetype INSTRUCTION_COLUMN_INDEX = 2;
+    const qsizetype LABEL_COLUMN_INDEX = 2;
+    const qsizetype INSTRUCTION_COLUMN_INDEX = 3;
 
     class InstructionEditorModel : public QAbstractTableModel {
         Q_OBJECT
@@ -51,6 +52,11 @@ namespace InstructionEditor {
 
         Assembly::Assembler m_assembler;
         Assembly::Disassembler m_disassembler;
+
+
+        void assembleLine(const qsizetype lineNumber);
+        bool setInstruction(const qsizetype lineNumber, const QString &text);
+        bool setLabel(const qsizetype lineNumber, const QString &text);
     };
 
 

@@ -10,11 +10,12 @@ InstructionEditorDelegate::InstructionEditorDelegate(QObject* parent)
 
 QWidget* InstructionEditorDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option,
                       const QModelIndex& index) const {
-    if (index.column() != INSTRUCTION_COLUMN_INDEX)
-        return nullptr;
+    if (index.column() == INSTRUCTION_COLUMN_INDEX || index.column() == LABEL_COLUMN_INDEX){
+        QLineEdit* editor = new QLineEdit(parent);
+        return editor;
+    }
 
-    QLineEdit* editor = new QLineEdit(parent);
-    return editor;
+    return nullptr;
 }
 
 void InstructionEditorDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const {

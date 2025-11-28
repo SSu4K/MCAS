@@ -39,6 +39,7 @@ MainWindow::~MainWindow(){
     closeInstructionEditorWindow();
     closeMemoryEditorWindow();
     closeMicrocodeEditorWindow();
+    AppContext::freeInstance();
     QMainWindow::~QMainWindow();
 }
 

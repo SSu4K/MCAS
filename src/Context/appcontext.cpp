@@ -44,6 +44,11 @@ AppContext* AppContext::instance()
     return s_instance;
 }
 
+void AppContext::freeInstance(){
+    if (s_instance)
+        delete s_instance;
+}
+
 AppContext::Theme AppContext::currentTheme() const
 {
     QString value = m_settings.value("ui/theme", "System").toString();
