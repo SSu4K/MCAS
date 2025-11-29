@@ -1,6 +1,7 @@
 #include <QMenuBar>
 
 #include "microcodeeditorwindow.h"
+
 #include "microcodeeditorwidget.h"
 #include "jumptableeditorwidget.h"
 

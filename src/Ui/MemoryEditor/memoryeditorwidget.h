@@ -31,7 +31,7 @@ namespace MemoryEditor {
 
     protected:
         void resizeEvent(QResizeEvent* event) override;
-
+        bool event(QEvent *e) override;
     private:
         QTableView* m_tableView;
         MemoryModel m_model;

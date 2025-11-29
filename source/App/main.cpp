@@ -1,0 +1,20 @@
+#include "mcasapp.h"
+#include "Common/appcontext.h"
+
+int main(int argc, char *argv[])
+{
+    MCASApp app(argc, argv);
+
+    qDebug() << "App version:" << AppContext::instance()->appVersion();
+    qDebug() << "Build type:"  << AppContext::instance()->buildType();
+    qDebug() << "Platform:"    << AppContext::instance()->platform();
+    qDebug() << "Compiler:"    << AppContext::instance()->compiler();
+    qDebug() << "Qt version:"  << AppContext::instance()->qtVersion();
+    qDebug() << "Runtime OS:"  << AppContext::instance()->runtimeOS();
+
+    qDebug() << app.windowIcon().name();
+
+    return app.exec();
+}
+
+

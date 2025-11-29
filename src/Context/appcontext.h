@@ -50,6 +50,7 @@ public:
     Q_ENUM(Language)
 
     static AppContext* instance();
+    static void freeInstance();
 
     SharedData* sharedData() { return &m_sharedData; }
     QSettings* settings() { return &m_settings; }

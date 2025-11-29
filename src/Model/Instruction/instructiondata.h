@@ -7,6 +7,7 @@ namespace InstructionEditor {
 
 struct InstructionEntry {
     quint32 encoded = 0;
+    QString label = "";
     QString text = "NOP";
     std::shared_ptr<Assembly::Instruction> instruction;
     bool valid = true;

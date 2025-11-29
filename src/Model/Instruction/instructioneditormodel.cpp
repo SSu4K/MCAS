@@ -4,6 +4,7 @@
 #include "instructiondata.h"
 
 #include "Assembler/assemblystatus.h"
+#include "Assembler/labeldata.h"
 #include "Common/hexint.h"
 #include "machinestate.h"
 
@@ -31,7 +32,7 @@ int InstructionEditorModel::rowCount(const QModelIndex& parent) const  {
 
 int InstructionEditorModel::columnCount(const QModelIndex& parent) const  {
     Q_UNUSED(parent);
-    return 4;
+    return 5;
 }
 
 QVariant InstructionEditorModel::data(const QModelIndex& index, int role) const  {
@@ -45,8 +46,9 @@ QVariant InstructionEditorModel::data(const QModelIndex& index, int role) const 
         switch (index.column()) {
             case 0: return QString("0x%1").arg(lineAddr, 4, 16, QChar('0')).toUpper();
             case 1: return entry.valid ? HexInt::intToString(entry.encoded, false, 8) : QString();
+            case LABEL_COLUMN_INDEX: return entry.label;
             case INSTRUCTION_COLUMN_INDEX: return entry.text;
-            case 3: return entry.valid ? "OK" : entry.errorMessage;
+            case 4: return entry.valid ? "OK" : entry.errorMessage;
         }
     }
 
@@ -68,11 +70,12 @@ QVariant InstructionEditorModel::headerData(int section, Qt::Orientation orienta
         return {};
 
     switch (section) {
-    case 0: return "Address";
-    case 1: return "Encoded";
-    case INSTRUCTION_COLUMN_INDEX: return "Instruction";
-    case 3: return "Status";
-    default: return {};
+        case 0: return "Address";
+        case 1: return "Encoded";
+        case LABEL_COLUMN_INDEX: return "Label";
+        case INSTRUCTION_COLUMN_INDEX: return "Instruction";
+        case 4: return "Status";
+        default: return {};
     }
 }
 
@@ -80,20 +83,14 @@ Qt::ItemFlags InstructionEditorModel::flags(const QModelIndex& index) const {
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    if (index.column() == INSTRUCTION_COLUMN_INDEX)
+    if (index.column() == INSTRUCTION_COLUMN_INDEX || index.column() == LABEL_COLUMN_INDEX)
         return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
-bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& value, int role) {
-    if (role != Qt::EditRole || index.column() != INSTRUCTION_COLUMN_INDEX)
-        return false;
-
-    auto& entry = instructionData->instructions[index.row()];
-    entry.text = value.toString();
-
-    auto lineNumber = index.row();
+void InstructionEditorModel::assembleLine(const qsizetype lineNumber){
+    auto& entry = instructionData->instructions[lineNumber];
     AssemblyStatus status;
     auto result = m_assembler.assembleLine(entry.text, lineNumber, status);
     entry.valid = status.isOk();
@@ -120,8 +117,82 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
     machineState->storeWord(address, entry.encoded);
     emit memoryRegionChanged(address, address+3);
 
-    emit dataChanged(index, this->index(index.row(), 3)); // update row
+    //emit dataChanged(this->index(lineNumber, 0), this->index(lineNumber, columnCount()-1));
+}
+
+bool InstructionEditorModel::setInstruction(const qsizetype lineNumber, const QString &text){
+    auto& entry = instructionData->instructions[lineNumber];
+    entry.text = text;
+    assembleLine(lineNumber);
     return true;
+}
+
+bool InstructionEditorModel::setLabel(const qsizetype lineNumber, const QString &text){
+    auto& entry = instructionData->instructions[lineNumber];
+
+    if(entry.label.isEmpty() && text.isEmpty()){
+        // do nothing
+        return true;
+    }
+
+    bool ok;
+    labelData->getAddress(text, &ok);
+    if(ok) return false;
+
+    quint32 address = 4*lineNumber;
+
+    if(entry.label.isEmpty() && !text.isEmpty()){
+        // set label
+        entry.label = text;
+        labelData->setLabel(text, address);
+        // reassemble lines that contain new label
+        for(qsizetype i=0; i < instructionData->instructions.count(); i++){
+            if(instructionData->instructions[i].text.contains(text)){
+                assembleLine(i);
+            }
+        }
+    }
+    else if(!entry.label.isEmpty() && !text.isEmpty()){
+        // change label
+        QString oldLabel = entry.label;
+        entry.label = text;
+
+        labelData->removeLabel(address);
+        labelData->setLabel(text, address);
+        // reassemble lines that contain new or old label
+        for(qsizetype i=0; i < instructionData->instructions.count(); i++){
+            if(instructionData->instructions[i].text.contains(text) || instructionData->instructions[i].text.contains(oldLabel)){
+                assembleLine(i);
+            }
+        }
+    }
+    else if(!entry.label.isEmpty() && text.isEmpty()){
+        // remove label
+        QString oldLabel = entry.label;
+        entry.label = "";
+        labelData->removeLabel(address);
+        // reassemble lines that contain old label
+        for(qsizetype i=0; i < instructionData->instructions.count(); i++){
+            if(instructionData->instructions[i].text.contains(oldLabel)){
+                assembleLine(i);
+            }
+        }
+    }
+
+    return true;
+}
+
+bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+    if (role != Qt::EditRole)
+        return false;
+
+    if(index.column() == INSTRUCTION_COLUMN_INDEX){
+        return setInstruction(index.row(), value.toString());
+    }
+    else if(index.column() == LABEL_COLUMN_INDEX){
+        return setLabel(index.row(), value.toString());
+    }
+    return false;
 }
 
 QList<quint32> InstructionEditorModel::encodedInstructions() const {
@@ -167,6 +238,6 @@ void InstructionEditorModel::onMemoryRegionChanged(const quint32 startAddress, c
     }
 
     QModelIndex firstIndex = this->index(firstline, 0);
-    QModelIndex lastIndex = this->index(lastline, 3);
+    QModelIndex lastIndex = this->index(lastline, columnCount()-1);
     emit dataChanged(firstIndex, lastIndex);
 }

@@ -14,6 +14,7 @@ namespace MemoryEditor{
     public:
         explicit MemoryEditorWindow(QWidget *parent = nullptr);
         MemoryModel* getModel();
+        void openWindow();
 
     protected:
         QString windowTitle() const override { return tr("Memory Editor"); }
