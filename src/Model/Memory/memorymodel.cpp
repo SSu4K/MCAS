@@ -21,7 +21,7 @@ MemoryModel::MemoryModel(Machine::MachineState* machineState, QObject* parent) :
 {
     machineState->clearMemory();
     setUnitSize(MemoryUnitSize::Half);
-    setColumns(8);
+    setColumns(8); // just an arbitrary value to init model
 }
 
 QVariant MemoryModel::headerData(int section, Qt::Orientation orientation, int role) const {
