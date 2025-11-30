@@ -3,17 +3,17 @@
 #include "instructionmodel.h"
 #include "instructiondata.h"
 
-#include "Assembler/assemblystatus.h"
-#include "Assembler/labeldata.h"
+#include "Assembly/assemblystatus.h"
+#include "Assembly/labeldata.h"
 #include "Common/hexint.h"
-#include "machinestate.h"
+#include "Machine/machinestate.h"
 
 using namespace Assembly;
-
+using namespace Models;
 using namespace InstructionEditor;
 
 InstructionModel::InstructionModel(
-                        MachineState* machineState,
+                        Machine::MachineState* machineState,
                         Assembly::LabelData* labelData, Assembly::InstructionSet* instructionSet,
                         InstructionData* instructionData, QObject* parent)
     : QAbstractTableModel(parent),

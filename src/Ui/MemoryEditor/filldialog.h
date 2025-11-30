@@ -6,7 +6,7 @@
 // forward declare
 class QLineEdit;
 
-namespace MemoryEditor {
+namespace Ui {
 
     class FillDialog : public QDialog
     {

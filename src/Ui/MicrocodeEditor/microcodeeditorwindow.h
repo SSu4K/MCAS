@@ -7,10 +7,13 @@
 #include "microcodeeditorwidget.h"
 #include "jumptableeditorwidget.h"
 
-namespace MicrocodeEditor{
-    // forward declarations
+// forward declarations
+namespace Models{
     class MicrocodeModel;
     class JumpTableModel;
+}
+
+namespace Ui{
 
     class MicrocodeEditorWidget;
     class JumpTableEditorWidget;
@@ -19,7 +22,7 @@ namespace MicrocodeEditor{
     {
         Q_OBJECT
     public:
-        explicit MicrocodeEditorWindow(MicrocodeModel* microcodeModel, JumpTableModel* jumpTableModel, QWidget* parent = nullptr);
+        explicit MicrocodeEditorWindow(Models::MicrocodeModel* microcodeModel, Models::JumpTableModel* jumpTableModel, QWidget* parent = nullptr);
 
     public slots:
         void open();
@@ -38,8 +41,8 @@ namespace MicrocodeEditor{
         void createCustomMenu() override;
 
     private:
-        MicrocodeModel* microcodeModel;
-        JumpTableModel* jumpTableModel;
+        Models::MicrocodeModel* microcodeModel;
+        Models::JumpTableModel* jumpTableModel;
 
         QTabWidget tabWidget;
         MicrocodeEditorWidget microcodeEditor;

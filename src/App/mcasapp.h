@@ -33,15 +33,15 @@ private:
     QTranslator translator;
 
     // models
-    MemoryEditor::MemoryModel memoryModel;
-    InstructionEditor::InstructionModel instructionModel;
-    MicrocodeEditor::MicrocodeModel microcodeModel;
-    MicrocodeEditor::JumpTableModel jumpTableModel;
+    Models::MemoryModel memoryModel;
+    Models::InstructionModel instructionModel;
+    Models::MicrocodeModel microcodeModel;
+    Models::JumpTableModel jumpTableModel;
 
     MainWindow mainWindow;
-    MemoryEditor::MemoryEditorWindow memoryEditorWindow;
-    InstructionEditor::InstructionEditorWindow instructionEditorWindow;
-    MicrocodeEditor::MicrocodeEditorWindow microcodeEditorWindow;
+    Ui::MemoryEditorWindow memoryEditorWindow;
+    Ui::InstructionEditorWindow instructionEditorWindow;
+    Ui::MicrocodeEditorWindow microcodeEditorWindow;
 
     // App-wide setup
     void initTranslations();

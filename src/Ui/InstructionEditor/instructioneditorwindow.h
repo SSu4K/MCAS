@@ -4,17 +4,21 @@
 #include "Common/editorwindow.h"
 #include "instructioneditorwidget.h"
 
-namespace InstructionEditor{
+// forward declarations
+namespace Models {
+    class InstructionModel;
+}
+
+namespace Ui{
 
     // forward declarations
     class InstructionEditorWidget;
-    class InstructionModel;
 
     class InstructionEditorWindow : public EditorWindow
     {
         Q_OBJECT
     public:
-        explicit InstructionEditorWindow(InstructionModel *model, QWidget *parent = nullptr);
+        explicit InstructionEditorWindow(Models::InstructionModel *model, QWidget *parent = nullptr);
 
     public slots:
         void open();
@@ -32,7 +36,7 @@ namespace InstructionEditor{
 
         void createCustomMenu() override;
 
-        InstructionModel *model;
+        Models::InstructionModel *model;
         InstructionEditorWidget widget;
 
     signals:

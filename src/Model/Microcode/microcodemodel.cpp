@@ -1,7 +1,8 @@
 #include "microcodemodel.h"
 #include "Common/hexint.h"
 
-using namespace MicrocodeEditor;
+using namespace Models;
+using namespace Microcode;
 
 const static QString MICROCODE_HEADER = "[Microcode]";
 const static QChar HEADER_PREFIX = '[';
@@ -16,15 +17,6 @@ MicrocodeModel::MicrocodeModel(MicrocodeData* microcodeData, QObject* parent)
     commentPrefix = COMMENT_PREFIX;
     delimiter = DELIMITER;
 }
-
-// void MicrocodeModel::setMicrocode(Microcode* code) {
-//     beginResetModel();
-//     if (code)
-//         m_microcode = *code;
-//     else
-//         microcodeData->instructions.clear();
-//     endResetModel();
-// }
 
 void MicrocodeModel::setInstructions(const QList<Instruction> &instructions){
     beginResetModel();
@@ -52,17 +44,20 @@ QVariant MicrocodeModel::data(const QModelIndex& index, int role) const {
     return {};
 }
 
-
 bool MicrocodeModel::setData(const QModelIndex& index, const QVariant& value, int role) {
     if (role != Qt::EditRole) return false;
     auto& instr = microcodeData->instructions[index.row()];
+    auto text = value.toString();
 
-    if(!instr.setFieldValue(index.column(), value)){
+    if(microcodeData->isValidStringValue(index.column(), text)){
+        instr.setFieldValue(index.column(), text);
+        emit dataChanged(index, index);
+        return true;
+    }
+    else{
         return false;
     }
 
-    emit dataChanged(index, index);
-    return true;
 }
 
 Qt::ItemFlags MicrocodeModel::flags(const QModelIndex& index) const {
@@ -77,7 +72,7 @@ Qt::ItemFlags MicrocodeModel::flags(const QModelIndex& index) const {
 
 QVariant MicrocodeModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        return Instruction::fieldNames[section];
+        return microcodeData->config.fieldNames[section];
     }
     return {};
 }

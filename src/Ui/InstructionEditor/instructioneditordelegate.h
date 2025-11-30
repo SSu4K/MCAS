@@ -3,7 +3,7 @@
 
 #include <QStyledItemDelegate>
 
-namespace InstructionEditor {
+namespace Ui {
 
 class InstructionEditorDelegate : public QStyledItemDelegate {
     Q_OBJECT

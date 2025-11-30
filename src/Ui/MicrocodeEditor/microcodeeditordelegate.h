@@ -3,7 +3,7 @@
 
 #include <QStyledItemDelegate>
 
-namespace MicrocodeEditor{
+namespace Ui{
 
     class MicrocodeEditorDelegate : public QStyledItemDelegate {
         Q_OBJECT

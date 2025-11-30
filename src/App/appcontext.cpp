@@ -4,13 +4,13 @@
 
 #include "appcontext.h"
 
-using namespace MicrocodeEditor;
 using namespace InstructionEditor;
 using namespace Assembly;
 
 SharedData::SharedData(QObject* parent)
     : QObject(parent),
-    m_microcode(),
+    m_microcodeConfig(),
+    m_microcode(m_microcodeConfig),
     m_jumptable(),
     m_labelData(),
     m_instructionSet({

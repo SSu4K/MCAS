@@ -4,7 +4,8 @@
 #include "microcodeeditorwidget.h"
 #include "Microcode/microcodemodel.h"
 
-using namespace MicrocodeEditor;
+using namespace Models;
+using namespace Ui;
 
 MicrocodeEditorWidget::MicrocodeEditorWidget(MicrocodeModel* microcodeModel, QWidget* parent)
     : model(microcodeModel),

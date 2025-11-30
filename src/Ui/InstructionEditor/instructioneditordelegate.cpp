@@ -3,14 +3,14 @@
 #include "instructioneditordelegate.h"
 #include "Instruction/instructionmodel.h"
 
-using namespace InstructionEditor;
+using namespace Ui;
 
 InstructionEditorDelegate::InstructionEditorDelegate(QObject* parent)
     : QStyledItemDelegate(parent) {}
 
 QWidget* InstructionEditorDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option,
                       const QModelIndex& index) const {
-    if (index.column() == INSTRUCTION_COLUMN_INDEX || index.column() == LABEL_COLUMN_INDEX){
+    if (index.column() == Models::INSTRUCTION_COLUMN_INDEX || index.column() == Models::LABEL_COLUMN_INDEX){
         QLineEdit* editor = new QLineEdit(parent);
         return editor;
     }

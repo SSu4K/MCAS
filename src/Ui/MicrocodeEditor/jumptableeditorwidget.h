@@ -8,23 +8,22 @@
 #include "Microcode/jumptablemodel.h"
 
 // forward declarations
-class QTableView;
+namespace Models {class JumpTableModel;}
 
-namespace MicrocodeEditor {
+namespace Ui {
     // forward declarations
-    class JumpTableModel;
 
     class JumpTableEditorWidget : public ZoomWidget {
         Q_OBJECT
     public:
-        explicit JumpTableEditorWidget(JumpTableModel* jumpTableModel, QWidget* parent = nullptr);
+        explicit JumpTableEditorWidget(Models::JumpTableModel* jumpTableModel, QWidget* parent = nullptr);
 
         void resizeColumnsToFit();
 
     private:
         QTableView table;
         JumpTableEditorDelegate delegate;
-        JumpTableModel* model;
+        Models::JumpTableModel* model;
 
         friend bool JumpTableEditorDelegate::eventFilter(QObject* editor, QEvent* event);
     };

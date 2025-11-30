@@ -6,18 +6,20 @@
 #include "Instruction/instructionmodel.h"
 #include "instructioneditordelegate.h"
 
-namespace InstructionEditor {
-
 // forward declarations
-class InstructionModel;
+namespace Models {
+    class InstructionModel;
+}
+
+namespace Ui {
 
 class InstructionEditorWidget : public QWidget {
     Q_OBJECT
 public:
-    explicit InstructionEditorWidget(InstructionModel *model, QWidget* parent = nullptr);
+    explicit InstructionEditorWidget(Models::InstructionModel *model, QWidget* parent = nullptr);
 
 private:
-    InstructionModel *model;
+    Models::InstructionModel *model;
     QTableView tableView;
     InstructionEditorDelegate delegate;
 };

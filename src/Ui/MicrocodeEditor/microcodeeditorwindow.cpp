@@ -1,11 +1,11 @@
 #include <QMenuBar>
 
 #include "microcodeeditorwindow.h"
-
 #include "microcodeeditorwidget.h"
 #include "jumptableeditorwidget.h"
 
-using namespace MicrocodeEditor;
+using namespace Models;
+using namespace Ui;
 
 MicrocodeEditorWindow::MicrocodeEditorWindow(MicrocodeModel* microcodeModel, JumpTableModel* jumpTableModel, QWidget* parent)
     : microcodeModel(microcodeModel),

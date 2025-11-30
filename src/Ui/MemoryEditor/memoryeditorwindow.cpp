@@ -4,7 +4,9 @@
 #include "memoryeditorwindow.h"
 #include "Memory/memorymodel.h"
 
-using namespace MemoryEditor;
+using namespace Ui;
+using namespace Machine;
+using namespace Models;
 
 MemoryEditorWindow::MemoryEditorWindow(MemoryModel* model, QWidget *parent)
     : model(model), widget(model), EditorWindow{parent}

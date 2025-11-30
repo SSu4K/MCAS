@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+namespace Machine {
+
 typedef uint32_t word;
 typedef uint16_t half;
 typedef uint8_t byte;
@@ -52,5 +54,7 @@ public:
     void clearDataMemory();
     void clearMemory();
 };
+
+}
 
 #endif // MACHINESTATE_H

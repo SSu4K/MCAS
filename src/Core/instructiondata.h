@@ -1,7 +1,7 @@
 #ifndef INSTRUCTIONDATA_H
 #define INSTRUCTIONDATA_H
 
-#include "Assembler/instruction.h"
+#include "Assembly/instruction.h"
 
 namespace InstructionEditor {
 

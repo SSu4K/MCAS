@@ -3,9 +3,9 @@
 #include <QHeaderView>
 
 #include "jumptableeditorwidget.h"
-#include "jumptableeditordelegate.h"
 
-using namespace MicrocodeEditor;
+using namespace Ui;
+using namespace Models;
 
 JumpTableEditorWidget::JumpTableEditorWidget(JumpTableModel* jumpTableModel, QWidget* parent)
     : model(jumpTableModel), ZoomWidget(parent)

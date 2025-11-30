@@ -1,7 +1,7 @@
 #ifndef JUMPTABLEDATA_H
 #define JUMPTABLEDATA_H
 
-namespace MicrocodeEditor{
+namespace Microcode{
 
 class JumpTableEntry {
 public:

@@ -3,15 +3,18 @@
 
 #include "Common/texttablemodel.h"
 
-namespace MicrocodeEditor{
-    // forward declarations
+// forward declarations
+namespace Microcode {
     class JumpTableEntry;
     class JumpTableData;
+}
+
+namespace Models{
 
     class JumpTableModel : public TextTableModel {
         Q_OBJECT
     public:
-        explicit JumpTableModel(JumpTableData *jumpTableData, QObject* parent = nullptr);
+        explicit JumpTableModel(Microcode::JumpTableData *jumpTableData, QObject* parent = nullptr);
 
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
         int columnCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -20,14 +23,14 @@ namespace MicrocodeEditor{
         QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
         Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-        void setEntries(const QVector<JumpTableEntry>& entries);
-        QVector<JumpTableEntry> entries() const;
+        void setEntries(const QVector<Microcode::JumpTableEntry>& entries);
+        QVector<Microcode::JumpTableEntry> entries() const;
         QStringList headers() const;
         void clear();
-        bool insertEntry(int row, const JumpTableEntry& entry);
+        bool insertEntry(int row, const Microcode::JumpTableEntry& entry);
         \
     private:
-        JumpTableData *jumpTableData;
+        Microcode::JumpTableData *jumpTableData;
         QStringList m_headers = {"Opcode", "Jump Table 1", "Jump Table 2"};
         void populateFromStringMatrix(const QList<QList<QString>> &rows) override;
     };

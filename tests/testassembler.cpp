@@ -1,8 +1,6 @@
 #include <QtTest/QTest>
 #include "testassembler.h"
-#include "Assembler/assembler.h"
-#include "Assembler/instructiondefinition.h"
-#include "Assembler/labeldata.h"
+#include "Assembly/assembler.h"
 #include "Common/twoscomplement.h"
 
 #define TEST_LINE_NUMBER 15

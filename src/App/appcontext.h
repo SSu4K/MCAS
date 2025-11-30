@@ -1,12 +1,12 @@
 #ifndef APPCONTEXT_H
 #define APPCONTEXT_H
 
-#include "Assembler/instructiondefinition.h"
-#include "Assembler/labeldata.h"
-#include "Instruction/instructiondata.h"
+#include "Assembly/instructiondefinition.h"
+#include "Assembly/labeldata.h"
+#include "instructiondata.h"
 #include "Microcode/jumptabledata.h"
 #include "Microcode/microcodedata.h"
-#include "machinestate.h"
+#include "Machine/machinestate.h"
 
 class SharedData: public QObject{
     Q_OBJECT
@@ -14,13 +14,13 @@ public:
     explicit SharedData(QObject* parent = nullptr);
 
     InstructionEditor::InstructionData* instructions() { return &m_instructions; }
-    MicrocodeEditor::MicrocodeData* microcode() { return &m_microcode; }
-    MicrocodeEditor::JumpTableData* jumptable() { return &m_jumptable; }
+    Microcode::MicrocodeData* microcode() { return &m_microcode; }
+    Microcode::JumpTableData* jumptable() { return &m_jumptable; }
     Assembly::LabelData* labels() { return &m_labelData; }
     Assembly::InstructionSet* instructionSet() { return &m_instructionSet;}
 
-    MachineState* editorMachineState() {return &m_editorMachineState;}
-    MachineConfig* machineConfig() {return &m_machineConfig;}
+    Machine::MachineState* editorMachineState() {return &m_editorMachineState;}
+    Machine::MachineConfig* machineConfig() {return &m_machineConfig;}
 
 signals:
     void memoryUpdated();
@@ -29,13 +29,14 @@ signals:
     void configChanged();
 
 private:
-    MicrocodeEditor::MicrocodeData m_microcode;
-    MicrocodeEditor::JumpTableData m_jumptable;
+    Microcode::MicrocodeConfig m_microcodeConfig;
+    Microcode::MicrocodeData m_microcode;
+    Microcode::JumpTableData m_jumptable;
     Assembly::LabelData m_labelData;
     Assembly::InstructionSet m_instructionSet;
 
-    MachineConfig m_machineConfig;
-    MachineState m_editorMachineState;
+    Machine::MachineConfig m_machineConfig;
+    Machine::MachineState m_editorMachineState;
     InstructionEditor::InstructionData m_instructions;
 };
 

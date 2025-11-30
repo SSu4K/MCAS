@@ -9,7 +9,10 @@
 #include "filldialog.h"
 #include "Common/hexintdelegate.h"
 
-using namespace MemoryEditor;
+using namespace Ui;
+using namespace Machine;
+using namespace Models;
+
 MemoryEditorWidget::MemoryEditorWidget(MemoryModel* model, QWidget* parent)
     : model(model), QWidget(parent)
 {

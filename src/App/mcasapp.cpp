@@ -3,6 +3,9 @@
 
 #include "mcasapp.h"
 
+using namespace Models;
+using namespace Ui;
+
 static QPalette getDarkPalette(){
     QPalette palette;
     palette.setColor(QPalette::Window, QColor(45, 45, 45));
@@ -69,28 +72,28 @@ MCASApp::MCASApp(int &argc, char **argv)
     initTranslations();
 
     // conncect coupled models
-    connect(&memoryModel, &MemoryEditor::MemoryModel::memoryRegionChanged, &instructionModel, &InstructionEditor::InstructionModel::onMemoryRegionChanged);
-    connect(&instructionModel, &InstructionEditor::InstructionModel::memoryRegionChanged, &memoryModel, &MemoryEditor::MemoryModel::onMemoryRegionChanged);
+    connect(&memoryModel, &MemoryModel::memoryRegionChanged, &instructionModel, &InstructionModel::onMemoryRegionChanged);
+    connect(&instructionModel, &InstructionModel::memoryRegionChanged, &memoryModel, &MemoryModel::onMemoryRegionChanged);
 
     // connect open windows
     connect(&mainWindow, &MainWindow::openMicrocodeEditorWindow,
-            &microcodeEditorWindow, &MicrocodeEditor::MicrocodeEditorWindow::open);
+            &microcodeEditorWindow, &MicrocodeEditorWindow::open);
 
     connect(&mainWindow, &MainWindow::openMemoryEditorWindow,
-            &memoryEditorWindow, &MemoryEditor::MemoryEditorWindow::open);
+            &memoryEditorWindow, &MemoryEditorWindow::open);
 
     connect(&mainWindow, &MainWindow::openInstructionEditorWindow,
-            &instructionEditorWindow, &InstructionEditor::InstructionEditorWindow::open);
+            &instructionEditorWindow, &InstructionEditorWindow::open);
 
     // connect retranslations
     connect(&context, &AppContext::languageChanged,
             &mainWindow, &MainWindow::retranslateUi);
     connect(&context, &AppContext::languageChanged,
-            &microcodeEditorWindow, &MicrocodeEditor::MicrocodeEditorWindow::retranslateUi);
+            &microcodeEditorWindow, &MicrocodeEditorWindow::retranslateUi);
     connect(&context, &AppContext::languageChanged,
-            &memoryEditorWindow, &MemoryEditor::MemoryEditorWindow::retranslateUi);
+            &memoryEditorWindow, &MemoryEditorWindow::retranslateUi);
     connect(&context, &AppContext::languageChanged,
-            &instructionEditorWindow, &InstructionEditor::InstructionEditorWindow::retranslateUi);
+            &instructionEditorWindow, &InstructionEditorWindow::retranslateUi);
 
     mainWindow.open();
 }

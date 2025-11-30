@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <cassert>
 
+using namespace Machine;
+
 MachineState::MachineState(const MachineConfig &config)
     : config(config), regs(new word[config.registerCount]), memory(new byte[config.memorySize]){}
 

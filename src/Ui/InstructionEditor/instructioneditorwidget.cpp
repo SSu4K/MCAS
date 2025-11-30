@@ -3,7 +3,8 @@
 
 #include "instructioneditorwidget.h"
 
-using namespace InstructionEditor;
+using namespace Ui;
+using namespace Models;
 
  InstructionEditorWidget::InstructionEditorWidget(InstructionModel *model, QWidget* parent)
     : QWidget(parent),model(model)

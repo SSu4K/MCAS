@@ -1,7 +1,8 @@
 #include <QMenuBar>
 #include "instructioneditorwindow.h"
 
-using namespace InstructionEditor;
+using namespace Ui;
+using namespace Models;
 
 InstructionEditorWindow::InstructionEditorWindow(InstructionModel *model, QWidget *parent)
     : model(model), widget(model), EditorWindow{parent}

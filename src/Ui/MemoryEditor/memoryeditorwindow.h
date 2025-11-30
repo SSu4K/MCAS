@@ -4,15 +4,17 @@
 #include "Common/editorwindow.h"
 #include "memoryeditorwidget.h"
 
-namespace MemoryEditor{
-
+namespace Models {
     class MemoryModel;
+}
+
+namespace Ui{
 
     class MemoryEditorWindow : public EditorWindow
     {
         Q_OBJECT
     public:
-        explicit MemoryEditorWindow(MemoryModel* model, QWidget *parent = nullptr);
+        explicit MemoryEditorWindow(Models::MemoryModel* model, QWidget *parent = nullptr);
 
     public slots:
         void open();
@@ -31,7 +33,7 @@ namespace MemoryEditor{
         void createCustomMenu() override;
 
     private:
-        MemoryModel* model;
+        Models::MemoryModel* model;
         MemoryEditorWidget widget;
     };
 }

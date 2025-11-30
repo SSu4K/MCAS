@@ -7,21 +7,21 @@
 #include "Common/zoomwidget.h"
 #include "Microcode/microcodemodel.h"
 
-namespace MicrocodeEditor{
-    // forward declarations
-    class MicrocodeModel;
+namespace Models {class MicrocodeModel;}
+
+namespace Ui{
 
     class MicrocodeEditorWidget : public ZoomWidget {
         Q_OBJECT
     public:
-        explicit MicrocodeEditorWidget(MicrocodeModel* microcodeModel, QWidget* parent = nullptr);
+        explicit MicrocodeEditorWidget(Models::MicrocodeModel* microcodeModel, QWidget* parent = nullptr);
 
     protected:
         // void onZoomChanged(double factor) override;
 
     private:
         // void resizeColumnsToFit();
-        MicrocodeModel* model;
+        Models::MicrocodeModel* model;
         QTableView tableView;
         MicrocodeEditorDelegate delegate;
 
