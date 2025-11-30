@@ -5,7 +5,7 @@
 #include <QIcon>
 
 #include "appcontext.h"
-#include "mainwindow.h"
+#include "App/mainwindow.h"
 
 #include "Memory/memorymodel.h"
 #include "Instruction/instructionmodel.h"

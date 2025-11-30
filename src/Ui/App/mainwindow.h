@@ -24,7 +24,6 @@ private:
     void createToolsMenu();
     void createViewMenu();
     void createMenu();
-
 };
 
 #endif // MAINWINDOW_H

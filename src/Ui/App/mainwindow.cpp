@@ -3,12 +3,6 @@
 #include <QLayout>
 
 #include "mainwindow.h"
-#include "mcasapp.h"
-
-using namespace MicrocodeEditor;
-using namespace MemoryEditor;
-using namespace InstructionEditor;
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

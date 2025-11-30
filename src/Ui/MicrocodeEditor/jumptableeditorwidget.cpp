@@ -4,7 +4,6 @@
 
 #include "jumptableeditorwidget.h"
 #include "jumptableeditordelegate.h"
-#include "appcontext.h"
 
 using namespace MicrocodeEditor;
 

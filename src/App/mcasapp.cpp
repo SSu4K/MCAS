@@ -2,9 +2,6 @@
 #include <QStyle>
 
 #include "mcasapp.h"
-#include "mainwindow.h"
-#include "MicrocodeEditor/microcodeeditorwindow.h"
-#include "appcontext.h"
 
 static QPalette getDarkPalette(){
     QPalette palette;
