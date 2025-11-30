@@ -23,9 +23,11 @@ private slots:
     void saveFileAs();
     void exitApp();
 
+public slots:
+    void retranslateUi();
+
 protected:
     void createMenu();
-    void retranslateUi();
 
     // Child classes override these
     virtual QString windowTitle() const { return "[Type] Editor"; }

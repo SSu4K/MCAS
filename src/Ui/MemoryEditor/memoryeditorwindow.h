@@ -12,9 +12,10 @@ namespace MemoryEditor{
     {
         Q_OBJECT
     public:
-        explicit MemoryEditorWindow(QWidget *parent = nullptr);
-        MemoryModel* getModel();
-        void openWindow();
+        explicit MemoryEditorWindow(MemoryModel* model, QWidget *parent = nullptr);
+
+    public slots:
+        void open();
 
     protected:
         QString windowTitle() const override { return tr("Memory Editor"); }
@@ -30,7 +31,8 @@ namespace MemoryEditor{
         void createCustomMenu() override;
 
     private:
-        MemoryEditorWidget *m_memoryEditorWidget;
+        MemoryModel* model;
+        MemoryEditorWidget widget;
     };
 }
 #endif // MEMORYEDITORWINDOW_H

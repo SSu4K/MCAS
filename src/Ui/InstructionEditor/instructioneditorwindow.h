@@ -2,19 +2,22 @@
 #define INSTRUCTIONEDITORWINDOW_H
 
 #include "Common/editorwindow.h"
+#include "instructioneditorwidget.h"
 
 namespace InstructionEditor{
 
     // forward declarations
     class InstructionEditorWidget;
-    class InstructionEditorModel;
+    class InstructionModel;
 
     class InstructionEditorWindow : public EditorWindow
     {
         Q_OBJECT
     public:
-        explicit InstructionEditorWindow(QWidget *parent = nullptr);
-        InstructionEditorModel* getModel();
+        explicit InstructionEditorWindow(InstructionModel *model, QWidget *parent = nullptr);
+
+    public slots:
+        void open();
 
     protected:
         QString windowTitle() const override { return tr("Instruction Editor"); }
@@ -29,7 +32,8 @@ namespace InstructionEditor{
 
         void createCustomMenu() override;
 
-        InstructionEditorWidget *m_widget;
+        InstructionModel *model;
+        InstructionEditorWidget widget;
 
     signals:
     };

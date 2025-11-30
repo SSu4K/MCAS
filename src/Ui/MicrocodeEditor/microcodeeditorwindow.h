@@ -1,10 +1,17 @@
 #ifndef MICROCODEEDITORWINDOW_H
 #define MICROCODEEDITORWINDOW_H
 
+#include <QTabWidget>
+
 #include "Common/editorwindow.h"
+#include "microcodeeditorwidget.h"
+#include "jumptableeditorwidget.h"
 
 namespace MicrocodeEditor{
     // forward declarations
+    class MicrocodeModel;
+    class JumpTableModel;
+
     class MicrocodeEditorWidget;
     class JumpTableEditorWidget;
 
@@ -12,7 +19,10 @@ namespace MicrocodeEditor{
     {
         Q_OBJECT
     public:
-        explicit MicrocodeEditorWindow(QWidget* parent = nullptr);
+        explicit MicrocodeEditorWindow(MicrocodeModel* microcodeModel, JumpTableModel* jumpTableModel, QWidget* parent = nullptr);
+
+    public slots:
+        void open();
 
     protected:
         QString windowTitle() const override { return tr("Microcode Editor"); }
@@ -28,10 +38,12 @@ namespace MicrocodeEditor{
         void createCustomMenu() override;
 
     private:
+        MicrocodeModel* microcodeModel;
+        JumpTableModel* jumpTableModel;
 
-        QTabWidget* m_tabWidget;
-        MicrocodeEditorWidget* m_microcodeEditor;
-        JumpTableEditorWidget* m_jumpTableEditor;
+        QTabWidget tabWidget;
+        MicrocodeEditorWidget microcodeEditor;
+        JumpTableEditorWidget jumpTableEditor;
     };
 
 }

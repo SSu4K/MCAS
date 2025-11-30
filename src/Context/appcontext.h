@@ -49,8 +49,8 @@ public:
     enum class Language { System, English, Polish };
     Q_ENUM(Language)
 
-    static AppContext* instance();
-    static void freeInstance();
+    explicit AppContext(QObject* parent = nullptr);
+    ~AppContext() override = default;
 
     SharedData* sharedData() { return &m_sharedData; }
     QSettings* settings() { return &m_settings; }
@@ -73,10 +73,6 @@ signals:
     void languageChanged();
 
 private:
-    explicit AppContext(QObject* parent = nullptr);
-    ~AppContext() override = default;
-
-    static QPointer<AppContext> s_instance;
 
     SharedData m_sharedData;
     QSettings m_settings;

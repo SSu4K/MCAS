@@ -30,7 +30,7 @@ bool JumpTableEditorDelegate::eventFilter(QObject* watched, QEvent* event)
     auto* owner = qobject_cast<JumpTableEditorWidget*>(parent());
     if (!owner) return QStyledItemDelegate::eventFilter(watched, event);
 
-    auto* view = owner->m_table;
+    auto* view = &owner->table;
     auto* model = view ? view->model() : nullptr;
     if (!model) return QStyledItemDelegate::eventFilter(watched, event);
 

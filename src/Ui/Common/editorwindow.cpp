@@ -1,7 +1,6 @@
 #include <QMenuBar>
 #include <QFileDialog>
 #include <QCoreApplication>
-#include "appcontext.h"
 #include "editorwindow.h"
 
 EditorWindow::EditorWindow(QWidget* parent)
@@ -9,8 +8,8 @@ EditorWindow::EditorWindow(QWidget* parent)
 {
     resize(1000, 600);
 
-    connect(AppContext::instance(), &AppContext::languageChanged,
-            this, &EditorWindow::retranslateUi);
+    // connect(AppContext::instance(), &AppContext::languageChanged,
+    //         this, &EditorWindow::retranslateUi);
 
     // Move to chidren
     createMenu();

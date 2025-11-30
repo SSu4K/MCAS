@@ -8,35 +8,32 @@
 
 using namespace MicrocodeEditor;
 
-JumpTableEditorWidget::JumpTableEditorWidget(QWidget* parent)
-    : ZoomWidget(parent), m_model(AppContext::instance()->sharedData()->jumptable())
+JumpTableEditorWidget::JumpTableEditorWidget(JumpTableModel* jumpTableModel, QWidget* parent)
+    : model(jumpTableModel), ZoomWidget(parent)
 {
-    m_table = new QTableView(this);
+    table.setModel(model);
+    table.setAlternatingRowColors(true);
+    table.setSelectionBehavior(QAbstractItemView::SelectItems);
+    table.setSelectionMode(QAbstractItemView::SingleSelection);
+    table.horizontalHeader()->setStretchLastSection(true);
 
-    m_table->setModel(&m_model);
-    m_table->setAlternatingRowColors(true);
-    m_table->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_table->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_table->horizontalHeader()->setStretchLastSection(true);
-
-    m_delegate = new JumpTableEditorDelegate(this);
-    m_table->setItemDelegate(m_delegate);
+    table.setItemDelegate(&delegate);
 
     auto* layout = new QVBoxLayout(this);
-    layout->addWidget(m_table);
+    layout->addWidget(&table);
     layout->setContentsMargins(4, 4, 4, 4);
     setLayout(layout);
 
     QTimer::singleShot(0, this, [this]() {
         resizeColumnsToFit();
-        m_table->updateGeometry();
+        table.updateGeometry();
     });
 }
 
 void JumpTableEditorWidget::resizeColumnsToFit()
 {
-    auto *hHeader = m_table->horizontalHeader();
-    const int columnCount = m_model.columnCount();
+    auto *hHeader = table.horizontalHeader();
+    const int columnCount = model->columnCount();
 
     for (int i = 0; i < columnCount; ++i) {
         if (i == columnCount - 1)
@@ -45,8 +42,8 @@ void JumpTableEditorWidget::resizeColumnsToFit()
             hHeader->setSectionResizeMode(i, QHeaderView::ResizeToContents);
     }
 
-    m_table->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
-    m_table->resizeColumnsToContents();
-    m_table->resizeRowsToContents();
+    table.setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+    table.resizeColumnsToContents();
+    table.resizeRowsToContents();
 }
 

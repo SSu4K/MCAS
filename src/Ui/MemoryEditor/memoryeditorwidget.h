@@ -1,8 +1,11 @@
 #ifndef MEMORYEDITORWIDGET_H
 #define MEMORYEDITORWIDGET_H
 
+#include <QTableView>
 #include <QWidget>
+
 #include "Memory/memorymodel.h"
+#include "Common/hexintdelegate.h"
 
 // forward declarations
 class QTableView;
@@ -16,9 +19,7 @@ namespace MemoryEditor {
     class MemoryEditorWidget : public QWidget {
         Q_OBJECT
     public:
-        explicit MemoryEditorWidget(QWidget* parent = nullptr);
-
-        MemoryModel *getModel() {return &m_model;}
+        explicit MemoryEditorWidget(MemoryModel* model, QWidget* parent = nullptr);
 
         MemoryUnitSize getUnitSize();
         void setUnitSize(MemoryUnitSize size);
@@ -33,9 +34,9 @@ namespace MemoryEditor {
         void resizeEvent(QResizeEvent* event) override;
         bool event(QEvent *e) override;
     private:
-        QTableView* m_tableView;
-        MemoryModel m_model;
-        HexIntDelegate* m_delegate;
+        MemoryModel* model;
+        QTableView tableView;
+        HexIntDelegate delegate;
         void updateColumnCount();
     };
 }

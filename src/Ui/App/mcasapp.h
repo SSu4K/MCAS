@@ -4,6 +4,18 @@
 #include <QApplication>
 #include <QIcon>
 
+#include "appcontext.h"
+#include "mainwindow.h"
+
+#include "Memory/memorymodel.h"
+#include "Instruction/instructionmodel.h"
+#include "Microcode/microcodemodel.h"
+#include "Microcode/jumptablemodel.h"
+
+#include "MemoryEditor/memoryeditorwindow.h"
+#include "MicrocodeEditor/microcodeeditorwindow.h"
+#include "InstructionEditor/instructioneditorwindow.h"
+
 // forward declaration
 class AppContext;
 class MainWindow;
@@ -15,18 +27,25 @@ public:
     MCASApp(int &argc, char **argv);
     ~MCASApp() override = default;
 
-    AppContext* context() { return m_context; }
-    MainWindow* mainWindow() const { return m_mainWindow; }
+
+private:
+    AppContext context;
+    QTranslator translator;
+
+    // models
+    MemoryEditor::MemoryModel memoryModel;
+    InstructionEditor::InstructionModel instructionModel;
+    MicrocodeEditor::MicrocodeModel microcodeModel;
+    MicrocodeEditor::JumpTableModel jumpTableModel;
+
+    MainWindow mainWindow;
+    MemoryEditor::MemoryEditorWindow memoryEditorWindow;
+    InstructionEditor::InstructionEditorWindow instructionEditorWindow;
+    MicrocodeEditor::MicrocodeEditorWindow microcodeEditorWindow;
 
     // App-wide setup
     void initTranslations();
     void initPalette();
     void initMainWindow();
-
-
-private:
-    AppContext *m_context = nullptr;
-    QTranslator m_translator;
-    MainWindow *m_mainWindow = nullptr;
 };
 #endif // MCASAPP_H

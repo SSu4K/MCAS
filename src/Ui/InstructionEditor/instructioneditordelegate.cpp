@@ -1,7 +1,7 @@
 #include <QLineEdit>
 
 #include "instructioneditordelegate.h"
-#include "Instruction/instructioneditormodel.h"
+#include "Instruction/instructionmodel.h"
 
 using namespace InstructionEditor;
 

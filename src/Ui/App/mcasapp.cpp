@@ -3,6 +3,7 @@
 
 #include "mcasapp.h"
 #include "mainwindow.h"
+#include "MicrocodeEditor/microcodeeditorwindow.h"
 #include "appcontext.h"
 
 static QPalette getDarkPalette(){
@@ -41,34 +42,71 @@ static QPalette getLightPalette(){
 
 
 MCASApp::MCASApp(int &argc, char **argv)
-    : QApplication(argc, argv)
+    : memoryModel(context.sharedData()->editorMachineState()),
+    instructionModel(context.sharedData()->editorMachineState(),
+                       context.sharedData()->labels(),
+                       context.sharedData()->instructionSet(),
+                       context.sharedData()->instructions(),
+                       ),
+    microcodeModel(context.sharedData()->microcode()),
+    jumpTableModel(context.sharedData()->jumptable()),
+
+    mainWindow(),
+    microcodeEditorWindow(&microcodeModel, &jumpTableModel),
+    memoryEditorWindow(&memoryModel),
+    instructionEditorWindow(&instructionModel),
+
+    QApplication(argc, argv)
 {
     setWindowIcon(QIcon(":/icons/appicon.png"));
 
     QFile f(":/icons/appicon.png");
     qDebug() << "Icon exists?" << f.exists();
 
-    m_context = AppContext::instance();
-
     setOrganizationName("SzymonSudak");
     setApplicationName("MCAS");
-    setApplicationVersion(m_context->appVersion());
+    setApplicationVersion(context.appVersion());
 
     setStyle(QStyleFactory::create("Fusion"));
     initPalette();
     initTranslations();
-    initMainWindow();
+
+    // conncect coupled models
+    connect(&memoryModel, &MemoryEditor::MemoryModel::memoryRegionChanged, &instructionModel, &InstructionEditor::InstructionModel::onMemoryRegionChanged);
+    connect(&instructionModel, &InstructionEditor::InstructionModel::memoryRegionChanged, &memoryModel, &MemoryEditor::MemoryModel::onMemoryRegionChanged);
+
+    // connect open windows
+    connect(&mainWindow, &MainWindow::openMicrocodeEditorWindow,
+            &microcodeEditorWindow, &MicrocodeEditor::MicrocodeEditorWindow::open);
+
+    connect(&mainWindow, &MainWindow::openMemoryEditorWindow,
+            &memoryEditorWindow, &MemoryEditor::MemoryEditorWindow::open);
+
+    connect(&mainWindow, &MainWindow::openInstructionEditorWindow,
+            &instructionEditorWindow, &InstructionEditor::InstructionEditorWindow::open);
+
+    // connect retranslations
+    connect(&context, &AppContext::languageChanged,
+            &mainWindow, &MainWindow::retranslateUi);
+    connect(&context, &AppContext::languageChanged,
+            &microcodeEditorWindow, &MicrocodeEditor::MicrocodeEditorWindow::retranslateUi);
+    connect(&context, &AppContext::languageChanged,
+            &memoryEditorWindow, &MemoryEditor::MemoryEditorWindow::retranslateUi);
+    connect(&context, &AppContext::languageChanged,
+            &instructionEditorWindow, &InstructionEditor::InstructionEditorWindow::retranslateUi);
+
+    mainWindow.open();
 }
 
 void MCASApp::initTranslations()
 {
-    AppContext::instance()->initLanguage();
+    context.initLanguage();
 }
 
 void MCASApp::initPalette()
 {
     using Theme = AppContext::Theme;
-    Theme theme = m_context->currentTheme();
+    Theme theme = context.currentTheme();
 
     if (theme == Theme::System) {
         setPalette(style()->standardPalette());
@@ -82,6 +120,4 @@ void MCASApp::initPalette()
 
 void MCASApp::initMainWindow()
 {
-    m_mainWindow = new MainWindow();
-    m_mainWindow->show();
 }

@@ -60,7 +60,7 @@ bool MicrocodeEditorDelegate::eventFilter(QObject* watched, QEvent* event)
     auto* owner = qobject_cast<MicrocodeEditorWidget*>(parent());
     if (!owner) return QStyledItemDelegate::eventFilter(watched, event);
 
-    auto* view = owner->m_tableView;
+    auto* view = &owner->tableView;
     auto* model = view ? view->model() : nullptr;
     if (!model) return QStyledItemDelegate::eventFilter(watched, event);
 

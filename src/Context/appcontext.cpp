@@ -8,8 +8,6 @@ using namespace MicrocodeEditor;
 using namespace InstructionEditor;
 using namespace Assembly;
 
-QPointer<AppContext> AppContext::s_instance = nullptr;
-
 SharedData::SharedData(QObject* parent)
     : QObject(parent),
     m_microcode(),
@@ -37,17 +35,6 @@ AppContext::AppContext(QObject* parent)
     m_compiler   = QStringLiteral(COMPILER_NAME);
 }
 
-AppContext* AppContext::instance()
-{
-    if (!s_instance)
-        s_instance = new AppContext();
-    return s_instance;
-}
-
-void AppContext::freeInstance(){
-    if (s_instance)
-        delete s_instance;
-}
 
 AppContext::Theme AppContext::currentTheme() const
 {

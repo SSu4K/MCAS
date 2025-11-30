@@ -1,6 +1,6 @@
 #include <QColor>
 
-#include "instructioneditormodel.h"
+#include "instructionmodel.h"
 #include "instructiondata.h"
 
 #include "Assembler/assemblystatus.h"
@@ -12,7 +12,7 @@ using namespace Assembly;
 
 using namespace InstructionEditor;
 
-InstructionEditorModel::InstructionEditorModel(
+InstructionModel::InstructionModel(
                         MachineState* machineState,
                         Assembly::LabelData* labelData, Assembly::InstructionSet* instructionSet,
                         InstructionData* instructionData, QObject* parent)
@@ -25,17 +25,17 @@ InstructionEditorModel::InstructionEditorModel(
     m_disassembler(instructionSet, labelData)
 {}
 
-int InstructionEditorModel::rowCount(const QModelIndex& parent) const  {
+int InstructionModel::rowCount(const QModelIndex& parent) const  {
     Q_UNUSED(parent);
     return instructionData->instructions.size();
 }
 
-int InstructionEditorModel::columnCount(const QModelIndex& parent) const  {
+int InstructionModel::columnCount(const QModelIndex& parent) const  {
     Q_UNUSED(parent);
     return 5;
 }
 
-QVariant InstructionEditorModel::data(const QModelIndex& index, int role) const  {
+QVariant InstructionModel::data(const QModelIndex& index, int role) const  {
     if (!index.isValid() || index.row() >= instructionData->instructions.size())
         return {};
 
@@ -65,7 +65,7 @@ QVariant InstructionEditorModel::data(const QModelIndex& index, int role) const 
     return {};
 }
 
-QVariant InstructionEditorModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant InstructionModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role != Qt::DisplayRole || orientation != Qt::Horizontal)
         return {};
 
@@ -79,7 +79,7 @@ QVariant InstructionEditorModel::headerData(int section, Qt::Orientation orienta
     }
 }
 
-Qt::ItemFlags InstructionEditorModel::flags(const QModelIndex& index) const {
+Qt::ItemFlags InstructionModel::flags(const QModelIndex& index) const {
     if (!index.isValid())
         return Qt::NoItemFlags;
 
@@ -89,7 +89,7 @@ Qt::ItemFlags InstructionEditorModel::flags(const QModelIndex& index) const {
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
-void InstructionEditorModel::assembleLine(const qsizetype lineNumber){
+void InstructionModel::assembleLine(const qsizetype lineNumber){
     auto& entry = instructionData->instructions[lineNumber];
     AssemblyStatus status;
     auto result = m_assembler.assembleLine(entry.text, lineNumber, status);
@@ -120,14 +120,14 @@ void InstructionEditorModel::assembleLine(const qsizetype lineNumber){
     //emit dataChanged(this->index(lineNumber, 0), this->index(lineNumber, columnCount()-1));
 }
 
-bool InstructionEditorModel::setInstruction(const qsizetype lineNumber, const QString &text){
+bool InstructionModel::setInstruction(const qsizetype lineNumber, const QString &text){
     auto& entry = instructionData->instructions[lineNumber];
     entry.text = text;
     assembleLine(lineNumber);
     return true;
 }
 
-bool InstructionEditorModel::setLabel(const qsizetype lineNumber, const QString &text){
+bool InstructionModel::setLabel(const qsizetype lineNumber, const QString &text){
     auto& entry = instructionData->instructions[lineNumber];
 
     if(entry.label.isEmpty() && text.isEmpty()){
@@ -182,7 +182,7 @@ bool InstructionEditorModel::setLabel(const qsizetype lineNumber, const QString 
     return true;
 }
 
-bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+bool InstructionModel::setData(const QModelIndex& index, const QVariant& value, int role) {
     if (role != Qt::EditRole)
         return false;
 
@@ -195,25 +195,25 @@ bool InstructionEditorModel::setData(const QModelIndex& index, const QVariant& v
     return false;
 }
 
-QList<quint32> InstructionEditorModel::encodedInstructions() const {
+QList<quint32> InstructionModel::encodedInstructions() const {
     QList<quint32> list;
     for (const auto& e : instructionData->instructions)
         list.append(e.encoded);
     return list;
 }
 
-void InstructionEditorModel::setBaseAddress(quint32 addr) {
+void InstructionModel::setBaseAddress(quint32 addr) {
     if (addr != instructionData->baseAddress) {
         instructionData->baseAddress = addr;
         emit dataChanged(index(0,0), index(instructionData->instructions.size()-1,0));
     }
 }
 
-quint32 InstructionEditorModel::baseAddress() const { return instructionData->baseAddress; }
+quint32 InstructionModel::baseAddress() const { return instructionData->baseAddress; }
 
-int InstructionEditorModel::maxLines() const { return instructionData->maxLines; }
+int InstructionModel::maxLines() const { return instructionData->maxLines; }
 
-void InstructionEditorModel::onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress){
+void InstructionModel::onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress){
     qsizetype firstline = startAddress / 4;
     qsizetype lastline = endAddress / 4;
 

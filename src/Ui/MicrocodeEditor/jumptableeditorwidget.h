@@ -1,6 +1,8 @@
 #ifndef JUMPTABLEEDITORWIDGET_H
 #define JUMPTABLEEDITORWIDGET_H
 
+#include <QTableView>
+
 #include "MicrocodeEditor/jumptableeditordelegate.h"
 #include "Common/zoomwidget.h"
 #include "Microcode/jumptablemodel.h"
@@ -15,15 +17,14 @@ namespace MicrocodeEditor {
     class JumpTableEditorWidget : public ZoomWidget {
         Q_OBJECT
     public:
-        explicit JumpTableEditorWidget(QWidget* parent = nullptr);
+        explicit JumpTableEditorWidget(JumpTableModel* jumpTableModel, QWidget* parent = nullptr);
 
-        JumpTableModel* model() { return &m_model; }
         void resizeColumnsToFit();
 
     private:
-        QTableView* m_table;
-        JumpTableEditorDelegate* m_delegate = nullptr;
-        JumpTableModel m_model;
+        QTableView table;
+        JumpTableEditorDelegate delegate;
+        JumpTableModel* model;
 
         friend bool JumpTableEditorDelegate::eventFilter(QObject* editor, QEvent* event);
     };
