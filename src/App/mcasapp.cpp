@@ -58,10 +58,14 @@ MCASApp::MCASApp(int &argc, char **argv)
 
     QApplication(argc, argv)
 {
-    setWindowIcon(QIcon(":/icons/appicon.png"));
-
     QFile f(":/icons/appicon.png");
-    qDebug() << "Icon exists?" << f.exists();
+    if(f.exists()){
+        setWindowIcon(QIcon(":/icons/appicon.png"));
+        qDebug() << "Loading icon success!";
+    }
+    else{
+        qDebug() << "Loading icon failed!";
+    }
 
     setOrganizationName("SzymonSudak");
     setApplicationName("MCAS");

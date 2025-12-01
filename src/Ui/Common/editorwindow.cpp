@@ -14,8 +14,6 @@ EditorWindow::EditorWindow(QWidget* parent)
     // Move to chidren
     createMenu();
     setWindowTitle(windowTitle());
-    qDebug() << defaultFilename();
-    qDebug() << fileFilterString();
 }
 
 void EditorWindow::createMenu()
@@ -37,7 +35,6 @@ void EditorWindow::createMenu()
 }
 
 void EditorWindow::retranslateUi(){
-    qDebug("Retranslating editor");
     menuBar()->clear();
     createMenu();
 }

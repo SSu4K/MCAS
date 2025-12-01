@@ -12,8 +12,6 @@ MemoryEditorWindow::MemoryEditorWindow(MemoryModel* model, QWidget *parent)
     : model(model), widget(model), EditorWindow{parent}
 {
     setWindowTitle(windowTitle());
-    qDebug() << defaultFilename();
-    qDebug() << fileFilterString();
 
     setCentralWidget(&widget);
 

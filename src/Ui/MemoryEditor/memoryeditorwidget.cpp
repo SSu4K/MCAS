@@ -16,8 +16,6 @@ using namespace Models;
 MemoryEditorWidget::MemoryEditorWidget(MemoryModel* model, QWidget* parent)
     : model(model), QWidget(parent)
 {
-    qDebug() << "Begin memory widget init";
-
     tableView.setModel(model);
     tableView.verticalHeader()->setVisible(true);
     tableView.horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
@@ -42,8 +40,6 @@ MemoryEditorWidget::MemoryEditorWidget(MemoryModel* model, QWidget* parent)
     layout->addWidget(&tableView);
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
-
-    qDebug() << "End memory widget init";
 }
 
 void MemoryEditorWidget::resizeEvent(QResizeEvent* event)
@@ -55,8 +51,6 @@ void MemoryEditorWidget::resizeEvent(QResizeEvent* event)
 bool MemoryEditorWidget::event(QEvent *e)
 {
     if (e->type() == QEvent::Show) {
-        // polish widget just before showing it
-        qDebug() << "Polishing widget";
         updateColumnCount();
     }
     return QWidget::event(e);
@@ -66,8 +60,6 @@ bool MemoryEditorWidget::event(QEvent *e)
 void MemoryEditorWidget::updateColumnCount()
 {
     if (!tableView.model()) return;
-    qDebug() << "Begin updateColumnCount";
-    qDebug() << "unitSize:" << (int)model->getUnitSize();
     QFontMetrics fm(tableView.font());
     int charW = fm.horizontalAdvance('F') + 1;
     int hexChars = 2 * (int)model->getUnitSize();
@@ -77,15 +69,11 @@ void MemoryEditorWidget::updateColumnCount()
     int available = tableView.viewport()->width();
     int cols = qMax(1, available / cellWidth);
 
-    qDebug() << "cols:" << cols;
-
     if (model->columnCount() != cols) {
         model->setColumns(cols);
         tableView.horizontalHeader()->setDefaultSectionSize(cellWidth);
         tableView.verticalHeader()->setDefaultSectionSize(fm.height() + 8);
     }
-
-    qDebug() << "End updateColumnCount";
 }
 
 MemoryUnitSize MemoryEditorWidget::getUnitSize(){

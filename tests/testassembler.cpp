@@ -82,7 +82,7 @@ void TestAssembler::RType_Parse_Done(){
     auto result_ptr = std::static_pointer_cast<RType>(parsed);
     QCOMPARE_NE(result_ptr, nullptr);
     auto expected = RType(6, {1, 2, 3, 4, 5});
-    // qDebug() << result_ptr->opcode() << result_ptr->formals[0] << result_ptr->formals[1] << result_ptr->formals[2] << result_ptr->formals[3] << result_ptr->formals[4];
+
     QCOMPARE(*result_ptr, expected);
 }
 
