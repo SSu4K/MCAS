@@ -8,17 +8,6 @@
 #include "simulationsubsystem.h"
 #include "modelssubsystem.h"
 #include "uisubsystem.h"
-// #include "appcontext.h"
-
-// #include "Memory/memorymodel.h"
-// #include "Instruction/instructionmodel.h"
-// #include "Microcode/microcodemodel.h"
-// #include "Microcode/jumptablemodel.h"
-
-// #include "App/mainwindow.h"
-// #include "MemoryEditor/memoryeditorwindow.h"
-// #include "MicrocodeEditor/microcodeeditorwindow.h"
-// #include "InstructionEditor/instructioneditorwindow.h"
 
 // forward declaration
 class AppContext;

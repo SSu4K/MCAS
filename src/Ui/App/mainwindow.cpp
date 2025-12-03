@@ -55,14 +55,6 @@ void MainWindow::createViewMenu()
     group->addAction(darkAct);
     group->setExclusive(true);
 
-    // connect(viewMenu, &QMenu::aboutToShow, this, [=]() {
-    //     switch (context->currentTheme()) {
-    //     case AppContext::Theme::System: systemAct->setChecked(true); break;
-    //     case AppContext::Theme::Light:  lightAct->setChecked(true);  break;
-    //     case AppContext::Theme::Dark:   darkAct->setChecked(true);   break;
-    //     }
-    // });
-
     connect(group, &QActionGroup::triggered, this, [=](QAction *action) {
         if (action == systemAct)    emit setTheme("System");
         if (action == lightAct)     emit setTheme("Light");
