@@ -21,7 +21,16 @@ class MachineState
 {
 private:
     MachineConfig config;
+
     word pc;
+    word mar = 0;
+    word mdr = 0;
+    word ir  = 0;
+
+    word regA = 0;
+    word regB = 0;
+    word regC = 0;
+
     word *regs;
     byte *memory;
 
@@ -34,6 +43,24 @@ public:
     MachineConfig getConfig() const;
     word getPc() const;
     void setPc(const word address);
+
+    word getMAR() const;
+    void setMAR(const word value);
+
+    word getMDR() const;
+    void setMDR(const word value);
+
+    word getIR() const;
+    void setIR(const word value);
+
+    word getA() const;
+    void setA(const word value);
+
+    word getB() const;
+    void setB(const word value);
+
+    word getC() const;
+    void setC(const word value);
 
     word getReg(const size_t index) const;
     void setReg(const size_t index, const word value);

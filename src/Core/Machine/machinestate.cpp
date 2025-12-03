@@ -25,6 +25,24 @@ void MachineState::setPc(const word address){
     pc = address;
 }
 
+word MachineState::getMAR() const { return mar; }
+void MachineState::setMAR(const word value) { mar = value; }
+
+word MachineState::getMDR() const { return mdr; }
+void MachineState::setMDR(const word value) { mdr = value; }
+
+word MachineState::getIR() const { return ir; }
+void MachineState::setIR(const word value) { ir = value; }
+
+word MachineState::getA() const { return regA; }
+void MachineState::setA(const word value) { regA = value; }
+
+word MachineState::getB() const { return regB; }
+void MachineState::setB(const word value) { regB = value; }
+
+word MachineState::getC() const { return regC; }
+void MachineState::setC(const word value) { regC = value; }
+
 word MachineState::getReg(const size_t index) const{
     if (index >= config.registerCount)
         throw std::out_of_range("Register index out of range");
