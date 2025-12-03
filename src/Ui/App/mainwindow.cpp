@@ -3,96 +3,21 @@
 #include <QLayout>
 
 #include "mainwindow.h"
-#include "appcontext.h"
-#include "mcasapp.h"
-
-#include "Instruction/instructioneditormodel.h"
-
-using namespace MicrocodeEditor;
-using namespace MemoryEditor;
-using namespace InstructionEditor;
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     setWindowTitle(tr("MCAS Main Window"));
-
-    setWindowIcon(QIcon(":/icons/appicon.png"));
-
     resize(700, 500);
 
     createMenu();
-
-    connect(AppContext::instance(), &AppContext::languageChanged,
-            this, &MainWindow::retranslateUi);
-
-    m_memoryEditorWindow = new MemoryEditorWindow(this);
-    m_memoryEditorWindow->installEventFilter(this);
-
-    m_instructionEditorWindow = new InstructionEditorWindow(this);
-    m_instructionEditorWindow->installEventFilter(this);
-
-
-    auto memoryModel = m_memoryEditorWindow->getModel();
-    auto instructionModel = m_instructionEditorWindow->getModel();
-    connect(memoryModel, &MemoryModel::memoryRegionChanged, instructionModel, &InstructionEditorModel::onMemoryRegionChanged);
-    connect(instructionModel, &InstructionEditorModel::memoryRegionChanged, memoryModel, &MemoryModel::onMemoryRegionChanged);
 }
 
-MainWindow::~MainWindow(){
-    closeInstructionEditorWindow();
-    closeMemoryEditorWindow();
-    closeMicrocodeEditorWindow();
-    AppContext::freeInstance();
-    QMainWindow::~QMainWindow();
-}
-
-void MainWindow::openMicrocodeEditorWindow()
+void MainWindow::open()
 {
-    if (!m_microcodeEditorWindow) {
-        m_microcodeEditorWindow = new MicrocodeEditorWindow(this);
-        m_microcodeEditorWindow->installEventFilter(this);
-    }
-
-    m_microcodeEditorWindow->show();
-    m_microcodeEditorWindow->raise();
-    m_microcodeEditorWindow->activateWindow();
-}
-
-void MainWindow::closeMicrocodeEditorWindow(){
-    m_microcodeEditorWindow->close();
-    m_microcodeEditorWindow = nullptr;
-}
-
-void MainWindow::openMemoryEditorWindow(){
-    if (!m_memoryEditorWindow) {
-        m_memoryEditorWindow = new MemoryEditorWindow(this);
-        m_memoryEditorWindow->installEventFilter(this);
-    }
-
-    m_memoryEditorWindow->openWindow();
-}
-
-void MainWindow::closeMemoryEditorWindow(){
-    m_memoryEditorWindow->close();
-    m_memoryEditorWindow = nullptr;
-}
-
-void MainWindow::openInstructionEditorWindow(){
-    if (!m_instructionEditorWindow) {
-        m_instructionEditorWindow = new InstructionEditorWindow(this);
-        m_instructionEditorWindow->installEventFilter(this);
-    }
-
-    m_instructionEditorWindow->show();
-    m_instructionEditorWindow->raise();
-    m_instructionEditorWindow->activateWindow();
-}
-
-void MainWindow::closeInstructionEditorWindow(){
-    m_instructionEditorWindow->close();
-    m_instructionEditorWindow = nullptr;
+    this->show();
+    this->raise();
+    this->activateWindow();
 }
 
 void MainWindow::createToolsMenu(){
@@ -130,25 +55,10 @@ void MainWindow::createViewMenu()
     group->addAction(darkAct);
     group->setExclusive(true);
 
-    // Reflect current theme
-    auto *context = AppContext::instance();
-
-    connect(viewMenu, &QMenu::aboutToShow, this, [=]() {
-        switch (context->currentTheme()) {
-        case AppContext::Theme::System: systemAct->setChecked(true); break;
-        case AppContext::Theme::Light:  lightAct->setChecked(true);  break;
-        case AppContext::Theme::Dark:   darkAct->setChecked(true);   break;
-        }
-    });
-
     connect(group, &QActionGroup::triggered, this, [=](QAction *action) {
-        auto *app = static_cast<MCASApp*>(QApplication::instance());
-        AppContext::Theme newTheme = AppContext::Theme::System;
-        if (action == lightAct) newTheme = AppContext::Theme::Light;
-        if (action == darkAct)  newTheme = AppContext::Theme::Dark;
-
-        context->setTheme(newTheme);
-        app->initPalette();
+        if (action == systemAct)    emit setTheme("System");
+        if (action == lightAct)     emit setTheme("Light");
+        if (action == darkAct)      emit setTheme("Dark");
     });
 
     QMenu* langMenu = viewMenu->addMenu(tr("Language"));
@@ -161,22 +71,12 @@ void MainWindow::createViewMenu()
 
     langGroup->addAction(enAction);
     langGroup->addAction(plAction);
+    langGroup->setExclusive(true);
 
-    connect(plAction, &QAction::triggered, this, []{
-        AppContext::instance()->setLanguage(AppContext::Language::Polish);
+    connect(langGroup, &QActionGroup::triggered, this, [=](QAction *action) {
+        if (action == enAction)    emit setLanguage("en");
+        if (action == plAction)     emit setLanguage("pl");
     });
-    connect(enAction, &QAction::triggered, this, []{
-        AppContext::instance()->setLanguage(AppContext::Language::English);
-    });
-
-    connect(viewMenu, &QMenu::aboutToShow, this, [=]() {
-        switch (context->currentLanguage()) {
-            case AppContext::Language::English: enAction->setChecked(true); break;
-            case AppContext::Language::Polish:  plAction->setChecked(true);  break;
-            default: break;
-        }
-    });
-
 }
 
 void MainWindow::createMenu(){
@@ -188,25 +88,5 @@ void MainWindow::retranslateUi(){
     setWindowTitle(tr("MCAS Main Window"));
     menuBar()->clear();
     createMenu();
-}
-
-bool MainWindow::eventFilter(QObject *obj, QEvent *event)
-{
-    if (obj == m_microcodeEditorWindow && event->type() == QEvent::Close) {
-        m_microcodeEditorWindow->hide();
-        event->ignore();
-        return true;
-    }
-    else if (obj == m_memoryEditorWindow && event->type() == QEvent::Close) {
-        m_memoryEditorWindow->hide();
-        event->ignore();
-        return true;
-    }
-    else if (obj == m_instructionEditorWindow && event->type() == QEvent::Close) {
-        m_instructionEditorWindow->hide();
-        event->ignore();
-        return true;
-    }
-    return QMainWindow::eventFilter(obj, event);
 }
 

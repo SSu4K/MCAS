@@ -2,10 +2,8 @@
 
 #include "testdisassembler.h"
 #include <QtTest/QTest>
-#include "Assembler/assembler.h"
-#include "Assembler/disassembler.h"
-#include "Assembler/instructiondefinition.h"
-#include "Assembler/labeldata.h"
+#include "Assembly/assembler.h"
+#include "Assembly/disassembler.h"
 #include "Common/twoscomplement.h"
 
 #define TEST_LINE_NUMBER 15

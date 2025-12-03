@@ -1,29 +1,29 @@
 #ifndef JUMPTABLEEDITORWIDGET_H
 #define JUMPTABLEEDITORWIDGET_H
 
+#include <QTableView>
+
 #include "MicrocodeEditor/jumptableeditordelegate.h"
 #include "Common/zoomwidget.h"
 #include "Microcode/jumptablemodel.h"
 
 // forward declarations
-class QTableView;
+namespace Models {class JumpTableModel;}
 
-namespace MicrocodeEditor {
+namespace Ui {
     // forward declarations
-    class JumpTableModel;
 
     class JumpTableEditorWidget : public ZoomWidget {
         Q_OBJECT
     public:
-        explicit JumpTableEditorWidget(QWidget* parent = nullptr);
+        explicit JumpTableEditorWidget(Models::JumpTableModel* jumpTableModel, QWidget* parent = nullptr);
 
-        JumpTableModel* model() { return &m_model; }
         void resizeColumnsToFit();
 
     private:
-        QTableView* m_table;
-        JumpTableEditorDelegate* m_delegate = nullptr;
-        JumpTableModel m_model;
+        QTableView table;
+        JumpTableEditorDelegate delegate;
+        Models::JumpTableModel* model;
 
         friend bool JumpTableEditorDelegate::eventFilter(QObject* editor, QEvent* event);
     };

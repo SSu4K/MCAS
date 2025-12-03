@@ -3,47 +3,47 @@
 
 #include "microcodeeditorwidget.h"
 #include "Microcode/microcodemodel.h"
-#include "appcontext.h"
 
-using namespace MicrocodeEditor;
+using namespace Models;
+using namespace Ui;
 
-MicrocodeEditorWidget::MicrocodeEditorWidget(QWidget* parent)
-    : ZoomWidget(parent), m_model(AppContext::instance()->sharedData()->microcode())
+MicrocodeEditorWidget::MicrocodeEditorWidget(MicrocodeModel* microcodeModel, QWidget* parent)
+    : model(microcodeModel),
+    ZoomWidget(parent)
 {
-    m_tableView = new QTableView(this);
-    m_tableView->setAlternatingRowColors(true);
+
+    tableView.setAlternatingRowColors(true);
 
     // Selection & editing behavior
-    m_tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_tableView->setEditTriggers(
+    tableView.setSelectionBehavior(QAbstractItemView::SelectItems);
+    tableView.setSelectionMode(QAbstractItemView::SingleSelection);
+    tableView.setEditTriggers(
         QAbstractItemView::DoubleClicked |
         QAbstractItemView::EditKeyPressed |
         QAbstractItemView::SelectedClicked |
         QAbstractItemView::AnyKeyPressed
         );
 
-    connect(m_tableView, &QTableView::activated, this, [this](const QModelIndex& idx){
-        m_tableView->edit(idx);
+    connect(&tableView, &QTableView::activated, this, [this](const QModelIndex& idx){
+        tableView.edit(idx);
     });
 
     // Model
-    m_tableView->setModel(&m_model);
+    tableView.setModel(model);
 
     // Delegate for non-enum columns
-    m_delegate = new MicrocodeEditorDelegate(this);
-    m_tableView->setItemDelegate(m_delegate);
+    tableView.setItemDelegate(&delegate);
 
     // Header setup
-    auto* hHeader = m_tableView->horizontalHeader();
+    auto* hHeader = tableView.horizontalHeader();
     hHeader->setStretchLastSection(true);
     hHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
     hHeader->setMinimumSectionSize(80);
-    m_tableView->verticalHeader()->setVisible(false);
+    tableView.verticalHeader()->setVisible(false);
 
     // Layout
     auto* layout = new QVBoxLayout(this);
-    layout->addWidget(m_tableView);
+    layout->addWidget(&tableView);
     layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(2);
     setLayout(layout);

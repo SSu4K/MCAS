@@ -1,6 +1,6 @@
 #include "jumptabledata.h"
 
-using namespace MicrocodeEditor;
+using namespace Microcode;
 
 JumpTableEntry::JumpTableEntry(){
     opcode = "";

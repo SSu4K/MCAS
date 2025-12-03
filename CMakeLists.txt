@@ -35,5 +35,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address")
 endif()
 
+add_subdirectory(resources)
 add_subdirectory(src)
 add_subdirectory(tests)

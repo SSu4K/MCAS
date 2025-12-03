@@ -11,7 +11,9 @@
 
 #include "Common/hexintdelegate.h"
 
-using namespace MicrocodeEditor;
+using namespace Microcode;
+using namespace Models;
+using namespace Ui;
 
 QWidget* MicrocodeEditorDelegate::createEditor(QWidget* parent,
                                          const QStyleOptionViewItem& option,
@@ -19,10 +21,12 @@ QWidget* MicrocodeEditorDelegate::createEditor(QWidget* parent,
 {
     const int col = index.column();
     QWidget* editor = nullptr;
+    const MicrocodeModel *model =
+        qobject_cast<const MicrocodeModel*>(index.model());
 
-    if (Instruction::validStringValues.contains(col)) {
+    if (model->microcodeConfig().validValues.contains(col)) {
         auto* enumDelegate = new EnumDelegate(const_cast<MicrocodeEditorDelegate*>(this));
-        enumDelegate->setItems(Instruction::validStringValues.value(col));
+        enumDelegate->setItems(model->microcodeConfig().validValues.value(col));
         editor = enumDelegate->createEditor(parent, option, index);
     }
     else if (col == InstructionField::constant || col == InstructionField::address) {
@@ -60,7 +64,7 @@ bool MicrocodeEditorDelegate::eventFilter(QObject* watched, QEvent* event)
     auto* owner = qobject_cast<MicrocodeEditorWidget*>(parent());
     if (!owner) return QStyledItemDelegate::eventFilter(watched, event);
 
-    auto* view = owner->m_tableView;
+    auto* view = &owner->tableView;
     auto* model = view ? view->model() : nullptr;
     if (!model) return QStyledItemDelegate::eventFilter(watched, event);
 
@@ -127,10 +131,13 @@ void MicrocodeEditorDelegate::setEditorData(QWidget* editor, const QModelIndex& 
     const QVariant value = index.data(Qt::EditRole);
     const int col = index.column();
 
-    if (Instruction::validStringValues.contains(col)) {
+    const MicrocodeModel *model =
+        qobject_cast<const MicrocodeModel*>(index.model());
+
+    if (model->microcodeConfig().validValues.contains(col)) {
         // Use EnumDelegate for dropdown string fields
         EnumDelegate enumDel(const_cast<MicrocodeEditorDelegate*>(this));
-        enumDel.setItems(Instruction::validStringValues[col]);
+        enumDel.setItems(model->microcodeConfig().validValues[col]);
         enumDel.setEditorData(editor, index);
     }
     else if (col == InstructionField::address || col == InstructionField::constant) {
@@ -148,9 +155,12 @@ void MicrocodeEditorDelegate::setModelData(QWidget* editor, QAbstractItemModel* 
                                      const QModelIndex& index) const {
     const int col = index.column();
 
-    if (Instruction::validStringValues.contains(col)) {
+    const MicrocodeModel *microcodeModel =
+        qobject_cast<const MicrocodeModel*>(model);
+
+    if (microcodeModel->microcodeConfig().validValues.contains(col)) {
         EnumDelegate enumDel(const_cast<MicrocodeEditorDelegate*>(this));
-        enumDel.setItems(Instruction::validStringValues[col]);
+        enumDel.setItems(microcodeModel->microcodeConfig().validValues[col]);
         enumDel.setModelData(editor, model, index);
     }
     else if (col == InstructionField::address || col == InstructionField::constant) {

@@ -1,25 +1,25 @@
-#ifndef INSTRUCTIONEDITORMODEL_H
-#define INSTRUCTIONEDITORMODEL_H
+#ifndef instructionmodel_H
+#define instructionmodel_H
 
-#include "Assembler/assembler.h"
-#include "Assembler/disassembler.h"
-// #include "Common/memoryobserver.h"
+#include "Assembly/assembler.h"
+#include "Assembly/disassembler.h"
 
 // forward declare
-class MachineState;
+namespace Machine{ class MachineState;}
+namespace InstructionEditor { class InstructionData; }
 
-namespace InstructionEditor {
-
-    // forward declarations
-    class InstructionData;
+namespace Models {
 
     const qsizetype LABEL_COLUMN_INDEX = 2;
     const qsizetype INSTRUCTION_COLUMN_INDEX = 3;
 
-    class InstructionEditorModel : public QAbstractTableModel {
+    class InstructionModel : public QAbstractTableModel {
         Q_OBJECT
     public:
-        explicit InstructionEditorModel(MachineState* machineState, Assembly::LabelData* labelData, Assembly::InstructionSet* instructionSet, InstructionData* instructionData, QObject* parent = nullptr);
+        explicit InstructionModel(Machine::MachineState* machineState, Assembly::LabelData* labelData,
+                                  Assembly::InstructionSet* instructionSet,
+                                  InstructionEditor::InstructionData* instructionData,
+                                  QObject* parent = nullptr);
 
         int rowCount(const QModelIndex& parent = {}) const override;
         int columnCount(const QModelIndex& parent = {}) const override;
@@ -45,10 +45,10 @@ namespace InstructionEditor {
         void onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress);
 
     private:
-        MachineState* machineState;
+        Machine::MachineState* machineState;
         Assembly::LabelData* labelData;
         Assembly::InstructionSet* instructionSet;
-        InstructionData* instructionData;
+        InstructionEditor::InstructionData* instructionData;
 
         Assembly::Assembler m_assembler;
         Assembly::Disassembler m_disassembler;
@@ -62,4 +62,4 @@ namespace InstructionEditor {
 
 } // namespace InstructionEditor
 
-#endif // INSTRUCTIONEDITORMODEL_H
+#endif // instructionmodel_H

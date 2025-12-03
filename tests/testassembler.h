@@ -2,8 +2,8 @@
 #define TESTASSEMBLER_H
 
 #include <QtTest/QTest>
-#include "Assembler/instructiondefinition.h"
-#include "Assembler/labeldata.h"
+#include "Assembly/instructiondefinition.h"
+#include "Assembly/labeldata.h"
 
 class TestAssembler: public QObject
 {

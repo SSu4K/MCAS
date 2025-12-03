@@ -27,8 +27,6 @@ void HexIntDelegate::setEditorData(QWidget* editor, const QModelIndex& index) co
     OutputMode mode = OutputMode::Auto;
     QVariant data = index.data(Qt::EditRole);
 
-    qDebug() << "typeID:" << data.typeId() << "name:" << data.typeName();
-
     if (data.typeId() == QMetaType::UInt) {
         quint32 v = data.toUInt();
         qDebug() << "Editor data as int:" << v;
@@ -36,12 +34,10 @@ void HexIntDelegate::setEditorData(QWidget* editor, const QModelIndex& index) co
 
         line->setText(s);
         mode = OutputMode::Integer;
-        qDebug("setEditorData type: quint32");
     }
     else {
         line->setText(data.toString());
         mode = OutputMode::String;
-        qDebug("setEditorData type: QString");
     }
 
     line->setProperty("outputMode", static_cast<int>(mode));
@@ -67,11 +63,8 @@ void HexIntDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 
     bool ok = false;
     quint32 value = text.toUInt(&ok, 16);
-    qDebug() << "Input line" << text;
-    qDebug() << "Parsed line as hex:" << value;
     if(!ok){
         value = static_cast<quint32>(text.toInt(&ok, 10));
-        qDebug() << "Parsed line as dec:" << value;
     }
 
     if(!ok){

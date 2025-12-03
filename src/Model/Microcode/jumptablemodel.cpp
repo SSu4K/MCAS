@@ -2,14 +2,15 @@
 #include <QTextStream>
 
 #include "jumptablemodel.h"
-#include "jumptabledata.h"
+#include "Microcode/jumptabledata.h"
 
 const static QString JUMP_TABLE_HEADER = "[Jump Tables]";
 const static QChar HEADER_PREFIX = '[';
 const static QChar COMMENT_PREFIX = ';';
 const static QChar DELIMITER = '|';
 
-using namespace MicrocodeEditor;
+using namespace Models;
+using namespace Microcode;
 
 JumpTableModel::JumpTableModel(JumpTableData* jumpTableData, QObject* parent)
     : TextTableModel(parent), jumpTableData(jumpTableData)

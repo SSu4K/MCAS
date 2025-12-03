@@ -1,26 +1,25 @@
 #include <QMenuBar>
 #include "instructioneditorwindow.h"
-#include "instructioneditorwidget.h"
 
-using namespace InstructionEditor;
+using namespace Ui;
+using namespace Models;
 
-InstructionEditorWindow::InstructionEditorWindow(QWidget *parent)
-    : EditorWindow{parent}
+InstructionEditorWindow::InstructionEditorWindow(InstructionModel *model, QWidget *parent)
+    : model(model), widget(model), EditorWindow{parent}
 {
     // setWindowTitle(windowTitle());
     menuBar()->clear();
     createMenu();
 
-    m_widget = new InstructionEditorWidget();
-    if(m_widget){
-        setCentralWidget(m_widget);
-    }
-    else{
-        qDebug() << "Failed to init InstructionEditorWidget";
-    }
+    setCentralWidget(&widget);
 }
 
-InstructionEditor::InstructionEditorModel* InstructionEditorWindow::getModel() {return m_widget->getModel();}
+void InstructionEditorWindow::open()
+{
+    this->show();
+    this->raise();
+    this->activateWindow();
+}
 
 bool InstructionEditorWindow::serializeToFile(QFile& file) const {
     // do nothing for now

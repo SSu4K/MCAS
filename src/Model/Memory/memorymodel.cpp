@@ -1,5 +1,5 @@
 #include "memorymodel.h"
-#include "machinestate.h"
+#include "Machine/machinestate.h"
 #include "Common/hexint.h"
 
 const static QString MEMORRY_HEADER = "[Memory]";
@@ -11,15 +11,17 @@ const static qsizetype MEMORY_SLICE_SIZE = 32; // in bytes
 const static qsizetype VERTICAL_HEADER_PRECISION = 3;
 const static qsizetype HORIZONTAL_HEADER_PRECISION = 2;
 
-using namespace MemoryEditor;
+using namespace Models;
+using namespace Machine;
 
-MemoryModel::MemoryModel(MachineState* machineState, QObject* parent) :
+MemoryModel::MemoryModel(Machine::MachineState* machineState, QObject* parent) :
     QAbstractTableModel(parent),
     machineState(machineState)
 
 {
     machineState->clearMemory();
     setUnitSize(MemoryUnitSize::Half);
+    setColumns(8); // just an arbitrary value to init model
 }
 
 QVariant MemoryModel::headerData(int section, Qt::Orientation orientation, int role) const {

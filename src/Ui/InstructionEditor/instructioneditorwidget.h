@@ -3,24 +3,25 @@
 
 #include <QWidget>
 #include <QTableView>
-#include "Instruction/instructioneditormodel.h"
-
-namespace InstructionEditor {
+#include "Instruction/instructionmodel.h"
+#include "instructioneditordelegate.h"
 
 // forward declarations
-class InstructionEditorModel;
-class InstructionEditorDelegate;
+namespace Models {
+    class InstructionModel;
+}
+
+namespace Ui {
 
 class InstructionEditorWidget : public QWidget {
     Q_OBJECT
 public:
-    explicit InstructionEditorWidget(QWidget* parent = nullptr);
-    InstructionEditorModel* getModel() {return &model;}
+    explicit InstructionEditorWidget(Models::InstructionModel *model, QWidget* parent = nullptr);
 
 private:
-    QTableView* tableView;
-    InstructionEditorModel model;
-    InstructionEditorDelegate* delegate;
+    Models::InstructionModel *model;
+    QTableView tableView;
+    InstructionEditorDelegate delegate;
 };
 
 

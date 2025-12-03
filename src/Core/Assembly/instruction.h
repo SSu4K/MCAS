@@ -1,5 +1,5 @@
-#ifndef INSTRUCTION_H
-#define INSTRUCTION_H
+#ifndef ASSEMBLY_INSTRUCTION_H
+#define ASSEMBLY_INSTRUCTION_H
 
 namespace Assembly {
 

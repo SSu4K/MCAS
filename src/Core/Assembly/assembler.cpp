@@ -292,12 +292,6 @@ std::shared_ptr<Instruction> Assembler::assembleLine(const QString &instruction,
         return nullptr;
     }
 
-    // qDebug() << "Parsed:" << instruction;
-    // qDebug() << "Mnemonic:" << mnemonic << "Type:" << (int)definition.type << "Opcode:" << definition.opcode << "Format:" << definition.format;
-    // for(auto [key, value]: tokenMappings.asKeyValueRange()){
-    //     qDebug() << key << "->" << value.str;
-    // }
-
     if(definition->type == InstructionType::R){
         RType r = parseRType(tokenMappings, definition, status);
         return std::make_shared<RType>(r);

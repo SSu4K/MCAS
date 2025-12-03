@@ -7,7 +7,7 @@
 #include <QLineEdit>
 #include "filldialog.h"
 
-using namespace MemoryEditor;
+using namespace Ui;
 
 FillDialog::FillDialog(QWidget* parent)
     : QDialog(parent)

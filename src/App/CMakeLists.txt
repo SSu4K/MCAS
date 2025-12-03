@@ -3,22 +3,13 @@ file(GLOB_RECURSE APP_SOURCES
     *.h
 )
 
-add_executable(MCAS main.cpp)
+add_library(AppLib SHARED ${APP_SOURCES})
 
-target_link_libraries(MCAS PRIVATE
-    UiLib
-    ContextLib
-    ModelLib
-    CoreLib
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+target_include_directories(AppLib PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
-
-qt_finalize_executable(MCAS)
-
-include(GNUInstallDirs)
-install(TARGETS MCAS
-    BUNDLE DESTINATION .
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+target_link_libraries(AppLib PUBLIC
+    CoreLib
+    ModelLib
+    UiLib
 )

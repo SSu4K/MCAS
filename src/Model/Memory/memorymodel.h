@@ -1,14 +1,14 @@
 #ifndef MEMORYMODEL_H
 #define MEMORYMODEL_H
 
-#include "machinestate.h"
+#include "Machine/machinestate.h"
 
-namespace MemoryEditor {
+namespace Models {
 
     class MemoryModel : public QAbstractTableModel {
         Q_OBJECT
     public:
-        explicit MemoryModel(MachineState* machineState, QObject* parent = nullptr);
+        explicit MemoryModel(Machine::MachineState* machineState, QObject* parent = nullptr);
 
         QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
@@ -23,8 +23,8 @@ namespace MemoryEditor {
 
         void clear();
 
-        MemoryUnitSize getUnitSize();
-        void setUnitSize(MemoryUnitSize size);
+        Machine::MemoryUnitSize getUnitSize();
+        void setUnitSize(Machine::MemoryUnitSize size);
 
         bool loadFromTextStream(QTextStream &stream);
         bool saveToTextStream(QTextStream &stream);
@@ -36,14 +36,14 @@ namespace MemoryEditor {
         void onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress);
 
     private:
-        MachineState* machineState;
+        Machine::MachineState* machineState;
 
         int m_cols;
         int m_rows;
-        MemoryUnitSize unitSize;
+        Machine::MemoryUnitSize unitSize;
     };
 
 
-} // namespace MemoryEditor
+}
 
 #endif // MEMORYMODEL_H

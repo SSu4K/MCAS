@@ -1,5 +1,5 @@
 #include "testinstructions.h"
-#include "Assembler/instruction.h"
+#include "Assembly/instruction.h"
 
 using namespace Assembly;
 

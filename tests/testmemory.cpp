@@ -1,14 +1,16 @@
 #include <QTest>
 #include "testmemory.h"
-#include "machinestate.h"
+#include "Machine/machinestate.h"
+
+using namespace Machine;
 
 TestMemory::TestMemory(QObject *parent)
     : QObject{parent}
 {}
 
 void TestMemory::ByteStoreLoad(){
-    MachineConfig config;
-    MachineState state(config);
+    Machine::MachineConfig config;
+    Machine::MachineState state(config);
     word address;
     byte stored = 0xAB;
     byte loaded;
@@ -30,8 +32,8 @@ void TestMemory::ByteStoreLoad(){
 }
 
 void TestMemory::HalfStoreLoad(){
-    MachineConfig config;
-    MachineState state(config);
+    Machine::MachineConfig config;
+    Machine::MachineState state(config);
     word address;
     half stored = 0xABCD;
     byte loaded;
@@ -59,8 +61,8 @@ void TestMemory::HalfStoreLoad(){
 }
 
 void TestMemory::WordStoreLoad(){
-    MachineConfig config;
-    MachineState state(config);
+    Machine::MachineConfig config;
+    Machine::MachineState state(config);
     word address;
     word stored = 0x89ABCDEF;
     byte loaded;

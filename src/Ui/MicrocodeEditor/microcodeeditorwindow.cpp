@@ -1,18 +1,19 @@
 #include <QMenuBar>
 
 #include "microcodeeditorwindow.h"
-
 #include "microcodeeditorwidget.h"
 #include "jumptableeditorwidget.h"
 
-using namespace MicrocodeEditor;
+using namespace Models;
+using namespace Ui;
 
-MicrocodeEditorWindow::MicrocodeEditorWindow(QWidget* parent)
-    : EditorWindow(parent)
+MicrocodeEditorWindow::MicrocodeEditorWindow(MicrocodeModel* microcodeModel, JumpTableModel* jumpTableModel, QWidget* parent)
+    : microcodeModel(microcodeModel),
+    jumpTableModel(jumpTableModel),
+    microcodeEditor(microcodeModel, parent),
+    jumpTableEditor(jumpTableModel),
+    EditorWindow(parent)
 {
-    m_microcodeEditor = new MicrocodeEditorWidget(this);
-    m_jumpTableEditor = new JumpTableEditorWidget(this);
-
     setWindowTitle(windowTitle());
     resize(1000, 600);
 
@@ -20,33 +21,39 @@ MicrocodeEditorWindow::MicrocodeEditorWindow(QWidget* parent)
     createMenu();
 }
 
+void MicrocodeEditorWindow::open()
+{
+    this->show();
+    this->raise();
+    this->activateWindow();
+}
+
 bool MicrocodeEditorWindow::serializeToFile(QFile &file) const {
     QTextStream out(&file);
-    m_microcodeEditor->model()->saveToTextStream(out);
-    m_jumpTableEditor->model()->saveToTextStream(out);
+    microcodeModel->saveToTextStream(out);
+    jumpTableModel->saveToTextStream(out);
     return true;
 }
 
 bool MicrocodeEditorWindow::serializeFromFile(QFile &file){
     bool success = true;
     QTextStream in1(&file);
-    success &= m_microcodeEditor->model()->loadFromTextStream(in1);
+    success &= microcodeModel->loadFromTextStream(in1);
     file.seek(0);
     QTextStream in2(&file);
-    success &= m_jumpTableEditor->model()->loadFromTextStream(in2);
+    success &= jumpTableModel->loadFromTextStream(in2);
 
     return success;
 }
 
 void MicrocodeEditorWindow::clearData(){
-    m_microcodeEditor->model()->clear();
-    m_jumpTableEditor->model()->clear();
+    microcodeModel->clear();
+    jumpTableModel->clear();
 }
 
 void MicrocodeEditorWindow::createCustomMenu(){
     setWindowTitle(windowTitle());
-    m_tabWidget = new QTabWidget(this);
-    m_tabWidget->addTab(m_microcodeEditor, tr("Microcode"));
-    m_tabWidget->addTab(m_jumpTableEditor, tr("Jump Tables"));
-    setCentralWidget(m_tabWidget);
+    tabWidget.addTab(&microcodeEditor, tr("Microcode"));
+    tabWidget.addTab(&jumpTableEditor, tr("Jump Tables"));
+    setCentralWidget(&tabWidget);
 }
