@@ -4,17 +4,21 @@
 #include <QApplication>
 #include <QIcon>
 
-#include "appcontext.h"
-#include "App/mainwindow.h"
+#include "settingssubsystem.h"
+#include "simulationsubsystem.h"
+#include "modelssubsystem.h"
+#include "uisubsystem.h"
+// #include "appcontext.h"
 
-#include "Memory/memorymodel.h"
-#include "Instruction/instructionmodel.h"
-#include "Microcode/microcodemodel.h"
-#include "Microcode/jumptablemodel.h"
+// #include "Memory/memorymodel.h"
+// #include "Instruction/instructionmodel.h"
+// #include "Microcode/microcodemodel.h"
+// #include "Microcode/jumptablemodel.h"
 
-#include "MemoryEditor/memoryeditorwindow.h"
-#include "MicrocodeEditor/microcodeeditorwindow.h"
-#include "InstructionEditor/instructioneditorwindow.h"
+// #include "App/mainwindow.h"
+// #include "MemoryEditor/memoryeditorwindow.h"
+// #include "MicrocodeEditor/microcodeeditorwindow.h"
+// #include "InstructionEditor/instructioneditorwindow.h"
 
 // forward declaration
 class AppContext;
@@ -29,23 +33,22 @@ public:
 
 
 private:
-    AppContext context;
+
+    SettingsSubsystem settings;
+    SimulationSubsystem simulation;
+    ModelsSubsystem models;
+    UiSubsystem ui;
+
     QTranslator translator;
 
-    // models
-    Models::MemoryModel memoryModel;
-    Models::InstructionModel instructionModel;
-    Models::MicrocodeModel microcodeModel;
-    Models::JumpTableModel jumpTableModel;
-
-    MainWindow mainWindow;
-    Ui::MemoryEditorWindow memoryEditorWindow;
-    Ui::InstructionEditorWindow instructionEditorWindow;
-    Ui::MicrocodeEditorWindow microcodeEditorWindow;
-
     // App-wide setup
-    void initTranslations();
-    void initPalette();
-    void initMainWindow();
+    void initSettingsSubsystem();
+    void loadLanguage(const QString& lang);
+
+public slots:
+    void themeChanged(const QString&);
+
+signals:
+    void languageChanged();
 };
 #endif // MCASAPP_H

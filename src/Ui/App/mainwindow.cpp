@@ -8,9 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     setWindowTitle(tr("MCAS Main Window"));
-
-    setWindowIcon(QIcon(":/icons/appicon.png"));
-
     resize(700, 500);
 
     createMenu();
@@ -66,15 +63,11 @@ void MainWindow::createViewMenu()
     //     }
     // });
 
-    // connect(group, &QActionGroup::triggered, this, [=](QAction *action) {
-    //     auto *app = static_cast<MCASApp*>(QApplication::instance());
-    //     AppContext::Theme newTheme = AppContext::Theme::System;
-    //     if (action == lightAct) newTheme = AppContext::Theme::Light;
-    //     if (action == darkAct)  newTheme = AppContext::Theme::Dark;
-
-    //     context->setTheme(newTheme);
-    //     app->initPalette();
-    // });
+    connect(group, &QActionGroup::triggered, this, [=](QAction *action) {
+        if (action == systemAct)    emit setTheme("System");
+        if (action == lightAct)     emit setTheme("Light");
+        if (action == darkAct)      emit setTheme("Dark");
+    });
 
     QMenu* langMenu = viewMenu->addMenu(tr("Language"));
 
@@ -86,6 +79,12 @@ void MainWindow::createViewMenu()
 
     langGroup->addAction(enAction);
     langGroup->addAction(plAction);
+    langGroup->setExclusive(true);
+
+    connect(langGroup, &QActionGroup::triggered, this, [=](QAction *action) {
+        if (action == enAction)    emit setLanguage("en");
+        if (action == plAction)     emit setLanguage("pl");
+    });
 }
 
 void MainWindow::createMenu(){

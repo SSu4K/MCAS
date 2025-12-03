@@ -15,12 +15,14 @@ signals:
     void openMemoryEditorWindow();
     void openInstructionEditorWindow();
 
+    void setTheme(QString theme);
+    void setLanguage(QString language);
+
 public slots:
     void retranslateUi();
     void open();
 
 private:
-
     void createToolsMenu();
     void createViewMenu();
     void createMenu();

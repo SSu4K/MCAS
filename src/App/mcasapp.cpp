@@ -40,22 +40,8 @@ static QPalette getLightPalette(){
     return palette;
 }
 
-
 MCASApp::MCASApp(int &argc, char **argv)
-    : memoryModel(context.sharedData()->editorMachineState()),
-    instructionModel(context.sharedData()->editorMachineState(),
-                       context.sharedData()->labels(),
-                       context.sharedData()->instructionSet(),
-                       context.sharedData()->instructions(),
-                       ),
-    microcodeModel(context.sharedData()->microcode()),
-    jumpTableModel(context.sharedData()->jumptable()),
-
-    mainWindow(),
-    microcodeEditorWindow(&microcodeModel, &jumpTableModel),
-    memoryEditorWindow(&memoryModel),
-    instructionEditorWindow(&instructionModel),
-
+    : settings(), simulation(), models(simulation), ui(models),
     QApplication(argc, argv)
 {
     QFile f(":/icons/appicon.png");
@@ -67,61 +53,67 @@ MCASApp::MCASApp(int &argc, char **argv)
         qDebug() << "Loading icon failed!";
     }
 
-    setOrganizationName("SzymonSudak");
-    setApplicationName("MCAS");
-    setApplicationVersion(context.appVersion());
-
     setStyle(QStyleFactory::create("Fusion"));
-    initPalette();
-    initTranslations();
-
-    // conncect coupled models
-    connect(&memoryModel, &MemoryModel::memoryRegionChanged, &instructionModel, &InstructionModel::onMemoryRegionChanged);
-    connect(&instructionModel, &InstructionModel::memoryRegionChanged, &memoryModel, &MemoryModel::onMemoryRegionChanged);
-
-    // connect open windows
-    connect(&mainWindow, &MainWindow::openMicrocodeEditorWindow,
-            &microcodeEditorWindow, &MicrocodeEditorWindow::open);
-
-    connect(&mainWindow, &MainWindow::openMemoryEditorWindow,
-            &memoryEditorWindow, &MemoryEditorWindow::open);
-
-    connect(&mainWindow, &MainWindow::openInstructionEditorWindow,
-            &instructionEditorWindow, &InstructionEditorWindow::open);
-
-    // connect retranslations
-    connect(&context, &AppContext::languageChanged,
-            &mainWindow, &MainWindow::retranslateUi);
-    connect(&context, &AppContext::languageChanged,
-            &microcodeEditorWindow, &MicrocodeEditorWindow::retranslateUi);
-    connect(&context, &AppContext::languageChanged,
-            &memoryEditorWindow, &MemoryEditorWindow::retranslateUi);
-    connect(&context, &AppContext::languageChanged,
-            &instructionEditorWindow, &InstructionEditorWindow::retranslateUi);
-
-    mainWindow.open();
+    initSettingsSubsystem();
 }
 
-void MCASApp::initTranslations()
-{
-    context.initLanguage();
-}
-
-void MCASApp::initPalette()
-{
-    using Theme = AppContext::Theme;
-    Theme theme = context.currentTheme();
-
-    if (theme == Theme::System) {
+void MCASApp::themeChanged(const QString& theme){
+    qDebug() << "app: themeChanged:" << theme;
+    if(theme == "System"){
         setPalette(style()->standardPalette());
     }
-    else if (theme == Theme::Dark) {
-        setPalette(getDarkPalette());
-    } else if (theme == Theme::Light) {
+    else if (theme == "Light"){
         setPalette(getLightPalette());
     }
+    else if (theme == "Dark"){
+        setPalette(getDarkPalette());
+    }
+
+    qDebug() << "Is dark theme?" << qApp->palette().color(QPalette::Window).value();
 }
 
-void MCASApp::initMainWindow()
+
+void MCASApp::loadLanguage(const QString& lang)
 {
+    removeTranslator(&translator);
+    QString path = QString(":/i18n/MCAS_%1.qm").arg(lang);
+
+    if (!translator.load(path))
+    {
+        qWarning() << "Failed to load translator" << path;
+        return;
+    }
+
+    installTranslator(&translator);
+
+    emit languageChanged();
+}
+
+void MCASApp::initSettingsSubsystem(){
+    setOrganizationName("SzymonSudak");
+    setApplicationName("MCAS");
+
+    setStyle(QStyleFactory::create("Fusion"));
+
+    // connect theme change
+    connect(&ui.mainWindow, &MainWindow::setTheme, &settings, &SettingsSubsystem::setTheme);
+    connect(&settings, &SettingsSubsystem::themeChanged, this, &MCASApp::themeChanged);
+
+    // ensure initial theme is correct
+    themeChanged(settings.currentTheme());
+
+    // connect language change
+    connect(&ui.mainWindow, &MainWindow::setLanguage, &settings, &SettingsSubsystem::setLanguage);
+    connect(&settings, &SettingsSubsystem::languageChanged,
+            this, &MCASApp::loadLanguage);
+
+    // connect window retranslations
+    connect(this, &MCASApp::languageChanged,
+            &ui.mainWindow, &MainWindow::retranslateUi);
+    connect(this, &MCASApp::languageChanged,
+            &ui.microcodeEditorWindow, &MicrocodeEditorWindow::retranslateUi);
+    connect(this, &MCASApp::languageChanged,
+            &ui.memoryEditorWindow, &MemoryEditorWindow::retranslateUi);
+    connect(this, &MCASApp::languageChanged,
+            &ui.instructionEditorWindow, &InstructionEditorWindow::retranslateUi);
 }
