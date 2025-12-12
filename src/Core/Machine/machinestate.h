@@ -11,6 +11,17 @@ typedef uint8_t byte;
 
 enum class MemoryUnitSize{Byte=1, Half=2, Word=4};
 
+enum SpecRegIndex{
+    PC  = static_cast<size_t>(-1),
+    MAR = static_cast<size_t>(-2),
+    MDR = static_cast<size_t>(-3),
+    IR  = static_cast<size_t>(-4),
+    A   = static_cast<size_t>(-5),
+    B   = static_cast<size_t>(-6),
+    C   = static_cast<size_t>(-7),
+    TEMP = static_cast<size_t>(-8)
+};
+
 struct MachineConfig{
     word memorySize = 4096;
     word instructionMemorySize = 512;
@@ -19,10 +30,11 @@ struct MachineConfig{
 
 class MachineState
 {
+
 private:
     MachineConfig config;
 
-    word pc;
+    word pc = 0;
     word mar = 0;
     word mdr = 0;
     word ir  = 0;
@@ -30,6 +42,7 @@ private:
     word regA = 0;
     word regB = 0;
     word regC = 0;
+    word regTemp = 0;
 
     word *regs;
     byte *memory;
@@ -41,8 +54,8 @@ public:
     ~MachineState();
 
     MachineConfig getConfig() const;
-    word getPc() const;
-    void setPc(const word address);
+    word getPC() const;
+    void setPC(const word address);
 
     word getMAR() const;
     void setMAR(const word value);
@@ -61,6 +74,9 @@ public:
 
     word getC() const;
     void setC(const word value);
+
+    word getTemp() const;
+    void setTemp(const word value);
 
     word getReg(const size_t index) const;
     void setReg(const size_t index, const word value);

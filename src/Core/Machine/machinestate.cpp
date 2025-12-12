@@ -16,11 +16,11 @@ MachineConfig MachineState::getConfig() const{
     return config;
 }
 
-word MachineState::getPc() const{
+word MachineState::getPC() const{
     return pc;
 }
 
-void MachineState::setPc(const word address){
+void MachineState::setPC(const word address){
     assert(address%4 == 0);
     pc = address;
 }
@@ -42,6 +42,9 @@ void MachineState::setB(const word value) { regB = value; }
 
 word MachineState::getC() const { return regC; }
 void MachineState::setC(const word value) { regC = value; }
+
+word MachineState::getTemp() const { return regTemp; }
+void MachineState::setTemp(const word value) { regTemp = value; }
 
 word MachineState::getReg(const size_t index) const{
     if (index >= config.registerCount)

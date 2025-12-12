@@ -30,6 +30,9 @@ private:
     uint32_t resolveSource(const QString &src, bool &ok, QString &err, uint32_t constValue = 0) const;
     uint32_t computeAluResult(const QString &aluOp, uint32_t s1, uint32_t s2) const;
     bool performDestWrite(const QString &dest, uint32_t value, Effects &effects);
+
+    bool performMemoryRead(const uint32_t addr, const QString &memOp, const QString &memDest, Effects &effects, QString &err);
+    bool performMemoryWrite(const uint32_t addr, const QString &memOp, Effects &effects, QString &err);
     bool performMemoryOp(const Microcode::Instruction &mi, Effects &effects, QString &err);
     bool evaluateJumpCondition(const QString &jcond, bool &result) const;
     uint32_t parseConst(const QString &constStr, bool &ok) const;
