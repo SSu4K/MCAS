@@ -49,15 +49,7 @@ bool MicrocodeModel::setData(const QModelIndex& index, const QVariant& value, in
     auto& instr = microcodeData->instructions[index.row()];
     auto text = value.toString();
 
-    if(microcodeData->isValidStringValue(index.column(), text)){
-        instr.setFieldValue(index.column(), text);
-        emit dataChanged(index, index);
-        return true;
-    }
-    else{
-        return false;
-    }
-
+    return microcodeData->setValue(index.column(), index.row(), text);
 }
 
 Qt::ItemFlags MicrocodeModel::flags(const QModelIndex& index) const {

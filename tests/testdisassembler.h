@@ -3,7 +3,7 @@
 
 #include <QtTest/QTest>
 #include "Assembly/instructiondefinition.h"
-#include "Assembly/labeldata.h"
+#include "Common/labeldata.h"
 
 class TestDisassembler: public QObject
 {
@@ -11,7 +11,7 @@ class TestDisassembler: public QObject
 
 private:
     Assembly::InstructionSet testInstructionSet;
-    Assembly::LabelData testLabelData;
+    LabelData testLabelData;
 
 public:
     TestDisassembler(QObject* parent = nullptr);

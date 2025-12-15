@@ -4,7 +4,7 @@
 #include "instructiondata.h"
 
 #include "Assembly/assemblystatus.h"
-#include "Assembly/labeldata.h"
+#include "Common/labeldata.h"
 #include "Common/hexint.h"
 #include "Machine/machinestate.h"
 
@@ -14,7 +14,7 @@ using namespace InstructionEditor;
 
 InstructionModel::InstructionModel(
                         Machine::MachineState* machineState,
-                        Assembly::LabelData* labelData, Assembly::InstructionSet* instructionSet,
+                        LabelData* labelData, Assembly::InstructionSet* instructionSet,
                         InstructionData* instructionData, QObject* parent)
     : QAbstractTableModel(parent),
     machineState(machineState),

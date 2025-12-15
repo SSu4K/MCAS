@@ -4,11 +4,12 @@
 #include "assemblystatus.h"
 #include "tokenizer.h"
 
+class LabelData;
+
 namespace Assembly {
 
 class Instruction;
 class InstructionSet;
-class LabelData;
 class InstructionDefinition;
 class RType;
 class IType;

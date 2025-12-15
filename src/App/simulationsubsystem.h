@@ -2,7 +2,7 @@
 #define SIMULATIONSUBSYSTEM_H
 
 #include "Assembly/instructiondefinition.h"
-#include "Assembly/labeldata.h"
+#include "Common/labeldata.h"
 #include "Microcode/jumptabledata.h"
 #include "Microcode/microcodedata.h"
 #include "Machine/machinestate.h"
@@ -15,7 +15,7 @@ public:
     Microcode::MicrocodeConfig microcodeConfig;
     Microcode::MicrocodeData microcode;
     Microcode::JumpTableData jumptable;
-    Assembly::LabelData labelData;
+    LabelData labelData;
     Assembly::InstructionSet instructionSet;
 
     Machine::MachineConfig machineConfig;

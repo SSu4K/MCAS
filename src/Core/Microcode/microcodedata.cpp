@@ -3,36 +3,6 @@
 
 using namespace Microcode;
 
-// const QMap<size_t, QString> Microcode::Instruction::fieldNames = {
-//     {InstructionField::address,     "uAR"},
-//     {InstructionField::label,       "Label"},
-//     {InstructionField::alu,         "ALU"},
-//     {InstructionField::s1,          "S1"},
-//     {InstructionField::s2,          "S2"},
-//     {InstructionField::dest,        "Dest"},
-//     {InstructionField::extir,       "ExtIR"},
-//     {InstructionField::constant,    "Const"},
-//     {InstructionField::jcond,       "JCond"},
-//     {InstructionField::adr,         "Adr"},
-//     {InstructionField::mem,         "Mem"},
-//     {InstructionField::madr,        "MAdr"},
-//     {InstructionField::mdest,       "MDest"},
-//     {InstructionField::regs,        "Regs"}
-// };
-
-// const QMap<size_t, QStringList> Microcode::Instruction::validStringValues = {
-//     {InstructionField::alu,     aluOptions},
-//     {InstructionField::s1,      s1Options},
-//     {InstructionField::s2,      s2Options},
-//     {InstructionField::dest,    destOptions},
-//     {InstructionField::extir,   extirOptions},
-//     {InstructionField::jcond,   jcondOptions},
-//     {InstructionField::mem,     memOptions},
-//     {InstructionField::madr,    madrOptions},
-//     {InstructionField::mdest,   mdestOptions},
-//     {InstructionField::regs,    regsOptions}
-// };
-
 QStringList MicrocodeData::getValidStringValues(const size_t field){
     if(config.validValues.contains(field)){
         return config.validValues[field];
@@ -41,8 +11,24 @@ QStringList MicrocodeData::getValidStringValues(const size_t field){
 }
 
 bool MicrocodeData::isValidStringValue(const size_t field, const QString &string, Qt::CaseSensitivity cs){
-    QStringList validStrings = getValidStringValues(field);
-    return validStrings.contains(string, cs);
+    if(string.isEmpty()){
+        return true;
+    }
+
+    if(field == InstructionField::label){
+        bool result = false;
+        labelData.getAddress(string, &result);
+        return !result;
+    }
+    else if(field == InstructionField::adr){
+        bool result = false;
+        labelData.getAddress(string, &result);
+        return result;
+    }
+    else{
+        QStringList validStrings = getValidStringValues(field);
+        return validStrings.contains(string, cs);
+    }
 }
 
 QString MicrocodeData::matchValidFieldValue(const size_t field, const QString &string, bool * okptr){
@@ -53,7 +39,7 @@ QString MicrocodeData::matchValidFieldValue(const size_t field, const QString &s
         return trimmed;
     }
 
-    if(field == InstructionField::address){
+    if(field == InstructionField::adr){
         // need to validate hex str
         const quint16 value = HexInt::hexStringToInt(trimmed, okptr);
 
@@ -89,4 +75,46 @@ QString MicrocodeData::matchValidFieldValue(const size_t field, const QString &s
 }
 
 MicrocodeData::MicrocodeData(const MicrocodeConfig &config) : config(config) {
+}
+
+bool MicrocodeData::setValue(const size_t field, const size_t row, const QString &string){
+    if(!isValidStringValue(field, string)){
+        return false;
+    }
+
+    auto& instr = instructions[row];
+
+    if(field == InstructionField::label){
+        if(instr.label.isEmpty() && string.isEmpty()){
+            // Do nothing
+        }
+        else if(!instr.label.isEmpty() && string.isEmpty()){
+            // Remove label
+            labelData.removeLabel(instr.label);
+        }
+        else if(instr.label.isEmpty() && !string.isEmpty()){
+            // Create new label
+            labelData.setLabel(string, row);
+        }
+        else if(!instr.label.isEmpty() && !string.isEmpty()){
+            // Replace label
+            labelData.removeLabel(instr.label);
+            labelData.setLabel(string, row);
+        }
+        instr.label = string;
+    }
+    else if(field == InstructionField::adr){
+        if(string.isEmpty()){
+            instr.jumpAddress = NO_JUMP;
+        }
+        else{
+            instr.jumpAddress = labelData.getAddress(string, nullptr);
+        }
+
+        instr.adr = string;
+    }
+    else{
+        instr.setFieldValue(field, string);
+    }
+    return true;
 }

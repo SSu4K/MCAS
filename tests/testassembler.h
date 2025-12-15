@@ -3,7 +3,7 @@
 
 #include <QtTest/QTest>
 #include "Assembly/instructiondefinition.h"
-#include "Assembly/labeldata.h"
+#include "Common/labeldata.h"
 
 class TestAssembler: public QObject
 {
@@ -11,7 +11,7 @@ class TestAssembler: public QObject
 
 private:
     Assembly::InstructionSet testInstructionSet;
-    Assembly::LabelData testLabelData;
+    LabelData testLabelData;
 
 public:
     TestAssembler(QObject* parent = nullptr);
