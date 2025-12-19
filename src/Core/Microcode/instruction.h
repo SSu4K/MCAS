@@ -12,7 +12,7 @@ namespace Microcode {
     class Instruction{
     public:
 
-        uint32_t jumpAddress;
+        uint32_t jumpAddress = NO_JUMP;
         QString address;
         QString label;
         QString alu;

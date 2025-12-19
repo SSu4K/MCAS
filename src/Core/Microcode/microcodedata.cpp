@@ -74,7 +74,23 @@ QString MicrocodeData::matchValidFieldValue(const size_t field, const QString &s
     return config.validValues[field][index];
 }
 
-MicrocodeData::MicrocodeData(const MicrocodeConfig &config) : config(config) {
+MicrocodeData::MicrocodeData(const MicrocodeConfig &config) : config(config), instructions(config.microcodeSize, Instruction()) {
+    for(size_t row=0; row<config.microcodeSize; row++){
+        instructions[row].address=HexInt::intToString(row);
+    }
+}
+
+void MicrocodeData::eraseInstruction(const size_t row){
+    if(row < config.microcodeSize){
+        instructions[row] = Instruction();
+        instructions[row].address=HexInt::intToString(row);
+    }
+}
+
+void MicrocodeData::eraseAll(){
+    for(size_t row=0; row<config.microcodeSize; row++){
+        eraseInstruction(row);
+    }
 }
 
 bool MicrocodeData::setValue(const size_t field, const size_t row, const QString &string){

@@ -8,8 +8,6 @@
 namespace Microcode{
 
     class MicrocodeData{
-        QHash<QString, quint32> addressLookup;
-        QHash<quint32, QString> labelLookup;
     public:
         MicrocodeConfig config;
         QList<Microcode::Instruction> instructions;
@@ -19,6 +17,9 @@ namespace Microcode{
         QStringList getValidStringValues(const size_t field);
         bool isValidStringValue(const size_t field, const QString &string, Qt::CaseSensitivity cs = Qt::CaseSensitive);
         QString matchValidFieldValue(const size_t field, const QString &string, bool * okptr);
+
+        void eraseInstruction(const size_t row);
+        void eraseAll();
         bool setValue(const size_t field, const size_t row, const QString &string);
     };
 
