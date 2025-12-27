@@ -5,8 +5,7 @@ add_subdirectory(Ui)
 add_subdirectory(App)
 
 # Create the executable
-add_executable(MCAS main.cpp
-    Simulation/CMakeLists.txt)
+add_executable(MCAS main.cpp)
 
 if (DEFINED MCAS_QRC_SOURCES)
     target_sources(MCAS PRIVATE ${MCAS_QRC_SOURCES})

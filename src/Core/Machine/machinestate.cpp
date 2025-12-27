@@ -16,6 +16,14 @@ MachineConfig MachineState::getConfig() const{
     return config;
 }
 
+AluFlags MachineState::getAluFlags() const{
+    return aluFlags;
+}
+
+void MachineState::setAluFlags(const AluFlags &flags){
+    aluFlags = flags;
+}
+
 word MachineState::getPC() const{
     return pc;
 }
@@ -45,6 +53,14 @@ void MachineState::setC(const word value) { regC = value; }
 
 word MachineState::getTemp() const { return regTemp; }
 void MachineState::setTemp(const word value) { regTemp = value; }
+
+
+DecodedInstruction MachineState::getDecoded() const{
+    return decoded;
+}
+void MachineState::setDecoded(const DecodedInstruction &decoded){
+    this->decoded = decoded;
+}
 
 word MachineState::getReg(const size_t index) const{
     if (index >= config.registerCount)

@@ -2,6 +2,7 @@
 #define MACHINESTATE_H
 
 #include <stdint.h>
+#include "Assembly/instruction.h"
 
 namespace Machine {
 
@@ -22,10 +23,23 @@ enum SpecRegIndex{
     TEMP = static_cast<size_t>(-8)
 };
 
+struct DecodedInstruction {
+    Assembly::InstructionType type = Assembly::InstructionType::None;
+    quint8 opcode = 0;
+
+    QVector<quint8> formals;   // F1..Fn
+    quint32 immediate = 0;
+};
+
 struct MachineConfig{
     word memorySize = 4096;
     word instructionMemorySize = 512;
     byte registerCount = 32;
+};
+
+struct AluFlags{
+    bool negative = false;
+    bool zero = false;
 };
 
 class MachineState
@@ -33,6 +47,8 @@ class MachineState
 
 private:
     MachineConfig config;
+
+    AluFlags aluFlags;
 
     word pc = 0;
     word mar = 0;
@@ -44,6 +60,8 @@ private:
     word regC = 0;
     word regTemp = 0;
 
+    DecodedInstruction decoded;
+
     word *regs;
     byte *memory;
 
@@ -54,6 +72,10 @@ public:
     ~MachineState();
 
     MachineConfig getConfig() const;
+
+    AluFlags getAluFlags() const;
+    void setAluFlags(const AluFlags &flags);
+
     word getPC() const;
     void setPC(const word address);
 
@@ -77,6 +99,9 @@ public:
 
     word getTemp() const;
     void setTemp(const word value);
+
+    DecodedInstruction getDecoded() const;
+    void setDecoded(const DecodedInstruction &decoded);
 
     word getReg(const size_t index) const;
     void setReg(const size_t index, const word value);

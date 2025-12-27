@@ -11,7 +11,8 @@ target_include_directories(tests PRIVATE
 
 target_link_libraries(tests PRIVATE
     project_pch
-    CoreLib
+    #CoreLib
+    SimulationLib
     Qt6::Core
     Qt6::Test
 )

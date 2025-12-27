@@ -3,6 +3,7 @@
 #include "testassembler.h"
 #include "testdisassembler.h"
 #include "testmemory.h"
+#include "testexecutionengine.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +22,10 @@ int main(int argc, char *argv[])
     }
     {
         TestMemory t4;
+        status |= QTest::qExec(&t4, argc, argv);
+    }
+    {
+        TestExecutionEngine t4;
         status |= QTest::qExec(&t4, argc, argv);
     }
     return status;

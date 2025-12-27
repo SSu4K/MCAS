@@ -5,6 +5,7 @@
 #include "Microcode/microcodedata.h"
 #include "Microcode/jumptabledata.h"
 #include "effects.h"
+#include "Assembly/instructiondefinition.h"
 
 namespace Sim {
 
@@ -13,17 +14,18 @@ class ExecutionEngine
 public:
     ExecutionEngine(Machine::MachineState &state,
                     Microcode::MicrocodeData const &microcode,
-                    Microcode::JumpTableData const &jumpTable);
-
-    bool executeMicrostep(Effects &out, QString &errorOut);
+                    Microcode::JumpTableData const &jumpTable,
+                    Assembly::InstructionSet const &instructionSet);
 
     uint32_t currentMicroAddress() const;
     void setMicroAddress(uint32_t uar);
+    bool stepMicro(Effects &effects, QString &err);
 
 private:
     Machine::MachineState &m_state;
     const Microcode::MicrocodeData &m_microcode;
     const Microcode::JumpTableData &m_jumpTable;
+    const Assembly::InstructionSet &m_instructionSet;
 
     uint32_t m_microAddress = 0;
 
@@ -36,6 +38,15 @@ private:
     bool performMemoryOp(const Microcode::Instruction &mi, Effects &effects, QString &err);
     bool evaluateJumpCondition(const QString &jcond, bool &result) const;
     uint32_t parseConst(const QString &constStr, bool &ok) const;
+
+    uint32_t resolveJumpTable(const Microcode::Instruction &mi, QString &err);
+
+    bool decodeInstruction(quint32 raw, Machine::DecodedInstruction &out, QString &err);
+    void applyDefaultAB(const Machine::DecodedInstruction &d);
+    bool fetchAndDecode(QString &err);
+    bool performRegsOp(const QString &regs, Effects &effects, QString &err);
+
+    void advanceMicroAddress(const Microcode::Instruction &mi, bool jumpTaken, QString &err);
 };
 
 } // namespace Sim
