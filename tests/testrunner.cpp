@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
         status |= QTest::qExec(&t4, argc, argv);
     }
     {
-        TestExecutionEngine t4;
-        status |= QTest::qExec(&t4, argc, argv);
+        TestExecutionEngine t5;
+        status |= QTest::qExec(&t5, argc, argv);
     }
     return status;
 }

@@ -20,6 +20,7 @@ public:
     uint32_t currentMicroAddress() const;
     void setMicroAddress(uint32_t uar);
     bool stepMicro(Effects &effects, QString &err);
+    bool fetchAndDecode(QString &err);
 
 private:
     Machine::MachineState &m_state;
@@ -43,7 +44,6 @@ private:
 
     bool decodeInstruction(quint32 raw, Machine::DecodedInstruction &out, QString &err);
     void applyDefaultAB(const Machine::DecodedInstruction &d);
-    bool fetchAndDecode(QString &err);
     bool performRegsOp(const QString &regs, Effects &effects, QString &err);
 
     void advanceMicroAddress(const Microcode::Instruction &mi, bool jumpTaken, QString &err);

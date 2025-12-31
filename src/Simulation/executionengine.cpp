@@ -305,6 +305,9 @@ bool ExecutionEngine::decodeInstruction(quint32 raw,
     Assembly::JType tempInstruction = Assembly::JType::decode(raw);
     quint8 opcode = tempInstruction.opcode();
     const auto definition = m_instructionSet.getDefinition(opcode);
+    if(definition == nullptr){
+        return false;
+    }
     Assembly::InstructionType type = definition->type;
     out.type = type;
 
@@ -351,7 +354,7 @@ bool ExecutionEngine::fetchAndDecode(QString &err)
     quint32 raw = m_state.loadWord(pc);
 
     m_state.setIR(raw);
-    m_state.setPC(pc + 1);
+    m_state.setPC(pc + 4);
 
     DecodedInstruction decoded;
     if (!decodeInstruction(raw, decoded, err)) {
