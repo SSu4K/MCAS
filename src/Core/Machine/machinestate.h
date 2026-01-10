@@ -24,11 +24,11 @@ enum SpecRegIndex{
 };
 
 struct DecodedInstruction {
-    Assembly::InstructionType type = Assembly::InstructionType::None;
-    quint8 opcode = 0;
+    uint8_t opcode = 0;
 
-    QVector<quint8> formals;   // F1..Fn
-    quint32 immediate = 0;
+    QVector<quint8> formals;
+    uint32_t immediateI = 0;
+    uint32_t immediateJ = 0;
 };
 
 struct MachineConfig{
@@ -66,6 +66,7 @@ private:
     byte *memory;
 
     void checkMemoryAccess(const word address, const size_t size) const;
+    bool decodeIR();
 
 public:
     explicit MachineState(const MachineConfig &config);

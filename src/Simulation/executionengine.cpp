@@ -28,17 +28,50 @@ void ExecutionEngine::setMicroAddress(uint32_t uar) {
     m_microAddress = uar;
 }
 
-uint32_t ExecutionEngine::resolveSource(const QString &src, bool &ok, QString &err, uint32_t constValue) const
+uint32_t ExecutionEngine::resolveImmediate(const Microcode::Instruction &mi, Effects &effects, bool &ok, QString &err) const{
+    const auto &d = m_state.getDecoded();
+    const Assembly::InstructionDefinition* def = m_instructionSet.getDefinition(d.opcode);
+    if(def == nullptr){
+        ok = false;
+        err = "Unknown instruction type";
+        return 0;
+    }
+
+    uint32_t imm;
+
+    if(def->type == Assembly::InstructionType::I){
+        imm = d.immediateI;
+    }
+    else if(def->type == Assembly::InstructionType::J){
+        imm = d.immediateJ;
+    }
+    else{
+        ok = false;
+        err = "Extracting immediate for wrong instruction type";
+        return 0;
+    }
+
+    if(mi.extir.compare("Byte", Qt::CaseInsensitive) == 0){
+        return signExtend(imm, 8);
+    }
+    else if(mi.extir.compare("Half", Qt::CaseInsensitive) == 0){
+        return signExtend(imm, 16);
+    }
+    else{
+        signExtend(imm, 32);
+    }
+
+    return 0;
+}
+
+uint32_t ExecutionEngine::resolveSource(const QString &src, const quint32 &constant, bool &ok, QString &err) const
 {
     ok = true;
     QString s = src.trimmed();
     if (s.isEmpty()) return 0;
 
     if (s.compare("Const", Qt::CaseInsensitive) == 0) {
-        bool cOk = false;
-        uint32_t v = parseConst(constValue ? QString::number(constValue) : QString(), cOk);
-        if (!cOk) { ok = false; err = "Const parse failed"; return 0; }
-        return v;
+        return constant;
     }
     if (s.compare("PC", Qt::CaseInsensitive) == 0) {
         return m_state.getPC();
@@ -298,73 +331,43 @@ uint32_t ExecutionEngine::resolveJumpTable(const Instruction &mi, QString &err)
     return target;
 }
 
-bool ExecutionEngine::decodeInstruction(quint32 raw,
-                                        DecodedInstruction &out,
-                                        QString &err)
-{
-    Assembly::JType tempInstruction = Assembly::JType::decode(raw);
-    quint8 opcode = tempInstruction.opcode();
-    const auto definition = m_instructionSet.getDefinition(opcode);
-    if(definition == nullptr){
-        return false;
-    }
-    Assembly::InstructionType type = definition->type;
-    out.type = type;
-
-    switch (type) {
-    case Assembly::InstructionType::R: {
-        Assembly::RType r = Assembly::RType::decode(raw);
-        out.formals = r.formals;
-        break;
-    }
-    case Assembly::InstructionType::I: {
-        Assembly::IType i = Assembly::IType::decode(raw);
-        out.formals = { i.sourceRegister, i.destinationRegister };
-        out.immediate = i.immediate;
-        break;
-    }
-    case Assembly::InstructionType::J: {
-        Assembly::JType j = Assembly::JType::decode(raw);
-        out.immediate = j.immediate;
-        break;
-    }
-    default:
-        err = "Unknown instruction type";
-        return false;
-    }
-
-    return true;
+bool ExecutionEngine::regsRR(Effects &effects){
+    return regsRAF(1, effects) & regsRBF(2, effects);
 }
 
-void ExecutionEngine::applyDefaultAB(const DecodedInstruction &d)
-{
-    if (d.formals.size() >= 1) {
-        m_state.setA(m_state.getReg(d.formals[0]));
+bool ExecutionEngine::regsRAF(const qsizetype formalId, Effects &effects){
+    const auto &d = m_state.getDecoded();
+    if(formalId < d.formals.size()){
+        const auto &newValue = m_state.getReg(d.formals[formalId]);
+        effects.regs.push_back({SpecRegIndex::A, m_state.getA(), newValue});
+        m_state.setA(newValue);
+        return true;
     }
-    if (d.formals.size() >= 2) {
-        m_state.setB(m_state.getReg(d.formals[1]));
-    }
-
+    return false;
 }
 
-
-bool ExecutionEngine::fetchAndDecode(QString &err)
-{
-    quint32 pc = m_state.getPC();
-    quint32 raw = m_state.loadWord(pc);
-
-    m_state.setIR(raw);
-    m_state.setPC(pc + 4);
-
-    DecodedInstruction decoded;
-    if (!decodeInstruction(raw, decoded, err)) {
-        return false;
+bool ExecutionEngine::regsRBF(const qsizetype formalId, Effects &effects){
+    const auto &d = m_state.getDecoded();
+    if(formalId < d.formals.size()){
+        const auto &newValue = m_state.getReg(d.formals[formalId]);
+        effects.regs.push_back({SpecRegIndex::B, m_state.getB(), newValue});
+        m_state.setB(newValue);
+        return true;
     }
+    return false;
+}
 
-    m_state.setDecoded(decoded);
-    applyDefaultAB(decoded);
-
-    return true;
+bool ExecutionEngine::regsWF(const qsizetype formalId, Effects &effects){
+    const auto &d = m_state.getDecoded();
+    if(formalId < d.formals.size()){
+        const auto reg = d.formals[formalId];
+        const auto &oldValue = m_state.getReg(reg);
+        const auto &newValue = m_state.getC();
+        effects.regs.push_back({reg, oldValue, newValue});
+        m_state.setReg(reg, newValue);
+        return true;
+    }
+    return false;
 }
 
 bool ExecutionEngine::performRegsOp(const QString &regs, Effects &effects, QString &err)
@@ -373,29 +376,37 @@ bool ExecutionEngine::performRegsOp(const QString &regs, Effects &effects, QStri
 
     const auto &d = m_state.getDecoded();
 
+    qsizetype formalId = 0;
+    bool ok = false;
+
+
     if (regs == "RR") {
-        applyDefaultAB(d);
-        return true;
+        ok = regsRR(effects);
+    }
+    else if (regs.startsWith("RAF")) {
+        formalId = regs.mid(3).toInt() - 1;
+        ok = regsRAF(formalId, effects);
+    }
+    else if (regs.startsWith("RBF")) {
+        formalId = regs.mid(3).toInt() - 1;
+        ok = regsRBF(formalId, effects);
+    }
+    else if (regs.startsWith("WF")) {
+        formalId = regs.mid(2).toInt() - 1;
+        ok = regsWF(formalId, effects);
+    }
+    else{
+        err = "Unknown Regs operation " + regs;
+        return false;
     }
 
-    if (regs.startsWith("WF")) {
-        int idx = regs.mid(2).toInt() - 1;
-        if (idx < 0 || idx >= d.formals.size()) {
-            err = "WF index out of range";
-            return false;
-        }
-
-        quint8 reg = d.formals[idx];
-        uint32_t old = m_state.getReg(reg);
-        uint32_t val = m_state.getC();
-
-        m_state.setReg(reg, val);
-        effects.regs.push_back({reg, old, val});
+    if (!ok) {
+        err = "Formal index out of range";
+        return false;
+    }
+    else{
         return true;
     }
-
-    err = "Unsupported Regs op: " + regs;
-    return false;
 }
 
 
@@ -429,14 +440,15 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
     bool ok = true;
     uint32_t s1 = 0;
     uint32_t s2 = 0;
+    const uint32_t constant = parseConst(mi.constant, ok);
 
     if (!mi.s1.trimmed().isEmpty()) {
-        s1 = resolveSource(mi.s1, ok, err, parseConst(mi.constant, ok));
+        s1 = resolveSource(mi.s1, constant, ok, err);
         if (!ok) return false;
     }
 
     if (!mi.s2.trimmed().isEmpty()) {
-        s2 = resolveSource(mi.s2, ok, err, parseConst(mi.constant, ok));
+        s2 = resolveSource(mi.s2, constant, ok, err);
         if (!ok) return false;
     }
 

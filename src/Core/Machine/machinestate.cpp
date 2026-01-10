@@ -12,6 +12,21 @@ MachineState::~MachineState(){
     delete [] memory;
 }
 
+bool MachineState::decodeIR(){
+    Assembly::JType tempInstruction = Assembly::JType::decode(ir);
+    decoded.opcode = tempInstruction.opcode();
+
+    DecodedInstruction result;
+    Assembly::RType r = Assembly::RType::decode(ir);
+    Assembly::IType i = Assembly::IType::decode(ir);
+    Assembly::JType j = Assembly::JType::decode(ir);
+
+    decoded.formals = r.formals;
+    decoded.immediateI = i.immediate;
+    decoded.immediateJ = j.immediate;
+    return true;
+}
+
 MachineConfig MachineState::getConfig() const{
     return config;
 }
@@ -40,7 +55,10 @@ word MachineState::getMDR() const { return mdr; }
 void MachineState::setMDR(const word value) { mdr = value; }
 
 word MachineState::getIR() const { return ir; }
-void MachineState::setIR(const word value) { ir = value; }
+void MachineState::setIR(const word value) {
+    ir = value;
+    decodeIR();
+}
 
 word MachineState::getA() const { return regA; }
 void MachineState::setA(const word value) { regA = value; }

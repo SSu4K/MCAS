@@ -9,6 +9,12 @@
 
 namespace Sim {
 
+static uint32_t signExtend(uint32_t value, int bits)
+{
+    uint32_t mask = 1u << (bits - 1);
+    return (value ^ mask) - mask;
+}
+
 class ExecutionEngine
 {
 public:
@@ -20,7 +26,6 @@ public:
     uint32_t currentMicroAddress() const;
     void setMicroAddress(uint32_t uar);
     bool stepMicro(Effects &effects, QString &err);
-    bool fetchAndDecode(QString &err);
 
 private:
     Machine::MachineState &m_state;
@@ -30,7 +35,8 @@ private:
 
     uint32_t m_microAddress = 0;
 
-    uint32_t resolveSource(const QString &src, bool &ok, QString &err, uint32_t constValue = 0) const;
+    uint32_t resolveImmediate(const Microcode::Instruction &mi, Effects &effects, bool &ok, QString &err) const;
+    uint32_t resolveSource(const QString &src, const quint32 &constant, bool &ok, QString &err) const;
     uint32_t computeAluResult(const QString &aluOp, uint32_t s1, uint32_t s2) const;
     bool performDestWrite(const QString &dest, uint32_t value, Effects &effects);
 
@@ -38,12 +44,18 @@ private:
     bool performMemoryWrite(const uint32_t addr, const QString &memOp, Effects &effects, QString &err);
     bool performMemoryOp(const Microcode::Instruction &mi, Effects &effects, QString &err);
     bool evaluateJumpCondition(const QString &jcond, bool &result) const;
+    bool performRegsOp(const Microcode::Instruction &mi, Effects &effects, QString &err);
     uint32_t parseConst(const QString &constStr, bool &ok) const;
 
     uint32_t resolveJumpTable(const Microcode::Instruction &mi, QString &err);
 
     bool decodeInstruction(quint32 raw, Machine::DecodedInstruction &out, QString &err);
-    void applyDefaultAB(const Machine::DecodedInstruction &d);
+
+    bool regsRR(Effects &effects);
+    bool regsRAF(const qsizetype formalId, Effects &effects);
+    bool regsRBF(const qsizetype formalId, Effects &effects);
+    bool regsWF(const qsizetype formalId, Effects &effects);
+
     bool performRegsOp(const QString &regs, Effects &effects, QString &err);
 
     void advanceMicroAddress(const Microcode::Instruction &mi, bool jumpTaken, QString &err);
