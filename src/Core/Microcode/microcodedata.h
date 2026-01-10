@@ -14,6 +14,7 @@ namespace Microcode{
         LabelData labelData;
 
         MicrocodeData(const MicrocodeConfig &config);
+        static Microcode::MicrocodeData buildMinimalFetchMicrocode(const MicrocodeConfig &config);
         QStringList getValidStringValues(const size_t field);
         bool isValidStringValue(const size_t field, const QString &string, Qt::CaseSensitivity cs = Qt::CaseSensitive);
         QString matchValidFieldValue(const size_t field, const QString &string, bool * okptr);

@@ -28,7 +28,7 @@ void ExecutionEngine::setMicroAddress(uint32_t uar) {
     m_microAddress = uar;
 }
 
-uint32_t ExecutionEngine::resolveImmediate(const Microcode::Instruction &mi, Effects &effects, bool &ok, QString &err) const{
+uint32_t ExecutionEngine::resolveImmediate(const QString &extir, bool &ok, QString &err) const{
     const auto &d = m_state.getDecoded();
     const Assembly::InstructionDefinition* def = m_instructionSet.getDefinition(d.opcode);
     if(def == nullptr){
@@ -51,10 +51,10 @@ uint32_t ExecutionEngine::resolveImmediate(const Microcode::Instruction &mi, Eff
         return 0;
     }
 
-    if(mi.extir.compare("Byte", Qt::CaseInsensitive) == 0){
+    if(extir.compare("Byte", Qt::CaseInsensitive) == 0){
         return signExtend(imm, 8);
     }
-    else if(mi.extir.compare("Half", Qt::CaseInsensitive) == 0){
+    else if(extir.compare("Half", Qt::CaseInsensitive) == 0){
         return signExtend(imm, 16);
     }
     else{
@@ -64,14 +64,14 @@ uint32_t ExecutionEngine::resolveImmediate(const Microcode::Instruction &mi, Eff
     return 0;
 }
 
-uint32_t ExecutionEngine::resolveSource(const QString &src, const quint32 &constant, bool &ok, QString &err) const
+uint32_t ExecutionEngine::resolveSource(const Microcode::Instruction &mi, const bool &source, bool &ok, QString &err) const
 {
     ok = true;
-    QString s = src.trimmed();
+    QString s = source ? mi.s2.trimmed() : mi.s1.trimmed();
     if (s.isEmpty()) return 0;
 
     if (s.compare("Const", Qt::CaseInsensitive) == 0) {
-        return constant;
+        return parseConst(mi.constant, ok);
     }
     if (s.compare("PC", Qt::CaseInsensitive) == 0) {
         return m_state.getPC();
@@ -83,7 +83,7 @@ uint32_t ExecutionEngine::resolveSource(const QString &src, const quint32 &const
         return m_state.getMDR();
     }
     if (s.compare("IR", Qt::CaseInsensitive) == 0) {
-        return m_state.getIR();
+        return resolveImmediate(mi.extir, ok, err);
     }
     if (s.compare("A", Qt::CaseInsensitive) == 0) {
         return m_state.getA();
@@ -208,6 +208,10 @@ bool ExecutionEngine::performMemoryRead(const uint32_t addr, const QString &memO
         uint32_t old = m_state.getPC();
         m_state.setPC(value);
         effects.regs.push_back({SpecRegIndex::PC, old, value});
+    } else if (memDest == "IR") {
+        uint32_t old = m_state.getIR();
+        m_state.setIR(value);
+        effects.regs.push_back({SpecRegIndex::IR, old, value});
     } else {
         err = "Unknown memory destination " + memOp;
         return false;
@@ -267,7 +271,7 @@ bool ExecutionEngine::performMemoryOp(const Microcode::Instruction &mi, Effects 
     }
 
     if(memOp[0] == 'R'){
-        QString memDest = mi.dest.trimmed().toUpper();
+        QString memDest = mi.mdest.trimmed().toUpper();
         return performMemoryRead(addr, memOp, memDest, effects, err);
     }
     else if(memOp[0] == 'W'){
@@ -332,7 +336,7 @@ uint32_t ExecutionEngine::resolveJumpTable(const Instruction &mi, QString &err)
 }
 
 bool ExecutionEngine::regsRR(Effects &effects){
-    return regsRAF(1, effects) & regsRBF(2, effects);
+    return regsRAF(0, effects) & regsRBF(1, effects);
 }
 
 bool ExecutionEngine::regsRAF(const qsizetype formalId, Effects &effects){
@@ -440,15 +444,14 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
     bool ok = true;
     uint32_t s1 = 0;
     uint32_t s2 = 0;
-    const uint32_t constant = parseConst(mi.constant, ok);
 
     if (!mi.s1.trimmed().isEmpty()) {
-        s1 = resolveSource(mi.s1, constant, ok, err);
+        s1 = resolveSource(mi, 0, ok, err);
         if (!ok) return false;
     }
 
     if (!mi.s2.trimmed().isEmpty()) {
-        s2 = resolveSource(mi.s2, constant, ok, err);
+        s2 = resolveSource(mi, 1, ok, err);
         if (!ok) return false;
     }
 
@@ -476,6 +479,8 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
             return false;
         }
     }
+
+    performRegsOp(mi.regs, effects, err);
 
     advanceMicroAddress(mi, jumpTaken, err);
 

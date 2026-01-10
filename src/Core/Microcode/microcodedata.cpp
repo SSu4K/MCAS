@@ -80,6 +80,27 @@ MicrocodeData::MicrocodeData(const MicrocodeConfig &config) : config(config), in
     }
 }
 
+MicrocodeData MicrocodeData::buildMinimalFetchMicrocode(const MicrocodeConfig &config)
+{
+    MicrocodeData mc(config);
+
+    mc.instructions[0].label = "Fetch";
+    mc.instructions[0].jcond = "MBusy";
+    mc.instructions[0].adr = "Fetch";
+    mc.instructions[0].mem = "RW";
+    mc.instructions[0].madr = "PC";
+    mc.instructions[0].mdest = "IR";
+
+    mc.instructions[1].alu = "ADD";
+    mc.instructions[1].s1 = "PC";
+    mc.instructions[1].s2 = "Const";
+    mc.instructions[1].constant = "4";
+    mc.instructions[1].dest = "PC";
+    mc.instructions[1].regs = "RR";
+
+    return mc;
+}
+
 void MicrocodeData::eraseInstruction(const size_t row){
     if(row < config.microcodeSize){
         instructions[row] = Instruction();

@@ -35,8 +35,8 @@ private:
 
     uint32_t m_microAddress = 0;
 
-    uint32_t resolveImmediate(const Microcode::Instruction &mi, Effects &effects, bool &ok, QString &err) const;
-    uint32_t resolveSource(const QString &src, const quint32 &constant, bool &ok, QString &err) const;
+    uint32_t resolveImmediate(const QString &extir, bool &ok, QString &err) const;
+    uint32_t resolveSource(const Microcode::Instruction &mi, const bool &source, bool &ok, QString &err) const;
     uint32_t computeAluResult(const QString &aluOp, uint32_t s1, uint32_t s2) const;
     bool performDestWrite(const QString &dest, uint32_t value, Effects &effects);
 

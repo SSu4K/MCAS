@@ -18,7 +18,7 @@ private slots:
     void micro_alu_sets_result();
     void micro_jump_eq_uses_alu_result();
     void fetch_increments_pc_and_sets_ir();
-    void decode_rtype_sets_ab();
+    void rr_loads_ab_from_formals();
     // void wf2_writes_correct_register();
 };
 

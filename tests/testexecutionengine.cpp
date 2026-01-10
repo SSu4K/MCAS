@@ -2,12 +2,15 @@
 #include "Simulation/executionengine.h"
 #include "Simulation/effects.h"
 #include "Microcode/instruction.h"
+#include "Microcode/microcodedata.h"
 
 #include "Common/hexint.h"
 
 
 using Sim::ExecutionEngine;
 using Sim::Effects;
+
+using Microcode::MicrocodeData;
 
 using Assembly::InstructionSet;
 using Assembly::InstructionDefinition;
@@ -85,30 +88,39 @@ void TestExecutionEngine::fetch_increments_pc_and_sets_ir()
     state.setPC(address);
     state.storeWord(address, encoded);
 
-    Microcode::MicrocodeData mc(Microcode::MicrocodeConfig{});
+    Microcode::MicrocodeData mc = MicrocodeData::buildMinimalFetchMicrocode(Microcode::MicrocodeConfig{});
     ExecutionEngine eng(state, mc, {}, instructionSet);
+
+    Sim::Effects effects;
     QString err;
 
-    QVERIFY(eng.fetchAndDecode(err));
+    QVERIFY(eng.stepMicro(effects, err));
+    QVERIFY(eng.stepMicro(effects, err));
+
     QCOMPARE(state.getIR(), encoded);
-    QCOMPARE(state.getPC(), address+4);
+    QCOMPARE(state.getPC(), address + 4);
+
 }
 
-void TestExecutionEngine::decode_rtype_sets_ab()
+void TestExecutionEngine::rr_loads_ab_from_formals()
 {
     Machine::MachineState state(Machine::MachineConfig{});
+
     state.setReg(1, 11);
     state.setReg(2, 22);
 
     quint32 raw = Assembly::RType(0x01, {1, 2, 3}).encode();
-    state.storeWord(0, raw);
-    state.setPC(0);
+    state.setIR(raw);   // decoding happens automatically
 
     Microcode::MicrocodeData mc(Microcode::MicrocodeConfig{});
+    mc.instructions[0].regs = "RR";
+
     ExecutionEngine eng(state, mc, {}, instructionSet);
+    Sim::Effects effects;
     QString err;
 
-    QVERIFY(eng.fetchAndDecode(err));
+    QVERIFY(eng.stepMicro(effects, err));
+
     QCOMPARE(state.getA(), 11u);
     QCOMPARE(state.getB(), 22u);
 }
