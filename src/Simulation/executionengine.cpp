@@ -226,17 +226,17 @@ bool ExecutionEngine::performMemoryWrite(const uint32_t addr, const QString &mem
     qsizetype memoryChangeSize = 0;
     if (memOp == "WB") {
         old = m_state.loadByte(addr);
-        m_state.storeByte(value, addr);
+        m_state.storeByte(addr, value);
         memoryChangeSize = 1;
     }
     else if (memOp == "WH") {
         old = m_state.loadHalf(addr);
-        m_state.storeHalf(value, addr);
+        m_state.storeHalf(addr, value);
         memoryChangeSize = 2;
     }
     else if (memOp == "WW") {
         old = m_state.loadWord(addr);
-        m_state.storeWord(value, addr);
+        m_state.storeWord(addr, value);
         memoryChangeSize = 4;
     }
     else{
@@ -285,7 +285,7 @@ bool ExecutionEngine::performMemoryOp(const Microcode::Instruction &mi, Effects 
 bool ExecutionEngine::evaluateJumpCondition(const QString &jcond, bool &result) const
 {
     QString j = jcond.trimmed().toUpper();
-    if (j == "TRUE") { result = true; return true; }
+    if (j == "TRUE" || j == "JUMP1" || j == "JUMP2") { result = true; return true; }
     if (j == "MBUSY") {
         result = false; return true;
     }
@@ -305,8 +305,8 @@ bool ExecutionEngine::evaluateJumpCondition(const QString &jcond, bool &result) 
 uint32_t ExecutionEngine::resolveJumpTable(const Instruction &mi, QString &err)
 {
     int tableIndex = -1;
-    if (mi.jcond == "JUMP1") tableIndex = 0;
-    else if (mi.jcond == "JUMP2") tableIndex = 1;
+    if (mi.jcond.compare("JUMP1", Qt::CaseInsensitive) == 0) tableIndex = 0;
+    else if (mi.jcond.compare("JUMP2", Qt::CaseInsensitive) == 0) tableIndex = 1;
     else {
         err = "Invalid jump table selector";
         return m_microAddress + 1;
@@ -424,7 +424,7 @@ void ExecutionEngine::advanceMicroAddress(const Instruction &mi,
         if (!mi.adr.trimmed().isEmpty()) {
             next = mi.jumpAddress;
         }
-        else if (mi.jcond == "JUMP1" || mi.jcond == "JUMP2") {
+        else if (mi.jcond.startsWith("JUMP", Qt::CaseInsensitive)) {
             next = resolveJumpTable(mi, err);
         }
     }

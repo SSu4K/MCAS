@@ -94,8 +94,9 @@ MicrocodeData MicrocodeData::buildMinimalFetchMicrocode(const MicrocodeConfig &c
     mc.instructions[1].alu = "ADD";
     mc.instructions[1].s1 = "PC";
     mc.instructions[1].s2 = "Const";
-    mc.instructions[1].constant = "4";
     mc.instructions[1].dest = "PC";
+    mc.instructions[1].constant = "4";
+    mc.instructions[1].jcond = "Jump1";
     mc.instructions[1].regs = "RR";
 
     return mc;

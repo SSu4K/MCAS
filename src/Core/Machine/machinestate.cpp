@@ -5,7 +5,7 @@
 using namespace Machine;
 
 MachineState::MachineState(const MachineConfig &config)
-    : config(config), regs(new word[config.registerCount]), memory(new byte[config.memorySize]){}
+    : config(config), regs(new word[config.registerCount]), memory(new byte[config.memorySize]{0}){}
 
 MachineState::~MachineState(){
     delete [] regs;
@@ -93,7 +93,7 @@ void MachineState::setReg(const size_t index, const word value){
 }
 
 void MachineState::checkMemoryAccess(const word address, const size_t size) const{
-    if(address > config.memorySize - size)
+    if(address > (config.memorySize - size))
         throw std::out_of_range("Memory access out of range");
 }
 

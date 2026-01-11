@@ -15,11 +15,25 @@ public:
     TestExecutionEngine(QObject* parent = nullptr);
 
 private slots:
-    void micro_alu_sets_result();
-    void micro_jump_eq_uses_alu_result();
-    void fetch_increments_pc_and_sets_ir();
-    void rr_loads_ab_from_formals();
-    // void wf2_writes_correct_register();
+
+    // basic uar incrementing tests
+    void uar_advances_without_jump();
+    void true_jump_sets_uar();
+
+    // regs op tests
+    void rr_reads_formals();
+    void wf_writes_c_into_formal();
+
+    // ALU tests
+    void alu_add_sets_C();
+
+    void extir_byte_sign_extends();
+
+    void memory_write_stores_word();
+
+    // Microcode run tests
+    void basic_fetch();
 };
+
 
 #endif // TESTEXECUTIONENGINE_H
