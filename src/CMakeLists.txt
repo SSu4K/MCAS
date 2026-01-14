@@ -13,10 +13,7 @@ endif()
 
 # Link all sublibraries
 target_link_libraries(MCAS PRIVATE
-    UiLib
     AppLib
-    ModelLib
-    CoreLib
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
