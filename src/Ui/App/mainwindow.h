@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "simulationview.h"
 
 class MainWindow : public QMainWindow
 {
@@ -23,6 +24,8 @@ public slots:
     void open();
 
 private:
+    SimulationView *simView;
+
     void createToolsMenu();
     void createViewMenu();
     void createMenu();

@@ -11,6 +11,9 @@ MainWindow::MainWindow(QWidget *parent)
     resize(700, 500);
 
     createMenu();
+
+    SimulationView *simView = new SimulationView(this);
+    setCentralWidget(simView);
 }
 
 void MainWindow::open()
