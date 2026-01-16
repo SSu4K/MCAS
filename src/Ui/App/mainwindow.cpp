@@ -4,8 +4,8 @@
 
 #include "mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
+    : worker(worker), QMainWindow(parent)
 {
     setWindowTitle(tr("MCAS Main Window"));
     resize(700, 500);
@@ -14,6 +14,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     SimulationView *simView = new SimulationView(this);
     setCentralWidget(simView);
+
+    connect(simView, &SimulationView::clockClicked, worker, &Sim::ExecutionWorker::stepMicro);
+    connect(simView, &SimulationView::resetClicked, worker, &Sim::ExecutionWorker::reset);
+
+    connect(worker, &Sim::ExecutionWorker::stateChanged,
+            simView, [simView, worker]() {
+                simView->updateUAR(worker->currentUAR());
+            });
+
+    connect(worker, &Sim::ExecutionWorker::stateChanged,
+            simView, [simView, worker]() {
+                simView->updateState(worker->getMachineState());
+            });
+
+
 }
 
 void MainWindow::open()

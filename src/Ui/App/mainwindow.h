@@ -4,11 +4,13 @@
 #include <QMainWindow>
 #include "simulationview.h"
 
+#include "executionworker.h"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(Sim::ExecutionWorker *worker, QWidget *parent = nullptr);
     ~MainWindow() = default;
 
 signals:
@@ -25,6 +27,9 @@ public slots:
 
 private:
     SimulationView *simView;
+
+    QString err;
+    Sim::ExecutionWorker *worker;
 
     void createToolsMenu();
     void createViewMenu();

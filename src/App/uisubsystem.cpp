@@ -5,7 +5,7 @@ using namespace Ui;
 
 UiSubsystem::UiSubsystem(ModelsSubsystem &modelsSubsystem, QObject *parent)
     : QObject{parent},
-    mainWindow(),
+    mainWindow(&modelsSubsystem.simulation.worker),
     microcodeEditorWindow(&modelsSubsystem.microcodeModel, &modelsSubsystem.jumpTableModel),
     memoryEditorWindow(&modelsSubsystem.memoryModel),
     instructionEditorWindow(&modelsSubsystem.instructionModel)

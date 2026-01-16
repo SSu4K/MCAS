@@ -25,6 +25,13 @@ bool MicrocodeData::isValidStringValue(const size_t field, const QString &string
         labelData.getAddress(string, &result);
         return result;
     }
+    else if(field == InstructionField::constant){
+        if(string.isEmpty()) return true;
+
+        bool ok;
+        HexInt::hexStringToInt(string, &ok);
+        return ok;
+    }
     else{
         QStringList validStrings = getValidStringValues(field);
         return validStrings.contains(string, cs);
@@ -96,6 +103,7 @@ MicrocodeData MicrocodeData::buildMinimalFetchMicrocode(const MicrocodeConfig &c
     mc.instructions[1].s2 = "Const";
     mc.instructions[1].dest = "PC";
     mc.instructions[1].constant = "4";
+    mc.instructions[1].constantValue = 4;
     mc.instructions[1].jcond = "Jump1";
     mc.instructions[1].regs = "RR";
 
@@ -150,6 +158,10 @@ bool MicrocodeData::setValue(const size_t field, const size_t row, const QString
         }
 
         instr.adr = string;
+    }
+    else if(field == InstructionField::constant){
+        instr.constant = string;
+        instr.constantValue = HexInt::hexStringToInt(string, nullptr);
     }
     else{
         instr.setFieldValue(field, string);

@@ -19,6 +19,14 @@ void revertEffects(MachineState &state, const Effects &fx)
 
 ExecutionWorker::ExecutionWorker(QObject *parent): QObject(parent){}
 
+void ExecutionWorker::setMachineState(Machine::MachineState *state){
+    this->state = state;
+}
+
+void ExecutionWorker::setExecutionEngine(ExecutionEngine *engine){
+    this->engine = engine;
+}
+
 bool ExecutionWorker::executeOneMicro(QString &err)
 {
     Effects fx;
@@ -39,8 +47,15 @@ bool ExecutionWorker::executeOneMicro(QString &err)
     return true;
 }
 
-bool ExecutionWorker::stepMicro(QString &err){
+bool ExecutionWorker::stepMicro(){
+    QString err;
     return executeOneMicro(err);
+}
+
+bool ExecutionWorker::reset(){
+    bool success = engine->reset();
+    emit stateChanged();
+    return success;
 }
 
 void ExecutionWorker::runContinuous(double hz)
@@ -51,8 +66,7 @@ void ExecutionWorker::runContinuous(double hz)
 
 void ExecutionWorker::onClockTick()
 {
-    QString err;
-    if (!stepMicro(err)) {
+    if (!stepMicro()) {
         stop();
     }
 }
@@ -75,5 +89,19 @@ bool ExecutionWorker::rewindMicro()
 
     emit stateChanged();
     return true;
+}
+
+uint32_t ExecutionWorker::currentPC() const
+{
+    return state->getPC();
+}
+
+uint32_t ExecutionWorker::currentUAR() const
+{
+    return engine->currentMicroAddress();
+}
+
+const Machine::MachineState *ExecutionWorker::getMachineState(){
+    return state;
 }
 

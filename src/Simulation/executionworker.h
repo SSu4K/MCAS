@@ -17,20 +17,21 @@ public:
 
     explicit ExecutionWorker(QObject *parent = nullptr);
 
-    // Configuration
     void setMachineState(Machine::MachineState *state);
     void setExecutionEngine(ExecutionEngine *engine);
 
-    // Execution
-    bool stepMicro(QString &err);
     bool stepInstruction(QString &err);
 
     void runContinuous(double hz);
     void stop();
 
-    // Rewind
     bool rewindMicro();
     bool rewindInstruction();
+
+    const Machine::MachineState *getMachineState();
+
+    uint32_t currentPC() const;
+    uint32_t currentUAR() const;
 
 signals:
     void microStepDone(const Effects &fx);
@@ -40,6 +41,10 @@ signals:
 
 private slots:
     void onClockTick();
+
+public slots:
+    bool stepMicro();
+    bool reset();
 
 private:
     bool executeOneMicro(QString &err);

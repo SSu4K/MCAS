@@ -13,6 +13,7 @@ namespace Microcode {
     public:
 
         uint32_t jumpAddress = NO_JUMP;
+        uint32_t constantValue = 0;
         QString address;
         QString label;
         QString alu;

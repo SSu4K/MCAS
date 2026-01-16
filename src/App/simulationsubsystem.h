@@ -7,6 +7,8 @@
 #include "Microcode/microcodedata.h"
 #include "Machine/machinestate.h"
 
+#include "executionworker.h"
+
 class SimulationSubsystem
 {
 public:
@@ -20,6 +22,9 @@ public:
 
     Machine::MachineConfig machineConfig;
     Machine::MachineState editorMachineState;
+
+    Sim::ExecutionEngine engine;
+    Sim::ExecutionWorker worker;
 };
 
 #endif // SIMULATIONSUBSYSTEM_H

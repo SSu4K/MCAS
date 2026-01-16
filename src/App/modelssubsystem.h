@@ -14,6 +14,8 @@ class ModelsSubsystem: QObject
     Q_OBJECT
 public:
     ModelsSubsystem(SimulationSubsystem &simulationSubsystem);
+
+    SimulationSubsystem &simulation;
     InstructionEditor::InstructionData instructions;
     Models::MemoryModel memoryModel;
     Models::InstructionModel instructionModel;

@@ -71,7 +71,7 @@ uint32_t ExecutionEngine::resolveSource(const Microcode::Instruction &mi, const 
     if (s.isEmpty()) return 0;
 
     if (s.compare("Const", Qt::CaseInsensitive) == 0) {
-        return parseConst(mi.constant, ok);
+        return mi.constantValue;
     }
     if (s.compare("PC", Qt::CaseInsensitive) == 0) {
         return m_state.getPC();
@@ -483,7 +483,15 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
     performRegsOp(mi.regs, effects, err);
 
     advanceMicroAddress(mi, jumpTaken, err);
+    clock += 1;
 
+    return true;
+}
+
+bool ExecutionEngine::reset(){
+    m_microAddress = 0;
+    clock = 0;
+    m_state.reset();
     return true;
 }
 

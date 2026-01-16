@@ -26,6 +26,7 @@ public:
     uint32_t currentMicroAddress() const;
     void setMicroAddress(uint32_t uar);
     bool stepMicro(Effects &effects, QString &err);
+    bool reset();
 
 private:
     Machine::MachineState &m_state;
@@ -34,6 +35,7 @@ private:
     const Assembly::InstructionSet &m_instructionSet;
 
     uint32_t m_microAddress = 0;
+    uint32_t clock = 0;
 
     uint32_t resolveImmediate(const QString &extir, bool &ok, QString &err) const;
     uint32_t resolveSource(const Microcode::Instruction &mi, const bool &source, bool &ok, QString &err) const;

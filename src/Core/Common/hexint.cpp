@@ -15,13 +15,17 @@ quint32 HexInt::hexStringToInt(const QString &string, bool* okptr)
     quint32 value = 0;
     QString s = string.trimmed();
 
+    bool ok;
+
     if (s.startsWith("0x", Qt::CaseInsensitive)) {
-        value = s.mid(2).toULong(okptr, 16);
+        value = s.mid(2).toULong(&ok, 16);
     } else {
-        value = s.toULong(okptr, 16);
+        value = s.toULong(&ok, 16);
     }
 
-    return *okptr ? value : 0;
+    if(okptr != nullptr) *okptr = ok;
+
+    return ok ? value : 0;
 }
 
 quint32 HexInt::stringToInt(const QString &string, bool* okptr)

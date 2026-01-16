@@ -151,7 +151,8 @@ void TestExecutionEngine::extir_byte_sign_extends(){
     mi.s1 = "Const";
     mi.s2 = "IR";
     mi.dest = "C";
-    mi.setFieldValue(Microcode::InstructionField::constant, "1");
+    mi.constant = "1";
+    mi.constantValue = 1;
     mi.extir = "Byte";
 
     Microcode::MicrocodeData mc(Microcode::MicrocodeConfig{});

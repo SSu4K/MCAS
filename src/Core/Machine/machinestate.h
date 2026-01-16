@@ -122,6 +122,8 @@ public:
     void clearInstructionMemory();
     void clearDataMemory();
     void clearMemory();
+
+    void reset();
 };
 
 }

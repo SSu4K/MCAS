@@ -160,3 +160,23 @@ void MachineState::clearMemory(){
         memory[i] = 0;
     }
 }
+
+void MachineState::reset(){
+    // reset special registers
+    pc = 0;
+    mar = 0;
+    mdr = 0;
+    setIR(0);
+    regA = 0;
+    regB = 0;
+    regC = 0;
+    regTemp = 0;
+
+    // reset registers
+    for(size_t i=0; i<config.registerCount; i++){
+        regs[i] = 0;
+    }
+
+    // reset alu
+    aluFlags = {};
+}
