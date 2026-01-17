@@ -174,7 +174,7 @@ void MachineState::reset(){
 
     // reset registers
     for(size_t i=0; i<config.registerCount; i++){
-        regs[i] = 0;
+        regs[i] = i;
     }
 
     // reset alu

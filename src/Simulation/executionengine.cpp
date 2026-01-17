@@ -40,10 +40,10 @@ uint32_t ExecutionEngine::resolveImmediate(const QString &extir, bool &ok, QStri
     uint32_t imm;
 
     if(def->type == Assembly::InstructionType::I){
-        imm = d.immediateI;
+        imm = signExtend(d.immediateI, Assembly::encodingConfig->IImmediateSize());
     }
     else if(def->type == Assembly::InstructionType::J){
-        imm = d.immediateJ;
+        imm = signExtend(d.immediateJ, Assembly::encodingConfig->JImmediateSize());
     }
     else{
         ok = false;
@@ -52,13 +52,13 @@ uint32_t ExecutionEngine::resolveImmediate(const QString &extir, bool &ok, QStri
     }
 
     if(extir.compare("Byte", Qt::CaseInsensitive) == 0){
-        return signExtend(imm, 8);
+        return imm & 0xFF;
     }
     else if(extir.compare("Half", Qt::CaseInsensitive) == 0){
-        return signExtend(imm, 16);
+        return imm & 0xFFFF;
     }
     else{
-        signExtend(imm, 32);
+        return imm & 0xFFFFFFFF;
     }
 
     return 0;

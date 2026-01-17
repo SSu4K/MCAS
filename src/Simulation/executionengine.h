@@ -11,8 +11,11 @@ namespace Sim {
 
 static uint32_t signExtend(uint32_t value, int bits)
 {
-    uint32_t mask = 1u << (bits - 1);
-    return (value ^ mask) - mask;
+    const uint32_t fieldMask = (1u << bits) - 1;
+    value &= fieldMask;
+
+    const uint32_t signBit = 1u << (bits - 1);
+    return (value ^ signBit) - signBit;
 }
 
 class ExecutionEngine
