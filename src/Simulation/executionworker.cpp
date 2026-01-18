@@ -7,14 +7,22 @@ using Machine::MachineState;
 void revertEffects(MachineState &state, const Effects &fx)
 {
     for (const auto &r : fx.regs) {
-        state.setReg(r.index, r.oldValue);
+        switch(r.index){
+            case Machine::SpecRegIndex::PC: state.setPC(r.oldValue); break;
+            case Machine::SpecRegIndex::IR: state.setIR(r.oldValue); break;
+            case Machine::SpecRegIndex::MAR: state.setMAR(r.oldValue); break;
+            case Machine::SpecRegIndex::MDR: state.setMDR(r.oldValue); break;
+            case Machine::SpecRegIndex::A: state.setA(r.oldValue); break;
+            case Machine::SpecRegIndex::B: state.setB(r.oldValue); break;
+            case Machine::SpecRegIndex::C: state.setC(r.oldValue); break;
+            case Machine::SpecRegIndex::TEMP: state.setTemp(r.oldValue); break;
+            default: state.setReg(r.index, r.oldValue);
+        }
     }
 
     for (const auto &m : fx.memWrites) {
         state.storeByte(m.address, m.oldByte);
     }
-
-    state.setPC(fx.oldPc);
 }
 
 ExecutionWorker::ExecutionWorker(QObject *parent): QObject(parent){}
@@ -31,14 +39,10 @@ bool ExecutionWorker::executeOneMicro(QString &err)
 {
     Effects fx;
 
-    fx.oldPc = state->getPC();
-
     if (!engine->stepMicro(fx, err)) {
         emit halted(err);
         return false;
     }
-
-    fx.newPc = state->getPC();
 
     history.push_back(fx);
 
@@ -86,6 +90,7 @@ bool ExecutionWorker::rewindMicro()
     history.pop_back();
 
     revertEffects(*state, rec);
+    engine->setMicroAddress(rec.oldUAR);
 
     emit stateChanged();
     return true;

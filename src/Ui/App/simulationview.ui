@@ -23,24 +23,22 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1,1">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <layout class="QHBoxLayout" name="uarDisplayLayout">
-         <item>
-          <widget class="QLabel" name="uarLabel">
-           <property name="text">
-            <string>uAR:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="uarValueLabel">
-           <property name="text">
-            <string>000000</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+      <layout class="QFormLayout" name="formLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
+       </property>
+       <item row="0" column="0">
+        <widget class="ValueDisplayWidget" name="uarDisplayWidget" native="true">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -54,103 +52,58 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Datapath view</string>
+             <string>Special Registers:</string>
             </property>
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="pcDisplayLayout">
-            <item>
-             <widget class="QLabel" name="pcLabel">
-              <property name="text">
-               <string>PC:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="pcValueLabel">
-              <property name="text">
-               <string>0x00000000</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="ValueDisplayWidget" name="pcDisplayWidget" native="true"/>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="irDisplayLayout">
-            <item>
-             <widget class="QLabel" name="irLabel">
-              <property name="text">
-               <string>IR:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="irValueLabel">
-              <property name="text">
-               <string>0x00000000</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="ValueDisplayWidget" name="irDisplayWidget" native="true"/>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="aDisplayLayout">
-            <item>
-             <widget class="QLabel" name="aLabel">
-              <property name="text">
-               <string>A:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="aValueLabel">
-              <property name="text">
-               <string>0x00000000</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="ValueDisplayWidget" name="aDisplayWidget" native="true"/>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="bDisplayLayout">
-            <item>
-             <widget class="QLabel" name="bLabel">
-              <property name="text">
-               <string>B:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="bValueLabel">
-              <property name="text">
-               <string>0x00000000</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="ValueDisplayWidget" name="bDisplayWidget" native="true"/>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="cDisplayLayout">
-            <item>
-             <widget class="QLabel" name="cLabel">
-              <property name="text">
-               <string>C:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="cValueLabel">
-              <property name="text">
-               <string>0x00000000</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="ValueDisplayWidget" name="cDisplayWidget" native="true"/>
+          </item>
+          <item>
+           <widget class="ValueDisplayWidget" name="marDisplayWidget" native="true"/>
+          </item>
+          <item>
+           <widget class="ValueDisplayWidget" name="mdrDisplayWidget" native="true"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>General Registers:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QScrollArea" name="registerScrollArea">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>250</width>
+               <height>309</height>
+              </rect>
+             </property>
+            </widget>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -186,6 +139,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ValueDisplayWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">Common/valuedisplaywidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

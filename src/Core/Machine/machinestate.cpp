@@ -5,7 +5,9 @@
 using namespace Machine;
 
 MachineState::MachineState(const MachineConfig &config)
-    : config(config), regs(new word[config.registerCount]), memory(new byte[config.memorySize]{0}){}
+    : config(config), regs(new word[config.registerCount]{0}), memory(new byte[config.memorySize]{0}){
+    reset();
+}
 
 MachineState::~MachineState(){
     delete [] regs;
@@ -87,6 +89,7 @@ word MachineState::getReg(const size_t index) const{
 }
 
 void MachineState::setReg(const size_t index, const word value){
+    if(index == 0) return;
     if (index >= config.registerCount)
         throw std::out_of_range("Register index out of range");
     regs[index] = value;
@@ -174,7 +177,7 @@ void MachineState::reset(){
 
     // reset registers
     for(size_t i=0; i<config.registerCount; i++){
-        regs[i] = i;
+        regs[i] = 0;
     }
 
     // reset alu

@@ -17,6 +17,7 @@ MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
 
     connect(simView, &SimulationView::clockClicked, worker, &Sim::ExecutionWorker::stepMicro);
     connect(simView, &SimulationView::resetClicked, worker, &Sim::ExecutionWorker::reset);
+    connect(simView, &SimulationView::rewindClicked, worker, &Sim::ExecutionWorker::rewindMicro);
 
     connect(worker, &Sim::ExecutionWorker::stateChanged,
             simView, [simView, worker]() {

@@ -1,11 +1,28 @@
 #include "simulationview.h"
 #include "ui_simulationview.h"
 
+static void initRegisterDisplay(ValueDisplayWidget* widget, const QString &label){
+    widget->setLabel(label);
+    widget->setBitWidth(32);
+    widget->setDisplayBase(ValueDisplayWidget::Hexadecimal);
+}
+
 SimulationView::SimulationView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SimulationView)
 {
     ui->setupUi(this);
+
+    initRegisterDisplay(ui->uarDisplayWidget, "uAR:");
+    initRegisterDisplay(ui->pcDisplayWidget, "PC:");
+    initRegisterDisplay(ui->irDisplayWidget, "IR:");
+    initRegisterDisplay(ui->aDisplayWidget, "A:");
+    initRegisterDisplay(ui->bDisplayWidget, "B:");
+    initRegisterDisplay(ui->cDisplayWidget, "C:");
+    initRegisterDisplay(ui->marDisplayWidget, "MAR:");
+    initRegisterDisplay(ui->mdrDisplayWidget, "MDR:");
+
+    initRegisterList(32);
 
     connect(ui->clockButton, &QPushButton::clicked,
             this, &SimulationView::clockClicked);
@@ -22,31 +39,64 @@ SimulationView::~SimulationView()
     delete ui;
 }
 
+void SimulationView::initRegisterList(int registerCount)
+{
+    auto* container = new QWidget(this);
+    auto* layout = new QVBoxLayout(container);
+
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(2);
+
+    for (int i = 0; i < registerCount; ++i)
+    {
+        auto* w = new ValueDisplayWidget(container);
+
+        w->setLabel(QString("R%1:").arg(i));
+        w->setBitWidth(32);
+        w->setDisplayBase(ValueDisplayWidget::Hexadecimal);
+
+        layout->addWidget(w);
+        m_gpRegisters.push_back(w);
+    }
+
+    layout->addStretch();
+
+    ui->registerScrollArea->setWidget(container);
+    ui->registerScrollArea->setWidgetResizable(true);
+}
+
+
 QString getRegString(uint32_t value){
     return QString("0x%1").arg(value, 8, 16, QLatin1Char('0'));
 }
 
 void SimulationView::updatePC(uint32_t pc)
 {
-    ui->pcValueLabel->setText(
-        QString("0x%1").arg(pc, 8, 16, QLatin1Char('0'))
-        );
+
 }
 
 void SimulationView::updateUAR(uint32_t uar)
 {
-    ui->uarValueLabel->setText(
-        QString::number(uar)
-        );
+    ui->uarDisplayWidget->setValue(uar);
 }
 
 void SimulationView::updateState(const Machine::MachineState * state)
 {
-    ui->pcValueLabel->setText(getRegString(state->getPC()));
-    ui->irValueLabel->setText(getRegString(state->getIR()));
-    ui->aValueLabel->setText(getRegString(state->getA()));
-    ui->bValueLabel->setText(getRegString(state->getB()));
-    ui->cValueLabel->setText(getRegString(state->getC()));
+    ui->pcDisplayWidget->setValue(state->getPC());
+    ui->irDisplayWidget->setValue(state->getIR());
+    ui->aDisplayWidget->setValue(state->getA());
+    ui->bDisplayWidget->setValue(state->getB());
+    ui->cDisplayWidget->setValue(state->getC());
+    ui->marDisplayWidget->setValue(state->getMAR());
+    ui->mdrDisplayWidget->setValue(state->getMDR());
+
+    for (size_t i = 0; i < m_gpRegisters.size(); ++i)
+    {
+        auto* w = m_gpRegisters[i];
+        auto value = state->getReg(i);
+
+        w->setValue(value);
+    }
 }
 
 

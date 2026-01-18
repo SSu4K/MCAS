@@ -439,6 +439,7 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
         return false;
     }
 
+    effects.oldUAR = m_microAddress;
     const Instruction &mi = m_microcode.instructions[m_microAddress];
 
     bool ok = true;
@@ -483,6 +484,8 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
     performRegsOp(mi.regs, effects, err);
 
     advanceMicroAddress(mi, jumpTaken, err);
+    effects.newUAR = m_microAddress;
+
     clock += 1;
 
     return true;

@@ -4,6 +4,8 @@
 #include <QWidget>
 #include "Machine/machinestate.h"
 
+class ValueDisplayWidget;
+
 namespace Ui {
 class SimulationView;
 }
@@ -28,6 +30,9 @@ public slots:
 
 private:
     Ui::SimulationView *ui;
+    std::vector<ValueDisplayWidget*> m_gpRegisters;
+
+    void initRegisterList(int registerCount);
 };
 
 #endif // SIMULATIONVIEW_H

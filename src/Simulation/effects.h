@@ -17,8 +17,8 @@ struct MemWrite {
 };
 
 struct Effects {
-    uint32_t oldPc = 0;
-    uint32_t newPc = 0;
+    uint32_t oldUAR = 0;
+    uint32_t newUAR = 0;
     std::vector<RegWrite> regs;
     std::vector<MemWrite> memWrites;
 };
