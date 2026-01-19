@@ -15,6 +15,11 @@ SimulationView::SimulationView(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Init clock display
+    ui->clockDisplayWidget->setLabel("Clock:");
+    ui->clockDisplayWidget->setBitWidth(32);
+     ui->clockDisplayWidget->setDisplayBase(ValueDisplayWidget::UnsignedDecimal);
+
     // Init special register displays
     initRegisterDisplay(ui->uarDisplayWidget, "uAR:");
     initRegisterDisplay(ui->pcDisplayWidget, "PC:");
@@ -30,16 +35,16 @@ SimulationView::SimulationView(QWidget *parent) :
 
     // Init clock frequency edit
     auto* validator = new QDoubleValidator(0.001, 1e6, 3, ui->hzEdit);
-    validator->setNotation(QDoubleValidator::StandardNotation);
-    ui->hzEdit->setValidator(validator);
+    // validator->setNotation(QDoubleValidator::StandardNotation);
+    // ui->hzEdit->setValidator(validator);
     validator->setLocale(QLocale::c());
-    ui->hzEdit->setText("1.0");
+    // ui->hzEdit->setText("1.0");
 
     // Connect buttons
     connect(ui->resetButton, &QPushButton::clicked,
             this, &SimulationView::resetClicked);
 
-    connect(ui->hzEdit, &QLineEdit::editingFinished,
+    connect(ui->hzEdit, &QDoubleSpinBox::editingFinished,
             this, &SimulationView::onClockFrequencyEdited);
 
     connect(ui->clockButton, &QPushButton::clicked,
@@ -106,6 +111,7 @@ void SimulationView::updateUAR(uint32_t uar)
 
 void SimulationView::updateState(const Machine::MachineState * state)
 {
+    ui->clockDisplayWidget->setValue(state->getClock());
     ui->pcDisplayWidget->setValue(state->getPC());
     ui->irDisplayWidget->setValue(state->getIR());
     ui->aDisplayWidget->setValue(state->getA());
@@ -123,6 +129,16 @@ void SimulationView::updateState(const Machine::MachineState * state)
     }
 }
 
+void SimulationView::setRunning(bool running){
+    ui->clockButton->setEnabled(!running);
+    ui->rewindButton->setEnabled(!running);
+    ui->stepInstrButton->setEnabled(!running);
+    ui->rewindInstrButton->setEnabled(!running);
+
+    ui->runButton->setEnabled(!running);
+    ui->stopButton->setEnabled(running);
+}
+
 void SimulationView::onClockFrequencyEdited()
 {
     bool ok = false;
@@ -133,9 +149,9 @@ void SimulationView::onClockFrequencyEdited()
 
     emit clockFrequencyChanged(hz);
 
-    ui->hzEdit->setText(QString::number(hz, 'f', 3));
+    //ui->hzEdit->setText(QString::number(hz, 'f', 3));
     ui->hzEdit->clearFocus();
-    ui->hzEdit->deselect();
+    //ui->hzEdit->deselect();
 }
 
 

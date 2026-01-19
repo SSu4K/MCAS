@@ -41,6 +41,18 @@ void MachineState::setAluFlags(const AluFlags &flags){
     aluFlags = flags;
 }
 
+word MachineState::getClock() const{
+    return clock;
+}
+
+void MachineState::setClock(const word value){
+    clock = value;
+}
+
+void MachineState::incrementClock(){
+    clock++;
+}
+
 word MachineState::getPC() const{
     return pc;
 }
@@ -165,6 +177,8 @@ void MachineState::clearMemory(){
 }
 
 void MachineState::reset(){
+
+    clock = 0;
     // reset special registers
     pc = 0;
     mar = 0;

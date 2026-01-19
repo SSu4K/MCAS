@@ -28,6 +28,19 @@ void ExecutionEngine::setMicroAddress(uint32_t uar) {
     m_microAddress = uar;
 }
 
+bool ExecutionEngine::reset(){
+    m_microAddress = 0;
+    haltStatus.isHalted = false;
+    haltStatus.reason = "";
+    m_state.reset();
+    return true;
+}
+
+void ExecutionEngine::halt(const QString &reason){
+    haltStatus.isHalted = true;
+    haltStatus.reason = reason;
+}
+
 uint32_t ExecutionEngine::resolveImmediate(const QString &extir, bool &ok, QString &err) const{
     const auto &d = m_state.getDecoded();
     const Assembly::InstructionDefinition* def = m_instructionSet.getDefinition(d.opcode);
@@ -436,6 +449,7 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
 {
     if (m_microAddress >= static_cast<uint32_t>(m_microcode.instructions.size())) {
         err = "Microaddress out of range";
+        halt(err);
         return false;
     }
 
@@ -448,12 +462,18 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
 
     if (!mi.s1.trimmed().isEmpty()) {
         s1 = resolveSource(mi, 0, ok, err);
-        if (!ok) return false;
+        if (!ok){
+            halt(err);
+            return false;
+        }
     }
 
     if (!mi.s2.trimmed().isEmpty()) {
         s2 = resolveSource(mi, 1, ok, err);
-        if (!ok) return false;
+        if (!ok){
+            halt(err);
+            return false;
+        }
     }
 
     uint32_t aluResult = 0;
@@ -470,6 +490,7 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
     }
 
     if (!performMemoryOp(mi, effects, err)) {
+        halt(err);
         return false;
     }
 
@@ -477,26 +498,27 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
     if (!mi.jcond.trimmed().isEmpty()) {
         if (!evaluateJumpCondition(mi.jcond, jumpTaken)) {
             err = "Invalid jump condition";
+            halt(err);
             return false;
         }
     }
 
     performRegsOp(mi.regs, effects, err);
 
+    if(m_microAddress == m_microcode.config.microcodeSize - 1){
+        err = "Reached the end of microcode";
+        halt(err);
+        return false;
+    }
+
+    // TODO: Add breakpoint halting
+
     advanceMicroAddress(mi, jumpTaken, err);
     effects.newUAR = m_microAddress;
 
-    clock += 1;
+    m_state.incrementClock();
 
     return true;
 }
-
-bool ExecutionEngine::reset(){
-    m_microAddress = 0;
-    clock = 0;
-    m_state.reset();
-    return true;
-}
-
 
 } // namespace Sim

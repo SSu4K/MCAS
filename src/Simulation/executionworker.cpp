@@ -93,7 +93,7 @@ bool ExecutionWorker::rewindMicro()
     if (mode != Mode::Stopped)
         return false;
 
-    if (history.empty())
+    if (history.empty() || state->getClock() == 0)
         return false;
 
     const auto rec = history.back();
@@ -101,6 +101,7 @@ bool ExecutionWorker::rewindMicro()
 
     revertEffects(*state, rec);
     engine->setMicroAddress(rec.oldUAR);
+    state->setClock(state->getClock()-1);
 
     emit stateChanged();
     return true;

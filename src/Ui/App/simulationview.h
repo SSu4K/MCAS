@@ -33,6 +33,7 @@ public slots:
     void updatePC(uint32_t pc);
     void updateUAR(uint32_t uar);
     void updateState(const Machine::MachineState * state);
+    void setRunning(bool running);
 
 private slots:
     void onClockFrequencyEdited();

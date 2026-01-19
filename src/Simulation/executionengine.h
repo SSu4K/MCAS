@@ -18,6 +18,11 @@ static uint32_t signExtend(uint32_t value, int bits)
     return (value ^ signBit) - signBit;
 }
 
+struct HaltStatus{
+    QString reason = "";
+    bool isHalted = false;
+};
+
 class ExecutionEngine
 {
 public:
@@ -28,6 +33,7 @@ public:
 
     uint32_t currentMicroAddress() const;
     void setMicroAddress(uint32_t uar);
+
     bool stepMicro(Effects &effects, QString &err);
     bool reset();
 
@@ -38,7 +44,9 @@ private:
     const Assembly::InstructionSet &m_instructionSet;
 
     uint32_t m_microAddress = 0;
-    uint32_t clock = 0;
+    HaltStatus haltStatus;
+
+    void halt(const QString &reason);
 
     uint32_t resolveImmediate(const QString &extir, bool &ok, QString &err) const;
     uint32_t resolveSource(const Microcode::Instruction &mi, const bool &source, bool &ok, QString &err) const;

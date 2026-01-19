@@ -42,13 +42,20 @@ struct AluFlags{
     bool zero = false;
 };
 
+struct MemoryStatus{
+    uint8_t clock;
+    bool busy;
+};
+
 class MachineState
 {
 
 private:
     MachineConfig config;
-
     AluFlags aluFlags;
+    MemoryStatus memStatus;
+
+    word clock = 0;
 
     word pc = 0;
     word mar = 0;
@@ -76,6 +83,10 @@ public:
 
     AluFlags getAluFlags() const;
     void setAluFlags(const AluFlags &flags);
+
+    word getClock() const;
+    void setClock(const word value);
+    void incrementClock();
 
     word getPC() const;
     void setPC(const word address);
