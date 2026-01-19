@@ -188,7 +188,7 @@ bool MemoryModel::loadFromTextStream(QTextStream &stream){
         if (line.startsWith(';'))
             continue;
 
-        hexEncoded.append(line.toLocal8Bit());
+        hexEncoded.append(QByteArray::fromHex(line.toLatin1()));
     }
 
     for(qsizetype i=0; i<machineState->getMemorySize(); i++){
