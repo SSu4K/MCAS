@@ -196,6 +196,8 @@ bool MemoryModel::loadFromTextStream(QTextStream &stream){
     }
 
     endResetModel();
+    emit memoryRegionChanged(0, machineState->getMemorySize()-1);
+
     return true;
 }
 

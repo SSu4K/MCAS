@@ -21,12 +21,21 @@ public:
 signals:
     void clockClicked();
     void rewindClicked();
+    void stepInstrClicked();
+    void rewindInstrClicked();
+    void runClicked();
+    void stopClicked();
     void resetClicked();
+
+    void clockFrequencyChanged(double hz);
 
 public slots:
     void updatePC(uint32_t pc);
     void updateUAR(uint32_t uar);
     void updateState(const Machine::MachineState * state);
+
+private slots:
+    void onClockFrequencyEdited();
 
 private:
     Ui::SimulationView *ui;

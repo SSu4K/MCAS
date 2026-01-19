@@ -15,9 +15,16 @@ MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
     SimulationView *simView = new SimulationView(this);
     setCentralWidget(simView);
 
-    connect(simView, &SimulationView::clockClicked, worker, &Sim::ExecutionWorker::stepMicro);
     connect(simView, &SimulationView::resetClicked, worker, &Sim::ExecutionWorker::reset);
+
+    connect(simView, &SimulationView::clockClicked, worker, &Sim::ExecutionWorker::stepMicro);
     connect(simView, &SimulationView::rewindClicked, worker, &Sim::ExecutionWorker::rewindMicro);
+
+    connect(simView, &SimulationView::stepInstrClicked, worker, &Sim::ExecutionWorker::stepInstr);
+    connect(simView, &SimulationView::rewindInstrClicked, worker, &Sim::ExecutionWorker::rewindInstruction);
+
+    connect(simView, &SimulationView::runClicked, worker, &Sim::ExecutionWorker::run);
+    connect(simView, &SimulationView::stopClicked, worker, &Sim::ExecutionWorker::stop);
 
     connect(worker, &Sim::ExecutionWorker::stateChanged,
             simView, [simView, worker]() {
@@ -29,7 +36,8 @@ MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
                 simView->updateState(worker->getMachineState());
             });
 
-
+    connect(simView, &SimulationView::clockFrequencyChanged,
+            worker, &Sim::ExecutionWorker::setFrequency);
 }
 
 void MainWindow::open()

@@ -1,4 +1,5 @@
 #include <QColor>
+#include <QtMinMax>
 
 #include "instructionmodel.h"
 #include "instructiondata.h"
@@ -211,11 +212,11 @@ void InstructionModel::setBaseAddress(quint32 addr) {
 
 quint32 InstructionModel::baseAddress() const { return instructionData->baseAddress; }
 
-int InstructionModel::maxLines() const { return instructionData->maxLines; }
+qsizetype InstructionModel::maxLines() const { return instructionData->maxLines; }
 
 void InstructionModel::onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress){
     qsizetype firstline = startAddress / 4;
-    qsizetype lastline = endAddress / 4;
+    qsizetype lastline = qMin(endAddress / 4, quint32(maxLines())-1);
 
     for (qsizetype i = firstline; i <= lastline; i++){
         AssemblyStatus status = AssemblyStatus::done();

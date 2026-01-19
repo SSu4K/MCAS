@@ -1,3 +1,5 @@
+#include <QDoubleValidator>
+
 #include "simulationview.h"
 #include "ui_simulationview.h"
 
@@ -13,6 +15,7 @@ SimulationView::SimulationView(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Init special register displays
     initRegisterDisplay(ui->uarDisplayWidget, "uAR:");
     initRegisterDisplay(ui->pcDisplayWidget, "PC:");
     initRegisterDisplay(ui->irDisplayWidget, "IR:");
@@ -22,16 +25,37 @@ SimulationView::SimulationView(QWidget *parent) :
     initRegisterDisplay(ui->marDisplayWidget, "MAR:");
     initRegisterDisplay(ui->mdrDisplayWidget, "MDR:");
 
+    // Init gereral registers displays
     initRegisterList(32);
+
+    // Init clock frequency edit
+    auto* validator = new QDoubleValidator(0.001, 1e6, 3, ui->hzEdit);
+    validator->setNotation(QDoubleValidator::StandardNotation);
+    ui->hzEdit->setValidator(validator);
+    validator->setLocale(QLocale::c());
+    ui->hzEdit->setText("1.0");
+
+    // Connect buttons
+    connect(ui->resetButton, &QPushButton::clicked,
+            this, &SimulationView::resetClicked);
+
+    connect(ui->hzEdit, &QLineEdit::editingFinished,
+            this, &SimulationView::onClockFrequencyEdited);
 
     connect(ui->clockButton, &QPushButton::clicked,
             this, &SimulationView::clockClicked);
-
     connect(ui->rewindButton, &QPushButton::clicked,
             this, &SimulationView::rewindClicked);
 
-    connect(ui->resetButton, &QPushButton::clicked,
-            this, &SimulationView::resetClicked);
+    connect(ui->stepInstrButton, &QPushButton::clicked,
+            this, &SimulationView::stepInstrClicked);
+    connect(ui->rewindInstrButton, &QPushButton::clicked,
+            this, &SimulationView::rewindInstrClicked);
+
+    connect(ui->runButton, &QPushButton::clicked,
+            this, &SimulationView::runClicked);
+    connect(ui->stopButton, &QPushButton::clicked,
+            this, &SimulationView::stopClicked);
 }
 
 SimulationView::~SimulationView()
@@ -97,6 +121,21 @@ void SimulationView::updateState(const Machine::MachineState * state)
 
         w->setValue(value);
     }
+}
+
+void SimulationView::onClockFrequencyEdited()
+{
+    bool ok = false;
+    double hz = ui->hzEdit->text().toDouble(&ok);
+
+    if (!ok || hz <= 0.0)
+        return;
+
+    emit clockFrequencyChanged(hz);
+
+    ui->hzEdit->setText(QString::number(hz, 'f', 3));
+    ui->hzEdit->clearFocus();
+    ui->hzEdit->deselect();
 }
 
 

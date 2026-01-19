@@ -20,18 +20,15 @@ public:
     void setMachineState(Machine::MachineState *state);
     void setExecutionEngine(ExecutionEngine *engine);
 
-    bool stepInstruction(QString &err);
+    bool executeOneInstruction(QString &err);
 
     void runContinuous(double hz);
-    void stop();
-
-    bool rewindMicro();
-    bool rewindInstruction();
 
     const Machine::MachineState *getMachineState();
 
     uint32_t currentPC() const;
     uint32_t currentUAR() const;
+    void setFrequency(double hz);
 
 signals:
     void microStepDone(const Effects &fx);
@@ -43,18 +40,23 @@ private slots:
     void onClockTick();
 
 public slots:
-    bool stepMicro();
     bool reset();
+    bool stepMicro();
+    bool rewindMicro();
+    bool stepInstr();
+    bool rewindInstruction();
+
+    void run();
+    void stop();
 
 private:
     bool executeOneMicro(QString &err);
-
-private:
     Machine::MachineState *state = nullptr;
     ExecutionEngine *engine = nullptr;
 
     QTimer clock;
     Mode mode = Mode::Stopped;
+    double frequency = 1;
 
     std::vector<Effects> history;
 };

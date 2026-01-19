@@ -25,7 +25,14 @@ void revertEffects(MachineState &state, const Effects &fx)
     }
 }
 
-ExecutionWorker::ExecutionWorker(QObject *parent): QObject(parent){}
+ExecutionWorker::ExecutionWorker(QObject *parent): QObject(parent){
+    clock.setTimerType(Qt::PreciseTimer);
+    clock.setSingleShot(false);
+
+    connect(&clock, &QTimer::timeout,
+            this, &ExecutionWorker::onClockTick);
+
+}
 
 void ExecutionWorker::setMachineState(Machine::MachineState *state){
     this->state = state;
@@ -51,38 +58,41 @@ bool ExecutionWorker::executeOneMicro(QString &err)
     return true;
 }
 
+bool ExecutionWorker::executeOneInstruction(QString &err){
+
+    if (mode != Mode::Stopped)
+        return false;
+
+    auto initialPC = state->getPC();
+    while(initialPC == state->getPC()){
+        if(!executeOneMicro(err)){
+            return false;
+        }
+    }
+    return true;
+}
+
 bool ExecutionWorker::stepMicro(){
+    if (mode != Mode::Stopped)
+        return false;
+
     QString err;
     return executeOneMicro(err);
 }
 
-bool ExecutionWorker::reset(){
-    bool success = engine->reset();
-    emit stateChanged();
-    return success;
-}
+bool ExecutionWorker::stepInstr(){
+    if (mode != Mode::Stopped)
+        return false;
 
-void ExecutionWorker::runContinuous(double hz)
-{
-    mode = Mode::Continuous;
-    clock.start(static_cast<int>(1000.0 / hz));
-}
-
-void ExecutionWorker::onClockTick()
-{
-    if (!stepMicro()) {
-        stop();
-    }
-}
-
-void ExecutionWorker::stop()
-{
-    clock.stop();
-    mode = Mode::Stopped;
+    QString err;
+    return executeOneInstruction(err);
 }
 
 bool ExecutionWorker::rewindMicro()
 {
+    if (mode != Mode::Stopped)
+        return false;
+
     if (history.empty())
         return false;
 
@@ -96,6 +106,70 @@ bool ExecutionWorker::rewindMicro()
     return true;
 }
 
+bool ExecutionWorker::rewindInstruction(){
+    if (mode != Mode::Stopped)
+        return false;
+
+    auto initialPC = state->getPC();
+    while(initialPC == state->getPC()){
+        if(!rewindMicro()){
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ExecutionWorker::reset(){
+
+    if (mode != Mode::Stopped)
+        return false;
+
+    bool success = engine->reset();
+    emit stateChanged();
+    return success;
+}
+
+void ExecutionWorker::runContinuous(double hz)
+{
+    if (mode != Mode::Stopped)
+        return;
+
+    mode = Mode::Continuous;
+
+    int intervalMs = qMax(1, static_cast<int>(1000.0 / hz));
+    clock.start(intervalMs);
+}
+
+
+void ExecutionWorker::onClockTick()
+{
+    if (mode != Mode::Continuous)
+        return;
+
+    QString err;
+    if (!executeOneMicro(err)) {
+        stop();
+    }
+}
+
+
+void ExecutionWorker::run(){
+    if (mode != Mode::Stopped)
+        return;
+
+    runContinuous(frequency);
+}
+
+void ExecutionWorker::stop()
+{
+    if (mode == Mode::Stopped)
+        return;
+
+    clock.stop();
+    mode = Mode::Stopped;
+}
+
+
 uint32_t ExecutionWorker::currentPC() const
 {
     return state->getPC();
@@ -108,5 +182,19 @@ uint32_t ExecutionWorker::currentUAR() const
 
 const Machine::MachineState *ExecutionWorker::getMachineState(){
     return state;
+}
+
+void ExecutionWorker::setFrequency(double hz)
+{
+    if (hz <= 0.0)
+        return;
+
+    frequency = hz;
+
+    int intervalMs = qMax(1, static_cast<int>(1000.0 / frequency));
+
+    if (clock.isActive()) {
+        clock.start(intervalMs);
+    }
 }
 

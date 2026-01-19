@@ -35,7 +35,7 @@ namespace Models {
         void setBaseAddress(quint32 addr);
         quint32 baseAddress() const;
 
-        int maxLines() const;
+        qsizetype maxLines() const;
         void syncFromMemory();
 
     signals:
