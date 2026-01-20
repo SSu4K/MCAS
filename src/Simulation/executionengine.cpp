@@ -28,6 +28,10 @@ void ExecutionEngine::setMicroAddress(uint32_t uar) {
     m_microAddress = uar;
 }
 
+HaltStatus ExecutionEngine::getHaltStatus() const{
+    return haltStatus;
+}
+
 bool ExecutionEngine::reset(){
     m_microAddress = 0;
     haltStatus.isHalted = false;

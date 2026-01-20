@@ -205,6 +205,15 @@
               <layout class="QHBoxLayout" name="horizontalLayout_8">
                <item>
                 <widget class="QDoubleSpinBox" name="hzEdit">
+                 <property name="locale">
+                  <locale language="C" country="AnyTerritory"/>
+                 </property>
+                 <property name="buttonSymbols">
+                  <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
+                 </property>
+                 <property name="suffix">
+                  <string> Hz</string>
+                 </property>
                  <property name="minimum">
                   <double>0.010000000000000</double>
                  </property>
@@ -219,13 +228,6 @@
                  </property>
                  <property name="value">
                   <double>1.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>Hz</string>
                  </property>
                 </widget>
                </item>

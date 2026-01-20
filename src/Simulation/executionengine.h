@@ -34,6 +34,8 @@ public:
     uint32_t currentMicroAddress() const;
     void setMicroAddress(uint32_t uar);
 
+    HaltStatus getHaltStatus() const;
+
     bool stepMicro(Effects &effects, QString &err);
     bool reset();
 

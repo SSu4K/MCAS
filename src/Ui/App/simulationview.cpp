@@ -18,7 +18,7 @@ SimulationView::SimulationView(QWidget *parent) :
     // Init clock display
     ui->clockDisplayWidget->setLabel("Clock:");
     ui->clockDisplayWidget->setBitWidth(32);
-     ui->clockDisplayWidget->setDisplayBase(ValueDisplayWidget::UnsignedDecimal);
+    ui->clockDisplayWidget->setDisplayBase(ValueDisplayWidget::UnsignedDecimal);
 
     // Init special register displays
     initRegisterDisplay(ui->uarDisplayWidget, "uAR:");
@@ -33,19 +33,20 @@ SimulationView::SimulationView(QWidget *parent) :
     // Init gereral registers displays
     initRegisterList(32);
 
+    //QDoubleSpinBox b;
     // Init clock frequency edit
-    auto* validator = new QDoubleValidator(0.001, 1e6, 3, ui->hzEdit);
+    //auto* validator = new QDoubleValidator(0.001, 1e6, 3, ui->hzEdit);
     // validator->setNotation(QDoubleValidator::StandardNotation);
     // ui->hzEdit->setValidator(validator);
-    validator->setLocale(QLocale::c());
+    // validator->setLocale(QLocale::c());
     // ui->hzEdit->setText("1.0");
+
+    connect(ui->hzEdit, &QDoubleSpinBox::editingFinished,
+            this, &SimulationView::onClockFrequencyEdited);
 
     // Connect buttons
     connect(ui->resetButton, &QPushButton::clicked,
             this, &SimulationView::resetClicked);
-
-    connect(ui->hzEdit, &QDoubleSpinBox::editingFinished,
-            this, &SimulationView::onClockFrequencyEdited);
 
     connect(ui->clockButton, &QPushButton::clicked,
             this, &SimulationView::clockClicked);
@@ -141,10 +142,9 @@ void SimulationView::setRunning(bool running){
 
 void SimulationView::onClockFrequencyEdited()
 {
-    bool ok = false;
-    double hz = ui->hzEdit->text().toDouble(&ok);
+    double hz = ui->hzEdit->value();
 
-    if (!ok || hz <= 0.0)
+    if (hz <= 0.0)
         return;
 
     emit clockFrequencyChanged(hz);

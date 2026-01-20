@@ -44,6 +44,13 @@ void ExecutionWorker::setExecutionEngine(ExecutionEngine *engine){
 
 bool ExecutionWorker::executeOneMicro(QString &err)
 {
+    auto haltStatus = engine->getHaltStatus();
+    if(haltStatus.isHalted){
+        mode = Mode::Stopped;
+        emit halted(haltStatus.reason);
+        return false;
+    }
+
     Effects fx;
 
     if (!engine->stepMicro(fx, err)) {
@@ -190,6 +197,7 @@ void ExecutionWorker::setFrequency(double hz)
     if (hz <= 0.0)
         return;
 
+    qDebug() << hz;
     frequency = hz;
 
     int intervalMs = qMax(1, static_cast<int>(1000.0 / frequency));

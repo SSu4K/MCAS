@@ -24,6 +24,7 @@ signals:
 public slots:
     void retranslateUi();
     void open();
+    void onSimulationHalted(const QString &reason);
 
 private:
     SimulationView *simView;

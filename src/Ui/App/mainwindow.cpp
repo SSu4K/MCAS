@@ -1,7 +1,9 @@
 #include <QMenuBar>
 #include <QActionGroup>
 #include <QLayout>
+#include <QMessageBox>
 
+#include "haltdialog.h"
 #include "mainwindow.h"
 
 MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
@@ -38,6 +40,8 @@ MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
 
     connect(simView, &SimulationView::clockFrequencyChanged,
             worker, &Sim::ExecutionWorker::setFrequency);
+
+    connect(worker, &Sim::ExecutionWorker::halted, this, &MainWindow::onSimulationHalted);
 }
 
 void MainWindow::open()
@@ -115,5 +119,18 @@ void MainWindow::retranslateUi(){
     setWindowTitle(tr("MCAS Main Window"));
     menuBar()->clear();
     createMenu();
+}
+
+void MainWindow::onSimulationHalted(const QString &reason)
+{
+    // HaltDialog dlg(this);
+    // dlg.setReason(reason);
+    // dlg.exec();
+    QMessageBox::warning(
+        this,
+        "Simulation Halted",
+        reason,
+        QMessageBox::Ok
+        );
 }
 

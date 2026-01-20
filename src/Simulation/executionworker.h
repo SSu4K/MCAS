@@ -33,7 +33,7 @@ public:
 signals:
     void microStepDone(const Effects &fx);
     void instructionDone();
-    void halted(QString reason);
+    void halted(const QString &reason);
     void stateChanged();
 
 private slots:
