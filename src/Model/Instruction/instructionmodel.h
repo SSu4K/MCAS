@@ -3,6 +3,7 @@
 
 #include "Assembly/assembler.h"
 #include "Assembly/disassembler.h"
+#include "Common/texttablemodel.h"
 
 // forward declare
 namespace Machine{ class MachineState;}
@@ -13,7 +14,7 @@ namespace Models {
     const qsizetype LABEL_COLUMN_INDEX = 2;
     const qsizetype INSTRUCTION_COLUMN_INDEX = 3;
 
-    class InstructionModel : public QAbstractTableModel {
+    class InstructionModel : public TextTableModel {
         Q_OBJECT
     public:
         explicit InstructionModel(Machine::MachineState* machineState, LabelData* labelData,
@@ -37,6 +38,7 @@ namespace Models {
 
         qsizetype maxLines() const;
         void syncFromMemory();
+        void clear();
 
     signals:
         void memoryRegionChanged(quint32 startAddress, quint32 endAddress);
@@ -53,6 +55,7 @@ namespace Models {
         Assembly::Assembler m_assembler;
         Assembly::Disassembler m_disassembler;
 
+        void populateFromStringMatrix(const QList<QList<QString>> &rows) override;
 
         void assembleLine(const qsizetype lineNumber);
         bool setInstruction(const qsizetype lineNumber, const QString &text);

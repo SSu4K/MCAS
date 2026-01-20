@@ -22,12 +22,12 @@ void InstructionEditorWindow::open()
 }
 
 bool InstructionEditorWindow::serializeToFile(QFile& file) const {
-    // do nothing for now
-    return true;
+    QTextStream out(&file);
+    return model->saveToTextStream(out);
 }
 bool InstructionEditorWindow::serializeFromFile(QFile& file) {
-    // do nothing for now
-    return true;
+    QTextStream in(&file);
+    return model->loadFromTextStream(in);
 }
 
 void InstructionEditorWindow::clearData(){

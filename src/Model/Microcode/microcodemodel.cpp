@@ -102,7 +102,6 @@ void MicrocodeModel::populateFromStringMatrix(const QList<QList<QString>> &rows)
     }
     for(qsizetype row=0; row<rows.count(); row++){
         microcodeData->setValue(InstructionField::adr, row, rows[row][InstructionField::adr]);
-        qDebug() << microcodeData->instructions[row].jumpAddress;
     }
 }
 

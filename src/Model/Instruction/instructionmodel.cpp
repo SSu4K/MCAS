@@ -17,7 +17,7 @@ InstructionModel::InstructionModel(
                         Machine::MachineState* machineState,
                         LabelData* labelData, Assembly::InstructionSet* instructionSet,
                         InstructionData* instructionData, QObject* parent)
-    : QAbstractTableModel(parent),
+    : TextTableModel(parent),
     machineState(machineState),
     labelData(labelData),
     instructionSet(instructionSet),
@@ -88,6 +88,27 @@ Qt::ItemFlags InstructionModel::flags(const QModelIndex& index) const {
         return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+}
+
+void InstructionModel::clear(){
+    for(qsizetype line=0; line<maxLines(); line++){
+        setInstruction(line, "NOP");
+        setLabel(line, "");
+        assembleLine(line);
+    }
+}
+
+void InstructionModel::populateFromStringMatrix(const QList<QList<QString>> &rows){
+    clear();
+    beginResetModel();
+    for(qsizetype row=0; row<rows.count(); row++){
+        setLabel(row, rows[row][LABEL_COLUMN_INDEX]);
+    }
+    for(qsizetype row=0; row<rows.count(); row++){
+        setInstruction(row, rows[row][INSTRUCTION_COLUMN_INDEX]);
+        assembleLine(row);
+    }
+    endResetModel();
 }
 
 void InstructionModel::assembleLine(const qsizetype lineNumber){
