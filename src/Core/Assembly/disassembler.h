@@ -3,11 +3,12 @@
 
 #include "assemblystatus.h"
 
+class LabelData;
+
 namespace Assembly {
 
 // forward declarations
 class InstructionSet;
-class LabelData;
 
 class Disassembler
 {

@@ -7,9 +7,13 @@ namespace Microcode {
         enum {address=0, label, alu, s1, s2, dest, extir, constant, jcond, adr, mem, madr, mdest, regs, fieldCount};
     };
 
+        static const uint32_t NO_JUMP = -1;
+
     class Instruction{
     public:
 
+        uint32_t jumpAddress = NO_JUMP;
+        uint32_t constantValue = 0;
         QString address;
         QString label;
         QString alu;

@@ -5,6 +5,7 @@ using namespace Microcode;
 Instruction::Instruction(){
     address = "00000000";
     constant = "";
+    jumpAddress = 0;
 }
 
 QString Instruction::getFieldValue(const size_t field) const{

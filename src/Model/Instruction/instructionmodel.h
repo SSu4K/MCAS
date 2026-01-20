@@ -16,7 +16,7 @@ namespace Models {
     class InstructionModel : public QAbstractTableModel {
         Q_OBJECT
     public:
-        explicit InstructionModel(Machine::MachineState* machineState, Assembly::LabelData* labelData,
+        explicit InstructionModel(Machine::MachineState* machineState, LabelData* labelData,
                                   Assembly::InstructionSet* instructionSet,
                                   InstructionEditor::InstructionData* instructionData,
                                   QObject* parent = nullptr);
@@ -35,7 +35,7 @@ namespace Models {
         void setBaseAddress(quint32 addr);
         quint32 baseAddress() const;
 
-        int maxLines() const;
+        qsizetype maxLines() const;
         void syncFromMemory();
 
     signals:
@@ -46,7 +46,7 @@ namespace Models {
 
     private:
         Machine::MachineState* machineState;
-        Assembly::LabelData* labelData;
+        LabelData* labelData;
         Assembly::InstructionSet* instructionSet;
         InstructionEditor::InstructionData* instructionData;
 

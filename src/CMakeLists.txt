@@ -1,7 +1,8 @@
 add_subdirectory(Core)
-add_subdirectory(App)
+add_subdirectory(Simulation)
 add_subdirectory(Model)
 add_subdirectory(Ui)
+add_subdirectory(App)
 
 # Create the executable
 add_executable(MCAS main.cpp)
@@ -12,10 +13,7 @@ endif()
 
 # Link all sublibraries
 target_link_libraries(MCAS PRIVATE
-    UiLib
     AppLib
-    ModelLib
-    CoreLib
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets

@@ -2,12 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "simulationview.h"
+
+#include "executionworker.h"
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(Sim::ExecutionWorker *worker, QWidget *parent = nullptr);
     ~MainWindow() = default;
 
 signals:
@@ -21,8 +24,14 @@ signals:
 public slots:
     void retranslateUi();
     void open();
+    void onSimulationHalted(const QString &reason);
 
 private:
+    SimulationView *simView;
+
+    QString err;
+    Sim::ExecutionWorker *worker;
+
     void createToolsMenu();
     void createViewMenu();
     void createMenu();

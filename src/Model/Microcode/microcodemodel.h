@@ -31,7 +31,6 @@ class MicrocodeModel : public TextTableModel {
         bool insertInstruction(int row, const Microcode::Instruction& instr = Microcode::Instruction{});
         void clear();
 
-
     private:
         Microcode::MicrocodeData *microcodeData;
         void populateFromStringMatrix(const QList<QList<QString>> &rows) override;

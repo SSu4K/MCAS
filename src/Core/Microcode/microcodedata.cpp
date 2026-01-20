@@ -3,36 +3,6 @@
 
 using namespace Microcode;
 
-// const QMap<size_t, QString> Microcode::Instruction::fieldNames = {
-//     {InstructionField::address,     "uAR"},
-//     {InstructionField::label,       "Label"},
-//     {InstructionField::alu,         "ALU"},
-//     {InstructionField::s1,          "S1"},
-//     {InstructionField::s2,          "S2"},
-//     {InstructionField::dest,        "Dest"},
-//     {InstructionField::extir,       "ExtIR"},
-//     {InstructionField::constant,    "Const"},
-//     {InstructionField::jcond,       "JCond"},
-//     {InstructionField::adr,         "Adr"},
-//     {InstructionField::mem,         "Mem"},
-//     {InstructionField::madr,        "MAdr"},
-//     {InstructionField::mdest,       "MDest"},
-//     {InstructionField::regs,        "Regs"}
-// };
-
-// const QMap<size_t, QStringList> Microcode::Instruction::validStringValues = {
-//     {InstructionField::alu,     aluOptions},
-//     {InstructionField::s1,      s1Options},
-//     {InstructionField::s2,      s2Options},
-//     {InstructionField::dest,    destOptions},
-//     {InstructionField::extir,   extirOptions},
-//     {InstructionField::jcond,   jcondOptions},
-//     {InstructionField::mem,     memOptions},
-//     {InstructionField::madr,    madrOptions},
-//     {InstructionField::mdest,   mdestOptions},
-//     {InstructionField::regs,    regsOptions}
-// };
-
 QStringList MicrocodeData::getValidStringValues(const size_t field){
     if(config.validValues.contains(field)){
         return config.validValues[field];
@@ -41,8 +11,31 @@ QStringList MicrocodeData::getValidStringValues(const size_t field){
 }
 
 bool MicrocodeData::isValidStringValue(const size_t field, const QString &string, Qt::CaseSensitivity cs){
-    QStringList validStrings = getValidStringValues(field);
-    return validStrings.contains(string, cs);
+    if(string.isEmpty()){
+        return true;
+    }
+
+    if(field == InstructionField::label){
+        bool result = false;
+        labelData.getAddress(string, &result);
+        return !result;
+    }
+    else if(field == InstructionField::adr){
+        bool result = false;
+        labelData.getAddress(string, &result);
+        return result;
+    }
+    else if(field == InstructionField::constant){
+        if(string.isEmpty()) return true;
+
+        bool ok;
+        HexInt::hexStringToInt(string, &ok);
+        return ok;
+    }
+    else{
+        QStringList validStrings = getValidStringValues(field);
+        return validStrings.contains(string, cs);
+    }
 }
 
 QString MicrocodeData::matchValidFieldValue(const size_t field, const QString &string, bool * okptr){
@@ -53,7 +46,7 @@ QString MicrocodeData::matchValidFieldValue(const size_t field, const QString &s
         return trimmed;
     }
 
-    if(field == InstructionField::address){
+    if(field == InstructionField::adr){
         // need to validate hex str
         const quint16 value = HexInt::hexStringToInt(trimmed, okptr);
 
@@ -88,5 +81,90 @@ QString MicrocodeData::matchValidFieldValue(const size_t field, const QString &s
     return config.validValues[field][index];
 }
 
-MicrocodeData::MicrocodeData(const MicrocodeConfig &config) : config(config) {
+MicrocodeData::MicrocodeData(const MicrocodeConfig &config) : config(config), instructions(config.microcodeSize, Instruction()) {
+    for(size_t row=0; row<config.microcodeSize; row++){
+        instructions[row].address=HexInt::intToString(row);
+    }
+}
+
+MicrocodeData MicrocodeData::buildMinimalFetchMicrocode(const MicrocodeConfig &config)
+{
+    MicrocodeData mc(config);
+
+    mc.instructions[0].label = "Fetch";
+    mc.instructions[0].jcond = "MBusy";
+    mc.instructions[0].adr = "Fetch";
+    mc.instructions[0].mem = "RW";
+    mc.instructions[0].madr = "PC";
+    mc.instructions[0].mdest = "IR";
+
+    mc.instructions[1].alu = "ADD";
+    mc.instructions[1].s1 = "PC";
+    mc.instructions[1].s2 = "Const";
+    mc.instructions[1].dest = "PC";
+    mc.instructions[1].constant = "4";
+    mc.instructions[1].constantValue = 4;
+    mc.instructions[1].jcond = "Jump1";
+    mc.instructions[1].regs = "RR";
+
+    return mc;
+}
+
+void MicrocodeData::eraseInstruction(const size_t row){
+    if(row < config.microcodeSize){
+        instructions[row] = Instruction();
+        instructions[row].address=HexInt::intToString(row);
+    }
+}
+
+void MicrocodeData::eraseAll(){
+    for(size_t row=0; row<config.microcodeSize; row++){
+        eraseInstruction(row);
+    }
+}
+
+bool MicrocodeData::setValue(const size_t field, const size_t row, const QString &string){
+    if(!isValidStringValue(field, string)){
+        return false;
+    }
+
+    auto& instr = instructions[row];
+
+    if(field == InstructionField::label){
+        if(instr.label.isEmpty() && string.isEmpty()){
+            // Do nothing
+        }
+        else if(!instr.label.isEmpty() && string.isEmpty()){
+            // Remove label
+            labelData.removeLabel(instr.label);
+        }
+        else if(instr.label.isEmpty() && !string.isEmpty()){
+            // Create new label
+            labelData.setLabel(string, row);
+        }
+        else if(!instr.label.isEmpty() && !string.isEmpty()){
+            // Replace label
+            labelData.removeLabel(instr.label);
+            labelData.setLabel(string, row);
+        }
+        instr.label = string;
+    }
+    else if(field == InstructionField::adr){
+        if(string.isEmpty()){
+            instr.jumpAddress = NO_JUMP;
+        }
+        else{
+            instr.jumpAddress = labelData.getAddress(string, nullptr);
+        }
+
+        instr.adr = string;
+    }
+    else if(field == InstructionField::constant){
+        instr.constant = string;
+        instr.constantValue = HexInt::hexStringToInt(string, nullptr);
+    }
+    else{
+        instr.setFieldValue(field, string);
+    }
+    return true;
 }

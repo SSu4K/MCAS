@@ -49,15 +49,7 @@ bool MicrocodeModel::setData(const QModelIndex& index, const QVariant& value, in
     auto& instr = microcodeData->instructions[index.row()];
     auto text = value.toString();
 
-    if(microcodeData->isValidStringValue(index.column(), text)){
-        instr.setFieldValue(index.column(), text);
-        emit dataChanged(index, index);
-        return true;
-    }
-    else{
-        return false;
-    }
-
+    return microcodeData->setValue(index.column(), index.row(), text);
 }
 
 Qt::ItemFlags MicrocodeModel::flags(const QModelIndex& index) const {
@@ -97,22 +89,20 @@ bool MicrocodeModel::insertInstruction(int row, const Instruction& instr) {
 
 void MicrocodeModel::clear(){
     beginResetModel();
-    microcodeData->instructions = {};
-    Instruction instr;
-    microcodeData->instructions.append(instr);
+    microcodeData->eraseAll();
     endResetModel();
 }
 
 void MicrocodeModel::populateFromStringMatrix(const QList<QList<QString>> &rows){
     clear();
-    QList<Instruction> instructions;
-    for(auto row: rows){
-        Instruction instruction;
+    for(qsizetype row=0; row<rows.count(); row++){
         for(qsizetype field = InstructionField::address; field < InstructionField::fieldCount; field++){
-            instruction.setFieldValue(field, row[field]);
+            if(field != InstructionField::adr) microcodeData->setValue(field, row, rows[row][field]);
         }
-        instructions.append(instruction);
     }
-    setInstructions(instructions);
+    for(qsizetype row=0; row<rows.count(); row++){
+        microcodeData->setValue(InstructionField::adr, row, rows[row][InstructionField::adr]);
+        qDebug() << microcodeData->instructions[row].jumpAddress;
+    }
 }
 

@@ -12,7 +12,7 @@ static const QStringList jcondOptions  = {emptyOptionString, "True", "EQ", "NE",
 static const QStringList extirOptions  = {emptyOptionString, "Byte", "Half", "Word"};
 static const QStringList memOptions    = {emptyOptionString, "RB", "RH", "RW", "WB", "WH", "WW"};
 static const QStringList madrOptions   = {emptyOptionString, "MAR", "PC"};
-static const QStringList mdestOptions  = {emptyOptionString, "MAR", "PC"};
+static const QStringList mdestOptions  = {emptyOptionString, "MDR", "IR"};
 static const QStringList regsOptions   = {
     emptyOptionString, "RR",
     "RAF1", "RAF2", "RAF3",

@@ -1,10 +1,11 @@
 #include <QColor>
+#include <QtMinMax>
 
 #include "instructionmodel.h"
 #include "instructiondata.h"
 
 #include "Assembly/assemblystatus.h"
-#include "Assembly/labeldata.h"
+#include "Common/labeldata.h"
 #include "Common/hexint.h"
 #include "Machine/machinestate.h"
 
@@ -14,7 +15,7 @@ using namespace InstructionEditor;
 
 InstructionModel::InstructionModel(
                         Machine::MachineState* machineState,
-                        Assembly::LabelData* labelData, Assembly::InstructionSet* instructionSet,
+                        LabelData* labelData, Assembly::InstructionSet* instructionSet,
                         InstructionData* instructionData, QObject* parent)
     : QAbstractTableModel(parent),
     machineState(machineState),
@@ -211,11 +212,11 @@ void InstructionModel::setBaseAddress(quint32 addr) {
 
 quint32 InstructionModel::baseAddress() const { return instructionData->baseAddress; }
 
-int InstructionModel::maxLines() const { return instructionData->maxLines; }
+qsizetype InstructionModel::maxLines() const { return instructionData->maxLines; }
 
 void InstructionModel::onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress){
     qsizetype firstline = startAddress / 4;
-    qsizetype lastline = endAddress / 4;
+    qsizetype lastline = qMin(endAddress / 4, quint32(maxLines())-1);
 
     for (qsizetype i = firstline; i <= lastline; i++){
         AssemblyStatus status = AssemblyStatus::done();

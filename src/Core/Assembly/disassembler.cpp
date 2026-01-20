@@ -1,6 +1,6 @@
 #include "disassembler.h"
 #include "instructiondefinition.h"
-#include "labeldata.h"
+#include "Common/labeldata.h"
 #include "Common/hexint.h"
 #include "Common/twoscomplement.h"
 

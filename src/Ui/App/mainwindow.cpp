@@ -1,16 +1,47 @@
 #include <QMenuBar>
 #include <QActionGroup>
 #include <QLayout>
+#include <QMessageBox>
 
+#include "haltdialog.h"
 #include "mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
+    : worker(worker), QMainWindow(parent)
 {
     setWindowTitle(tr("MCAS Main Window"));
     resize(700, 500);
 
     createMenu();
+
+    SimulationView *simView = new SimulationView(this);
+    setCentralWidget(simView);
+
+    connect(simView, &SimulationView::resetClicked, worker, &Sim::ExecutionWorker::reset);
+
+    connect(simView, &SimulationView::clockClicked, worker, &Sim::ExecutionWorker::stepMicro);
+    connect(simView, &SimulationView::rewindClicked, worker, &Sim::ExecutionWorker::rewindMicro);
+
+    connect(simView, &SimulationView::stepInstrClicked, worker, &Sim::ExecutionWorker::stepInstr);
+    connect(simView, &SimulationView::rewindInstrClicked, worker, &Sim::ExecutionWorker::rewindInstruction);
+
+    connect(simView, &SimulationView::runClicked, worker, &Sim::ExecutionWorker::run);
+    connect(simView, &SimulationView::stopClicked, worker, &Sim::ExecutionWorker::stop);
+
+    connect(worker, &Sim::ExecutionWorker::stateChanged,
+            simView, [simView, worker]() {
+                simView->updateUAR(worker->currentUAR());
+            });
+
+    connect(worker, &Sim::ExecutionWorker::stateChanged,
+            simView, [simView, worker]() {
+                simView->updateState(worker->getMachineState());
+            });
+
+    connect(simView, &SimulationView::clockFrequencyChanged,
+            worker, &Sim::ExecutionWorker::setFrequency);
+
+    connect(worker, &Sim::ExecutionWorker::halted, this, &MainWindow::onSimulationHalted);
 }
 
 void MainWindow::open()
@@ -88,5 +119,18 @@ void MainWindow::retranslateUi(){
     setWindowTitle(tr("MCAS Main Window"));
     menuBar()->clear();
     createMenu();
+}
+
+void MainWindow::onSimulationHalted(const QString &reason)
+{
+    // HaltDialog dlg(this);
+    // dlg.setReason(reason);
+    // dlg.exec();
+    QMessageBox::warning(
+        this,
+        "Simulation Halted",
+        reason,
+        QMessageBox::Ok
+        );
 }
 
