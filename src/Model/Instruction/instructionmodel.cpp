@@ -111,6 +111,14 @@ void InstructionModel::populateFromStringMatrix(const QList<QList<QString>> &row
     endResetModel();
 }
 
+bool InstructionModel::isRowEmpty(const qsizetype row) const{
+    auto& entry = instructionData->instructions[row];
+    if(entry.encoded == 0 && entry.label.isEmpty()){
+        return true;
+    }
+    return false;
+}
+
 void InstructionModel::assembleLine(const qsizetype lineNumber){
     auto& entry = instructionData->instructions[lineNumber];
     AssemblyStatus status;

@@ -25,7 +25,9 @@ class TextTableModel : public QAbstractTableModel
         QChar delimiter = '|';
 
         virtual void populateFromStringMatrix(const QList<QList<QString>> &rows);
+        virtual bool isRowEmpty(const qsizetype row) const;
 
+        qsizetype computePopulatedRowCount() const;
         QList<int> computeColumnWidths() const;
         bool findHeader(QTextStream &stream) const;
 };

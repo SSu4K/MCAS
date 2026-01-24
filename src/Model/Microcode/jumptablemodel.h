@@ -28,11 +28,14 @@ namespace Models{
         QStringList headers() const;
         void clear();
         bool insertEntry(int row, const Microcode::JumpTableEntry& entry);
-        \
+
     private:
         Microcode::JumpTableData *jumpTableData;
+
         QStringList m_headers = {"Opcode", "Jump Table 1", "Jump Table 2"};
+
         void populateFromStringMatrix(const QList<QList<QString>> &rows) override;
+        bool isRowEmpty(const qsizetype row) const override;
     };
 }
 

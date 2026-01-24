@@ -48,3 +48,9 @@ bool Instruction::setFieldValue(const size_t field, const QString &value){
     }
     return true;
 }
+
+bool Instruction::isEmpty() const{
+    return  label.isEmpty() && alu.isEmpty() && s1.isEmpty() && s2.isEmpty() &&
+            dest.isEmpty() && jcond.isEmpty() && adr.isEmpty() && constant.isEmpty() &&
+            extir.isEmpty() && mem.isEmpty() && madr.isEmpty() && mdest.isEmpty() && regs.isEmpty();
+}

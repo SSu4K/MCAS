@@ -105,3 +105,8 @@ void MicrocodeModel::populateFromStringMatrix(const QList<QList<QString>> &rows)
     }
 }
 
+bool MicrocodeModel::isRowEmpty(const qsizetype row) const{
+    if(row >= microcodeData->instructions.size()) return true;
+    return microcodeData->instructions[row].isEmpty();
+}
+

@@ -16,6 +16,17 @@ QList<int> TextTableModel::computeColumnWidths() const
     return widths;
 }
 
+qsizetype TextTableModel::computePopulatedRowCount() const{
+    qsizetype result = 0;
+    for(qsizetype row = 0; row<rowCount(); row++){
+        if(!this->isRowEmpty(row)){
+            result = row+1;
+        }
+    }
+
+    return result;
+}
+
 bool TextTableModel::saveToTextStream(QTextStream &stream) const
 {
     if (!sectionHeader.isEmpty())
@@ -35,8 +46,10 @@ bool TextTableModel::saveToTextStream(QTextStream &stream) const
             stream << qSetFieldWidth(width) << delimiter << qSetFieldWidth(0);
         }
     }
+
+    qsizetype populatedRows = computePopulatedRowCount();
     stream << "\n";
-    for (int row = 0; row < rowCount(); row++) {
+    for (int row = 0; row < populatedRows; row++) {
         for (int col = 0; col < columnCount(); col++) {
             QString cell = data(index(row, col), Qt::DisplayRole).toString();
             stream << cell;
@@ -95,4 +108,9 @@ bool TextTableModel::loadFromTextStream(QTextStream &stream)
 void TextTableModel::populateFromStringMatrix(const QList<QList<QString>> &rows)
 {
     Q_UNUSED(rows);
+}
+
+bool TextTableModel::isRowEmpty(const qsizetype row) const{
+    Q_UNUSED(row);
+    return false;
 }

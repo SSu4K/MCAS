@@ -120,3 +120,11 @@ void JumpTableModel::populateFromStringMatrix(const QList<QList<QString>> &rows)
     }
     setEntries(entries);
 }
+
+bool JumpTableModel::isRowEmpty(const qsizetype row) const{
+    if(!jumpTableData->entries[row].opcode.isEmpty()) return false;
+    for(auto &target : jumpTableData->entries[row].targets){
+        if(!target.isEmpty()) return false;
+    }
+    return true;
+}

@@ -56,6 +56,7 @@ namespace Models {
         Assembly::Disassembler m_disassembler;
 
         void populateFromStringMatrix(const QList<QList<QString>> &rows) override;
+        bool isRowEmpty(const qsizetype row) const override;
 
         void assembleLine(const qsizetype lineNumber);
         bool setInstruction(const qsizetype lineNumber, const QString &text);

@@ -34,6 +34,7 @@ class MicrocodeModel : public TextTableModel {
     private:
         Microcode::MicrocodeData *microcodeData;
         void populateFromStringMatrix(const QList<QList<QString>> &rows) override;
+        bool isRowEmpty(const qsizetype row) const override;
     };
 
 }

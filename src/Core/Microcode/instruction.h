@@ -33,6 +33,7 @@ namespace Microcode {
 
         QString getFieldValue(const size_t field) const;
         bool setFieldValue(const size_t field, const QString &value);
+        bool isEmpty() const;
     };
 } // namespace Microcode
 
