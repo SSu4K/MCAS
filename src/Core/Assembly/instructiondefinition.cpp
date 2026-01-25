@@ -30,9 +30,23 @@ InstructionDefinition::InstructionDefinition(QString definitionString, Instructi
     formatTokens = tokens;
 }
 
-InstructionSet::InstructionSet(const QList<InstructionDefinition> &definitionList){
+QString InstructionDefinition::getFormatString() const{
+    if(formatTokens.size() < 1) return "";
+    QString result = formatTokens[0].text;
+    for(qsizetype i=0; i<formatTokens.size(); i++){
+        result.append(", ");
+        result.append(formatTokens[i].text);
+    }
+
+    return result;
+}
+
+InstructionSet::InstructionSet(): definitions(encodingConfig->opcodeCount(), InstructionDefinition()){}
+
+InstructionSet::InstructionSet(const QList<InstructionDefinition> &definitionList): InstructionSet(){
     definitions = definitionList;
     for(qsizetype i=0; i<definitionList.size(); i++){
+        definitions[i] = definitionList[i];
         opcodeLookup[definitionList[i].mnemonic] = i;
     }
 }
@@ -59,4 +73,14 @@ const quint8 InstructionSet::getOpcode(const QString &mnemonic, bool *okptr) con
     }
     if(okptr) *okptr = true;
     return opcodeLookup[mnemonic];
+}
+
+bool InstructionSet::setDefinition(const quint8 opcode, const InstructionDefinition& definition){
+    if(opcode >= definitions.size()){
+        return false;
+    }
+
+    definitions[opcode] = definition;
+    opcodeLookup[definition.mnemonic] = opcode;
+    return true;
 }

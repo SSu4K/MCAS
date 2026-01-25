@@ -17,6 +17,8 @@ public:
     InstructionDefinition(QString mnemonic, InstructionType type, TokenList formatTokens);
     InstructionDefinition(QString mnemonic, InstructionType type, QString formatString);
     InstructionDefinition(QString definitionString, InstructionType type);
+
+    QString getFormatString() const;
 };
 
 class InstructionSet{
@@ -24,10 +26,13 @@ private:
     QList<InstructionDefinition> definitions; // index in this list is the opcode
     QHash<QString, quint8> opcodeLookup;
 public:
+    InstructionSet();
     InstructionSet(const QList<InstructionDefinition> &definitionList);
     const InstructionDefinition *getDefinition(quint8 opcode) const;
     const InstructionDefinition *getDefinition(QString mnemonic) const;
     const quint8 getOpcode(const QString &mnemonic, bool *okptr) const;
+
+    bool setDefinition(const quint8 opcode, const InstructionDefinition& definition);
 };
 
 }
