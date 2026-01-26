@@ -149,8 +149,7 @@ void InstructionSetModel::clear(){
 void InstructionSetModel::populateFromStringMatrix(const QList<QList<QString>> &rows){
     clear();
     beginResetModel();
-    auto rowCount = computePopulatedRowCount();
-    for(qsizetype row = 1; row<rowCount; row++){
+    for(qsizetype row = 1; row<rows.size(); row++){
         if(rows[row].size() == ColumnCount){
             QString mnemonic = rows[row][MnemonicColumn];
             if(instructionSet->getDefinition(mnemonic) != nullptr){
@@ -190,15 +189,15 @@ Assembly::InstructionType InstructionSetModel::stringToType(const QString& str, 
         if(okptr != nullptr) *okptr = true;
         return Assembly::InstructionType::None;
     }
-    else if(str.compare("R", Qt::CaseInsensitive)){
+    else if(str.compare("R", Qt::CaseInsensitive) == 0){
         if(okptr != nullptr) *okptr = true;
         return Assembly::InstructionType::R;
     }
-    else if(str.compare("I", Qt::CaseInsensitive)){
+    else if(str.compare("I", Qt::CaseInsensitive) == 0){
         if(okptr != nullptr) *okptr = true;
         return Assembly::InstructionType::I;
     }
-    else if(str.compare("J", Qt::CaseInsensitive)){
+    else if(str.compare("J", Qt::CaseInsensitive) == 0){
         if(okptr != nullptr) *okptr = true;
         return Assembly::InstructionType::J;
     }

@@ -56,8 +56,6 @@ InstructionSet::InstructionSet(): definitions(encodingConfig->opcodeCount(), Ins
 }
 
 InstructionSet::InstructionSet(const QList<InstructionDefinition> &definitionList): InstructionSet(){
-    definitions = definitionList;
-
     // always skip 0th definition, resrved for NOP
     for(qsizetype i=1; i<definitionList.size(); i++){
         definitions[i] = definitionList[i];

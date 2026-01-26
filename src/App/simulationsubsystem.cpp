@@ -7,17 +7,7 @@ SimulationSubsystem::SimulationSubsystem():
     microcode(microcodeConfig),
     jumptable(),
     labelData(),
-    instructionSet({
-        { "NOP",    InstructionType::R, ""},
-        { "ADD",    InstructionType::R, "r1, r2, r3"},
-        { "ADDI",    InstructionType::R, "r1, i, r2"},
-        { "LDH",    InstructionType::I, "r2, i(r1)"},
-        { "LDW",    InstructionType::I, "r2, i(r1)"},
-        { "STW",    InstructionType::I, "r2, i(r1)"},
-        { "ADDI",   InstructionType::I, "r1, i, r2"},
-        { "JUMP",   InstructionType::J, "j"},
-        { "BRZ",    InstructionType::I, "r1, j"},
-      }),
+    instructionSet(),
     machineConfig(),
     editorMachineState(machineConfig),
     engine(editorMachineState, microcode, jumptable, instructionSet)
