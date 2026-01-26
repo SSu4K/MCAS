@@ -27,8 +27,8 @@ namespace Ui{
         QString windowTitle() const override { return tr("Instruction Editor"); }
         QString openFilePrompt() const override { return tr("Open Instruction File"); }
         QString saveAsFilePrompt() const override { return tr("Save Instruction File As"); }
-        QString defaultFilename() const override { return "instr.txt"; }
-        QString fileFilterString() const override { return "Memory Files (*.dat *.txt)"; }
+        QString defaultFilename() const override { return "instr.cod"; }
+        QString fileFilterString() const override { return "Memory Files (*.cod)"; }
 
         bool serializeToFile(QFile& file) const override;
         bool serializeFromFile(QFile& file) override;

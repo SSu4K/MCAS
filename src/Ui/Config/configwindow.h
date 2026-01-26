@@ -23,8 +23,8 @@ protected:
     QString windowTitle() const override { return tr("Configuration"); }
     QString openFilePrompt() const override { return tr("Open Config File"); }
     QString saveAsFilePrompt() const override { return tr("Save Config File As"); }
-    QString defaultFilename() const override { return "config.txt"; }
-    QString fileFilterString() const override { return "Config Files (*.cfg *.txt)"; }
+    QString defaultFilename() const override { return "config.cfg"; }
+    QString fileFilterString() const override { return "Config Files (*.cfg)"; }
 
     bool serializeToFile(QFile& file) const override;
     bool serializeFromFile(QFile& file) override;

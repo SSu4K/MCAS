@@ -31,8 +31,8 @@ namespace Ui{
         QString windowTitle() const override { return tr("Microcode Editor"); }
         QString openFilePrompt() const override { return tr("Open Microcode File"); }
         QString saveAsFilePrompt() const override { return tr("Save Microcode File As"); }
-        QString defaultFilename() const override { return "microcode.txt"; }
-        QString fileFilterString() const override { return "Microcode Files (*.mco *.txt)"; }
+        QString defaultFilename() const override { return "microcode.mco"; }
+        QString fileFilterString() const override { return "Microcode Files (*.mco)"; }
 
         bool serializeToFile(QFile& file) const override;
         bool serializeFromFile(QFile& file) override;

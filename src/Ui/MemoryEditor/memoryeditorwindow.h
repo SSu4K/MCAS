@@ -23,8 +23,8 @@ namespace Ui{
         QString windowTitle() const override { return tr("Memory Editor"); }
         QString openFilePrompt() const override { return tr("Open Memory File"); }
         QString saveAsFilePrompt() const override { return tr("Save Memory File As"); }
-        QString defaultFilename() const override { return "memory.txt"; }
-        QString fileFilterString() const override { return "Memory Files (*.dat *.txt)"; }
+        QString defaultFilename() const override { return "memory.dat"; }
+        QString fileFilterString() const override { return "Memory Files (*.dat)"; }
 
         bool serializeToFile(QFile& file) const override;
         bool serializeFromFile(QFile& file) override;
