@@ -33,9 +33,12 @@ InstructionDefinition::InstructionDefinition(QString definitionString, Instructi
 QString InstructionDefinition::getFormatString() const{
     if(formatTokens.size() < 1) return "";
     QString result = formatTokens[0].text;
-    for(qsizetype i=0; i<formatTokens.size(); i++){
-        result.append(", ");
+    bool inBracket = false;
+    for(qsizetype i=1; i<formatTokens.size(); i++){
+        if(!inBracket) result.append(", ");
         result.append(formatTokens[i].text);
+        if(formatTokens[i].text == "(") inBracket = true;
+        else if(formatTokens[i].text == ")") inBracket = false;
     }
 
     return result;
@@ -83,4 +86,9 @@ bool InstructionSet::setDefinition(const quint8 opcode, const InstructionDefinit
     definitions[opcode] = definition;
     opcodeLookup[definition.mnemonic] = opcode;
     return true;
+}
+
+void InstructionSet::removeDefinition(const quint8 opcode){
+    opcodeLookup.remove(definitions[opcode].mnemonic);
+    definitions[opcode] = InstructionDefinition();
 }

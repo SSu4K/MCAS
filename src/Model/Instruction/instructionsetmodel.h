@@ -36,8 +36,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     bool setData(const QModelIndex& index, const QVariant& value, int role) override;
 
-    bool loadFromFile(const QString& path, QStringList& errors);
-    bool saveToFile(const QString& path, QStringList& errors) const;
+    void clear();
 
 signals:
     void instructionSetChanged();

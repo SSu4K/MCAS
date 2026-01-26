@@ -7,6 +7,7 @@
 #include "MemoryEditor/memoryeditorwindow.h"
 #include "MicrocodeEditor/microcodeeditorwindow.h"
 #include "InstructionEditor/instructioneditorwindow.h"
+#include "Config/configwindow.h"
 
 class ModelsSubsystem;
 
@@ -16,7 +17,9 @@ class UiSubsystem : public QObject
 public:
     explicit UiSubsystem(ModelsSubsystem &modelsSubsystem, QObject *parent = nullptr);
     MainWindow mainWindow;
+
     Ui::MemoryEditorWindow memoryEditorWindow;
+    Ui::ConfigWindow configWindow;
     Ui::InstructionEditorWindow instructionEditorWindow;
     Ui::MicrocodeEditorWindow microcodeEditorWindow;
 };

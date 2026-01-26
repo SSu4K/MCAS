@@ -54,6 +54,10 @@ void MainWindow::open()
 void MainWindow::createToolsMenu(){
     QMenu *toolsMenu = menuBar()->addMenu(tr("&Tools"));
 
+    QAction *openConfigWindowAction = new QAction(tr("Configure"), this);
+    toolsMenu->addAction(openConfigWindowAction);
+    connect(openConfigWindowAction, &QAction::triggered, this, &MainWindow::openConfigWindow);
+
     QAction *openMicrocodeEditorAction = new QAction(tr("Microcode Editor"), this);
     toolsMenu->addAction(openMicrocodeEditorAction);
     connect(openMicrocodeEditorAction, &QAction::triggered, this, &MainWindow::openMicrocodeEditorWindow);

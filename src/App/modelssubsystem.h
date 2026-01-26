@@ -8,6 +8,7 @@
 #include "Instruction/instructionmodel.h"
 #include "Microcode/microcodemodel.h"
 #include "Microcode/jumptablemodel.h"
+#include "Instruction/instructionsetmodel.h"
 
 class ModelsSubsystem: QObject
 {
@@ -18,6 +19,7 @@ public:
     SimulationSubsystem &simulation;
     InstructionEditor::InstructionData instructions;
     Models::MemoryModel memoryModel;
+    Models::InstructionSetModel instructionSetModel;
     Models::InstructionModel instructionModel;
     Models::MicrocodeModel microcodeModel;
     Models::JumpTableModel jumpTableModel;

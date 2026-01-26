@@ -33,6 +33,7 @@ public:
     const quint8 getOpcode(const QString &mnemonic, bool *okptr) const;
 
     bool setDefinition(const quint8 opcode, const InstructionDefinition& definition);
+    void removeDefinition(const quint8 opcode);
 };
 
 }

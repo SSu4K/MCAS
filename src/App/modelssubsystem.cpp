@@ -6,6 +6,7 @@ ModelsSubsystem::ModelsSubsystem(SimulationSubsystem &simulationSubsystem):
     simulation(simulationSubsystem),
     instructions(this, (int)simulationSubsystem.machineConfig.instructionMemorySize, 0),
     memoryModel(&simulationSubsystem.editorMachineState),
+    instructionSetModel(&simulationSubsystem.instructionSet),
     instructionModel(&simulationSubsystem.editorMachineState,
                      &simulationSubsystem.labelData,
                      &simulationSubsystem.instructionSet,

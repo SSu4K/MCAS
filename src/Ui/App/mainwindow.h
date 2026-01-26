@@ -17,6 +17,7 @@ signals:
     void openMicrocodeEditorWindow();
     void openMemoryEditorWindow();
     void openInstructionEditorWindow();
+    void openConfigWindow();
 
     void setTheme(QString theme);
     void setLanguage(QString language);

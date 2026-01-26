@@ -6,10 +6,14 @@ using namespace Ui;
 UiSubsystem::UiSubsystem(ModelsSubsystem &modelsSubsystem, QObject *parent)
     : QObject{parent},
     mainWindow(&modelsSubsystem.simulation.worker),
-    microcodeEditorWindow(&modelsSubsystem.microcodeModel, &modelsSubsystem.jumpTableModel),
-    memoryEditorWindow(&modelsSubsystem.memoryModel),
-    instructionEditorWindow(&modelsSubsystem.instructionModel)
+    microcodeEditorWindow(&modelsSubsystem.microcodeModel, &modelsSubsystem.jumpTableModel, &mainWindow),
+    memoryEditorWindow(&modelsSubsystem.memoryModel, &mainWindow),
+    configWindow(&modelsSubsystem.instructionSetModel, &mainWindow),
+    instructionEditorWindow(&modelsSubsystem.instructionModel, &mainWindow)
 {
+    connect(&mainWindow, &MainWindow::openConfigWindow,
+            &configWindow, &ConfigWindow::open);
+
     connect(&mainWindow, &MainWindow::openMicrocodeEditorWindow,
             &microcodeEditorWindow, &MicrocodeEditorWindow::open);
 

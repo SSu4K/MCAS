@@ -61,7 +61,7 @@ QVariant InstructionSetModel::data(const QModelIndex& index, int role) const
 
     const auto def = instructionSet->getDefinition(index.row());
     if(def == nullptr){
-        return false;
+        return {};
     }
 
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
@@ -122,13 +122,22 @@ bool InstructionSetModel::setData(const QModelIndex& index,
     return true;
 }
 
+void InstructionSetModel::clear(){
+    beginResetModel();
+    for(qsizetype opcode = 0; opcode<rowCount(); opcode++){
+        instructionSet->removeDefinition(opcode);
+    }
+    endResetModel();
+}
+
 void InstructionSetModel::populateFromStringMatrix(const QList<QList<QString>> &rows){
 
 }
 
 bool InstructionSetModel::isRowEmpty(const qsizetype row) const{
     auto def = instructionSet->getDefinition(row);
-    return def->type != InstructionType::None;
+    if(def == nullptr) return true;
+    return def->type == InstructionType::None;
 }
 
 QString InstructionSetModel::typeToString(Assembly::InstructionType type){
