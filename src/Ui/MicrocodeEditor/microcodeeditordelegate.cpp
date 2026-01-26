@@ -6,7 +6,7 @@
 #include "Microcode/microcodedata.h"
 
 #include "microcodeeditordelegate.h"
-#include "enumdelegate.h"
+#include "Common/enumdelegate.h"
 #include "microcodeeditorwidget.h"
 
 #include "Common/hexintdelegate.h"

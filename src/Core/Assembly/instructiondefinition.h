@@ -13,6 +13,7 @@ public:
     TokenList formatTokens;
     InstructionType type;
 
+    InstructionDefinition(const InstructionDefinition& source);
     InstructionDefinition();
     InstructionDefinition(QString mnemonic, InstructionType type, TokenList formatTokens);
     InstructionDefinition(QString mnemonic, InstructionType type, QString formatString);
@@ -20,6 +21,9 @@ public:
 
     QString getFormatString() const;
 };
+
+extern const InstructionDefinition nopDefinition;
+extern const InstructionDefinition emptyDefinition;
 
 class InstructionSet{
 private:
@@ -35,6 +39,9 @@ public:
     bool setDefinition(const quint8 opcode, const InstructionDefinition& definition);
     void removeDefinition(const quint8 opcode);
 };
+
+bool operator==(const InstructionDefinition &lhs, const InstructionDefinition &rhs);
+bool operator!=(const InstructionDefinition &lhs, const InstructionDefinition &rhs);
 
 }
 

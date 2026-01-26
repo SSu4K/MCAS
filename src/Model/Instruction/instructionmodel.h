@@ -45,6 +45,7 @@ namespace Models {
 
     public slots:
         void onMemoryRegionChanged(const quint32 startAddress, const quint32 endAddress);
+        void reassemble();
 
     private:
         Machine::MachineState* machineState;

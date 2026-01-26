@@ -49,7 +49,7 @@ private:
     bool isRowEmpty(const qsizetype row) const override;
 
     static QString typeToString(Assembly::InstructionType type);
-    static Assembly::InstructionType stringToType(const QString& str, bool* okptr);
+    static Assembly::InstructionType stringToType(const QString& str, bool* okptr = nullptr);
 };
 
 

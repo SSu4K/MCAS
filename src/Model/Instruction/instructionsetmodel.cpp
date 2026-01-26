@@ -4,6 +4,11 @@
 #include "instructionsetmodel.h"
 #include "Assembly/instructiondefinition.h"
 
+const static QString INSTRUCTION_SET_HEADER = "[Instruction Set]";
+const static QChar HEADER_PREFIX = '[';
+const static QChar COMMENT_PREFIX = ';';
+const static QChar DELIMITER = '|';
+
 namespace Models {
 
 using namespace Assembly;
@@ -13,6 +18,10 @@ InstructionSetModel::InstructionSetModel(InstructionSet* instructionSet,
     : TextTableModel(parent),
     instructionSet(instructionSet)
 {
+    sectionHeader = INSTRUCTION_SET_HEADER;
+    headerPrefix = HEADER_PREFIX;
+    commentPrefix = COMMENT_PREFIX;
+    delimiter = DELIMITER;
 }
 
 int InstructionSetModel::rowCount(const QModelIndex& parent) const
@@ -51,6 +60,11 @@ Qt::ItemFlags InstructionSetModel::flags(const QModelIndex& index) const
     if (index.column() == OpcodeColumn)
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
+    // protect NOP definition
+    if (index.row() == 0){
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    }
+
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
@@ -60,19 +74,19 @@ QVariant InstructionSetModel::data(const QModelIndex& index, int role) const
         return {};
 
     const auto def = instructionSet->getDefinition(index.row());
-    if(def == nullptr){
-        return {};
-    }
 
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         switch (index.column()) {
         case OpcodeColumn:
             return index.row();
         case MnemonicColumn:
+            if(def == nullptr) return {};
             return def->mnemonic;
         case TypeColumn:
+            if(def == nullptr) return {};
             return typeToString(def->type);
         case FormatColumn:
+            if(def == nullptr) return {};
             return def->getFormatString();
         }
     }
@@ -116,28 +130,49 @@ bool InstructionSetModel::setData(const QModelIndex& index,
         return false;
     }
 
-    instructionSet->setDefinition(index.row(), newDef);
+    if(*def != newDef){
+        instructionSet->setDefinition(index.row(), newDef);
+        emit instructionSetChanged();
+    }
 
-    emit instructionSetChanged();
     return true;
 }
 
 void InstructionSetModel::clear(){
     beginResetModel();
-    for(qsizetype opcode = 0; opcode<rowCount(); opcode++){
+    for(qsizetype opcode = 1; opcode<rowCount(); opcode++){
         instructionSet->removeDefinition(opcode);
     }
     endResetModel();
 }
 
 void InstructionSetModel::populateFromStringMatrix(const QList<QList<QString>> &rows){
+    clear();
+    beginResetModel();
+    auto rowCount = computePopulatedRowCount();
+    for(qsizetype row = 1; row<rowCount; row++){
+        if(rows[row].size() == ColumnCount){
+            QString mnemonic = rows[row][MnemonicColumn];
+            if(instructionSet->getDefinition(mnemonic) != nullptr){
+                continue;
+            }
+            bool ok;
+            InstructionType type = stringToType(rows[row][TypeColumn], &ok);
+            if(!ok || type == InstructionType::None){
+                continue;
+            }
 
+            instructionSet->setDefinition(row, {mnemonic, type, rows[row][FormatColumn]});
+        }
+    }
+
+    endResetModel();
 }
 
 bool InstructionSetModel::isRowEmpty(const qsizetype row) const{
     auto def = instructionSet->getDefinition(row);
     if(def == nullptr) return true;
-    return def->type == InstructionType::None;
+    return def->type == InstructionType::None || def->mnemonic.isEmpty();
 }
 
 QString InstructionSetModel::typeToString(Assembly::InstructionType type){

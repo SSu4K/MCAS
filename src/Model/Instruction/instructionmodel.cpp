@@ -13,6 +13,11 @@ using namespace Assembly;
 using namespace Models;
 using namespace InstructionEditor;
 
+const static QString INSTRUCTION_HEADER = "[Instructions]";
+const static QChar HEADER_PREFIX = '[';
+const static QChar COMMENT_PREFIX = ';';
+const static QChar DELIMITER = '|';
+
 InstructionModel::InstructionModel(
                         Machine::MachineState* machineState,
                         LabelData* labelData, Assembly::InstructionSet* instructionSet,
@@ -24,7 +29,12 @@ InstructionModel::InstructionModel(
     instructionData(instructionData),
     m_assembler(instructionSet, labelData),
     m_disassembler(instructionSet, labelData)
-{}
+{
+    sectionHeader = INSTRUCTION_HEADER;
+    headerPrefix = HEADER_PREFIX;
+    commentPrefix = COMMENT_PREFIX;
+    delimiter = DELIMITER;
+}
 
 int InstructionModel::rowCount(const QModelIndex& parent) const  {
     Q_UNUSED(parent);
@@ -151,6 +161,7 @@ void InstructionModel::assembleLine(const qsizetype lineNumber){
 }
 
 bool InstructionModel::setInstruction(const qsizetype lineNumber, const QString &text){
+    if(lineNumber >= instructionData->instructions.size()) return false;
     auto& entry = instructionData->instructions[lineNumber];
     entry.text = text;
     assembleLine(lineNumber);
@@ -158,6 +169,7 @@ bool InstructionModel::setInstruction(const qsizetype lineNumber, const QString 
 }
 
 bool InstructionModel::setLabel(const qsizetype lineNumber, const QString &text){
+    if(lineNumber >= instructionData->instructions.size()) return false;
     auto& entry = instructionData->instructions[lineNumber];
 
     if(entry.label.isEmpty() && text.isEmpty()){
@@ -270,4 +282,15 @@ void InstructionModel::onMemoryRegionChanged(const quint32 startAddress, const q
     QModelIndex firstIndex = this->index(firstline, 0);
     QModelIndex lastIndex = this->index(lastline, columnCount()-1);
     emit dataChanged(firstIndex, lastIndex);
+}
+
+void InstructionModel::reassemble(){
+    beginResetModel();
+    for(qsizetype i=0; i<rowCount(); i++){
+        assembleLine(i);
+    }
+    QModelIndex firstIndex = this->index(0, 0);
+    QModelIndex lastIndex = this->index(rowCount()-1, columnCount()-1);
+    emit dataChanged(firstIndex, lastIndex);
+    endResetModel();
 }

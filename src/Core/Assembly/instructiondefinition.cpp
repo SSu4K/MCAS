@@ -2,10 +2,15 @@
 
 using namespace Assembly;
 
-//static Tokenizer formatTokenizer;
+const InstructionDefinition Assembly::nopDefinition = {"NOP", InstructionType::R, TokenList()};
+const InstructionDefinition Assembly::emptyDefinition = {"", InstructionType::None, TokenList()};
 
+InstructionDefinition::InstructionDefinition(const InstructionDefinition& source)
+    : mnemonic(source.mnemonic), type(source.type), formatTokens(source.formatTokens) {}
+
+// the same as 'emptyDefinition'
 InstructionDefinition::InstructionDefinition()
-    : mnemonic(""), type(InstructionType::None), formatTokens({}) {}
+    : InstructionDefinition(emptyDefinition) {}
 
 InstructionDefinition::InstructionDefinition(QString mnemonic, InstructionType type, TokenList formatTokens)
     : mnemonic(mnemonic), type(type), formatTokens(formatTokens) {}
@@ -44,11 +49,17 @@ QString InstructionDefinition::getFormatString() const{
     return result;
 }
 
-InstructionSet::InstructionSet(): definitions(encodingConfig->opcodeCount(), InstructionDefinition()){}
+InstructionSet::InstructionSet(): definitions(encodingConfig->opcodeCount(), InstructionDefinition()){
+    // reserve opcode = 0 for NOP
+    definitions[0] = nopDefinition;
+    opcodeLookup[nopDefinition.mnemonic] = 0;
+}
 
 InstructionSet::InstructionSet(const QList<InstructionDefinition> &definitionList): InstructionSet(){
     definitions = definitionList;
-    for(qsizetype i=0; i<definitionList.size(); i++){
+
+    // always skip 0th definition, resrved for NOP
+    for(qsizetype i=1; i<definitionList.size(); i++){
         definitions[i] = definitionList[i];
         opcodeLookup[definitionList[i].mnemonic] = i;
     }
@@ -79,9 +90,11 @@ const quint8 InstructionSet::getOpcode(const QString &mnemonic, bool *okptr) con
 }
 
 bool InstructionSet::setDefinition(const quint8 opcode, const InstructionDefinition& definition){
-    if(opcode >= definitions.size()){
+    // protect out of bounds and reserved NOP instruction definition
+    if(opcode >= definitions.size() || opcode == 0){
         return false;
     }
+    removeDefinition(opcode);
 
     definitions[opcode] = definition;
     opcodeLookup[definition.mnemonic] = opcode;
@@ -89,6 +102,26 @@ bool InstructionSet::setDefinition(const quint8 opcode, const InstructionDefinit
 }
 
 void InstructionSet::removeDefinition(const quint8 opcode){
+    // protect out of bounds and reserved NOP instruction definition
+    if(opcode >= definitions.size() || opcode == 0){
+        return;
+    }
     opcodeLookup.remove(definitions[opcode].mnemonic);
-    definitions[opcode] = InstructionDefinition();
+    definitions[opcode] = emptyDefinition;
+}
+
+bool Assembly::operator==(const InstructionDefinition &lhs, const InstructionDefinition &rhs){
+    if(lhs.type != rhs.type) return false;
+    if(lhs.mnemonic.compare(rhs.mnemonic, Qt::CaseInsensitive) == 0) return false;
+    if(lhs.formatTokens.size() != rhs.formatTokens.size()) return false;
+
+    for(qsizetype i=0; i<lhs.formatTokens.size(); i++){
+        if(lhs.formatTokens[i].text == rhs.formatTokens[i].text) return false;
+    }
+
+    return true;
+}
+
+bool Assembly::operator!=(const InstructionDefinition &lhs, const InstructionDefinition &rhs){
+    return !(lhs == rhs);
 }

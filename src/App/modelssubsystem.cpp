@@ -17,4 +17,6 @@ ModelsSubsystem::ModelsSubsystem(SimulationSubsystem &simulationSubsystem):
 {
     connect(&memoryModel, &MemoryModel::memoryRegionChanged, &instructionModel, &InstructionModel::onMemoryRegionChanged);
     connect(&instructionModel, &InstructionModel::memoryRegionChanged, &memoryModel, &MemoryModel::onMemoryRegionChanged);
+
+    connect(&instructionSetModel, &InstructionSetModel::instructionSetChanged, &instructionModel, &InstructionModel::reassemble);
 }
