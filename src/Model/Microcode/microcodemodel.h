@@ -1,6 +1,8 @@
 #ifndef MICROCODEMODEL_H
 #define MICROCODEMODEL_H
 
+#include "modellib_export.h"
+
 #include "Common/texttablemodel.h"
 #include "Microcode/microcodedata.h"
 #include "Microcode/instruction.h"
@@ -13,7 +15,7 @@ namespace Models{
 
 const QChar MICROCODE_FILE_DELIMITER = '|';
 
-class MicrocodeModel : public TextTableModel {
+class MODELLIB_API MicrocodeModel : public TextTableModel {
         Q_OBJECT
     public:
         explicit MicrocodeModel(Microcode::MicrocodeData* microcodeData, QObject* parent = nullptr);

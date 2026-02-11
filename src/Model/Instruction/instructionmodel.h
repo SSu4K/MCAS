@@ -1,6 +1,8 @@
 #ifndef instructionmodel_H
 #define instructionmodel_H
 
+#include "modellib_export.h"
+
 #include "Assembly/assembler.h"
 #include "Assembly/disassembler.h"
 #include "Common/texttablemodel.h"
@@ -14,7 +16,7 @@ namespace Models {
     const qsizetype LABEL_COLUMN_INDEX = 2;
     const qsizetype INSTRUCTION_COLUMN_INDEX = 3;
 
-    class InstructionModel : public TextTableModel {
+    class MODELLIB_API InstructionModel : public TextTableModel {
         Q_OBJECT
     public:
         explicit InstructionModel(Machine::MachineState* machineState, LabelData* labelData,

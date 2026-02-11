@@ -1,6 +1,8 @@
 #ifndef EXECUTIONENGINE_H
 #define EXECUTIONENGINE_H
 
+#include "simLib_export.h"
+
 #include "Machine/machinestate.h"
 #include "Microcode/microcodedata.h"
 #include "Microcode/jumptabledata.h"
@@ -23,7 +25,7 @@ struct HaltStatus{
     bool isHalted = false;
 };
 
-class ExecutionEngine
+class SIMLIB_API ExecutionEngine
 {
 public:
     ExecutionEngine(Machine::MachineState &state,

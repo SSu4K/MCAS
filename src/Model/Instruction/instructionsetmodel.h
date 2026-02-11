@@ -1,6 +1,8 @@
 #ifndef INSTRUCTIONSETMODEL_H
 #define INSTRUCTIONSETMODEL_H
 
+#include "modellib_export.h"
+
 #include "Common/texttablemodel.h"
 #include "Assembly/instruction.h"
 
@@ -12,7 +14,7 @@ namespace Assembly{
 namespace Models {
 
 
-class InstructionSetModel : public TextTableModel
+class MODELLIB_API InstructionSetModel : public TextTableModel
 {
     Q_OBJECT
 public:

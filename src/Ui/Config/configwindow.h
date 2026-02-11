@@ -1,6 +1,8 @@
 #ifndef CONFIGWINDOW_H
 #define CONFIGWINDOW_H
 
+#include "uiLib_export.h"
+
 #include "Common/editorwindow.h"
 #include "instructionseteditorwidget.h"
 
@@ -10,7 +12,7 @@ namespace Models{
 
 namespace Ui{
 
-class ConfigWindow : public EditorWindow
+class UILIB_API ConfigWindow : public EditorWindow
 {
     Q_OBJECT
 public:

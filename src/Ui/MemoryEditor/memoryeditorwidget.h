@@ -1,6 +1,8 @@
 #ifndef MEMORYEDITORWIDGET_H
 #define MEMORYEDITORWIDGET_H
 
+#include "uiLib_export.h"
+
 #include <QTableView>
 #include <QWidget>
 
@@ -20,7 +22,7 @@ namespace Models {
 
 namespace Ui {
 
-    class MemoryEditorWidget : public QWidget {
+    class UILIB_API MemoryEditorWidget : public QWidget {
         Q_OBJECT
     public:
         explicit MemoryEditorWidget(Models::MemoryModel* model, QWidget* parent = nullptr);

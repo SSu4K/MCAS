@@ -17,3 +17,5 @@ target_link_libraries(SimulationLib PUBLIC
 target_link_libraries(SimulationLib PRIVATE Qt6::Core)
 
 target_include_directories(SimulationLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_compile_definitions(SimulationLib PRIVATE SIMLIB_LIBRARY)

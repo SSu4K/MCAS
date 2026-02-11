@@ -3,9 +3,10 @@
 
 #pragma once
 
+#include "modellib_export.h"
 #include <QAbstractTableModel>
 
-class TextTableModel : public QAbstractTableModel
+class MODELLIB_API TextTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 

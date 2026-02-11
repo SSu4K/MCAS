@@ -1,11 +1,12 @@
 #ifndef MEMORYMODEL_H
 #define MEMORYMODEL_H
 
+#include "modellib_export.h"
 #include "Machine/machinestate.h"
 
 namespace Models {
 
-    class MemoryModel : public QAbstractTableModel {
+    class MODELLIB_API MemoryModel : public QAbstractTableModel {
         Q_OBJECT
     public:
         explicit MemoryModel(Machine::MachineState* machineState, QObject* parent = nullptr);

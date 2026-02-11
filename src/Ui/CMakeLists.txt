@@ -16,3 +16,5 @@ target_link_libraries(UiLib PUBLIC
     Qt6::Widgets
 )
 
+target_compile_definitions(UiLib PRIVATE UILIB_LIBRARY)
+

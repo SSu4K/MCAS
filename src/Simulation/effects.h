@@ -1,9 +1,10 @@
 #ifndef EFFECTS_H
 #define EFFECTS_H
 
-namespace Sim {
-
 #include <vector>
+#include "simLib_export.h"
+
+namespace Sim {
 
 struct RegWrite {
     size_t index;
@@ -23,7 +24,7 @@ struct Effects {
     std::vector<MemWrite> memWrites;
 };
 
-bool operator==(const RegWrite &l, const RegWrite &r);
+SIMLIB_API bool operator==(const RegWrite &l, const RegWrite &r);
 
 } // namespace Sim
 

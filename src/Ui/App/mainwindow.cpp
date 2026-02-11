@@ -2,6 +2,7 @@
 #include <QActionGroup>
 #include <QLayout>
 #include <QMessageBox>
+#include <QFileDialog>
 
 #include "haltdialog.h"
 #include "mainwindow.h"
@@ -14,7 +15,7 @@ MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
 
     createMenu();
 
-    SimulationView *simView = new SimulationView(this);
+    simView = new SimulationView(this);
     setCentralWidget(simView);
 
     connect(simView, &SimulationView::resetClicked, worker, &Sim::ExecutionWorker::reset);
@@ -28,15 +29,7 @@ MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
     connect(simView, &SimulationView::runClicked, worker, &Sim::ExecutionWorker::run);
     connect(simView, &SimulationView::stopClicked, worker, &Sim::ExecutionWorker::stop);
 
-    connect(worker, &Sim::ExecutionWorker::stateChanged,
-            simView, [simView, worker]() {
-                simView->updateUAR(worker->currentUAR());
-            });
-
-    connect(worker, &Sim::ExecutionWorker::stateChanged,
-            simView, [simView, worker]() {
-                simView->updateState(worker->getMachineState());
-            });
+    connect(worker, &Sim::ExecutionWorker::stateChanged, this, &MainWindow::updateSimView);
 
     connect(simView, &SimulationView::clockFrequencyChanged,
             worker, &Sim::ExecutionWorker::setFrequency);
@@ -44,11 +37,27 @@ MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
     connect(worker, &Sim::ExecutionWorker::halted, this, &MainWindow::onSimulationHalted);
 }
 
+void MainWindow::updateSimView(){
+    simView->updateUAR(worker->currentUAR());
+    simView->updateState(worker->getMachineState());
+}
+
 void MainWindow::open()
 {
     this->show();
     this->raise();
     this->activateWindow();
+}
+
+void MainWindow::createFileMenu(){
+    QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
+
+    fileMenu->addAction(tr("&New Project"), QKeySequence::New, this, &MainWindow::newFile);
+    fileMenu->addAction(tr("&Open Project"), QKeySequence::Open, this, &MainWindow::openFile);
+
+    fileMenu->addSeparator();
+    fileMenu->addAction(tr("&Save Project"), QKeySequence::Save, this, &MainWindow::saveFile);
+    fileMenu->addAction(tr("Save Project &As..."), QKeySequence::SaveAs, this, &MainWindow::saveFileAs);
 }
 
 void MainWindow::createToolsMenu(){
@@ -115,6 +124,7 @@ void MainWindow::createViewMenu()
 }
 
 void MainWindow::createMenu(){
+    createFileMenu();
     createToolsMenu();
     createViewMenu();
 }
@@ -136,5 +146,96 @@ void MainWindow::onSimulationHalted(const QString &reason)
         reason,
         QMessageBox::Ok
         );
+}
+
+void MainWindow::newFile()
+{
+    if (!maybeSave())
+        return;
+
+    m_currentFilePath.clear();
+    setWindowTitle(windowTitle() + " - [New]");
+}
+
+void MainWindow::openFile()
+{
+    if (!maybeSave())
+        return;
+
+    QString filePath = QFileDialog::getOpenFileName(this, "Open Project File",
+                                                    "", "*.txt *.proj");
+    if (filePath.isEmpty()){
+        qDebug("Empty path!");
+        return;
+    }
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        qDebug("Failed to open!");
+        return;
+    }
+
+    bool success = serializeFromFile(file);
+
+    qDebug() << "Serializing from" << filePath << "Success:" << success;
+
+    if (success) {
+        m_currentFilePath = filePath;
+        setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
+    }
+}
+
+void MainWindow::saveFile()
+{
+    if (m_currentFilePath.isEmpty()) {
+        saveFileAs();
+        return;
+    }
+
+    QFile file(m_currentFilePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        return;
+    }
+
+    bool success = true;
+    success = serializeToFile(file);
+
+    qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
+}
+
+void MainWindow::saveFileAs()
+{
+    QString filePath = QFileDialog::getSaveFileName(this, "Save Project File As",
+                                                    m_currentFilePath.isEmpty() ? "project.proj" : m_currentFilePath,
+                                                    "*.txt *.proj");
+    if (filePath.isEmpty())
+        return;
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        return;
+    }
+
+    bool success = true;
+    success = serializeToFile(file);
+
+    qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
+
+    if (success) {
+        m_currentFilePath = filePath;
+        setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
+    }
+}
+
+bool MainWindow::serializeToFile(QFile& filePath) const{
+    return true;
+}
+bool MainWindow::serializeFromFile(QFile& filePath){
+    return true;
+}
+
+bool MainWindow::maybeSave()
+{
+    return true; // simplify for now
 }
 

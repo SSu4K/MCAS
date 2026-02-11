@@ -1,6 +1,8 @@
 #ifndef MICROCODEEDITORWIDGET_H
 #define MICROCODEEDITORWIDGET_H
 
+#include "uiLib_export.h"
+
 #include <QTableView>
 
 #include "microcodeeditordelegate.h"
@@ -11,7 +13,7 @@ namespace Models {class MicrocodeModel;}
 
 namespace Ui{
 
-    class MicrocodeEditorWidget : public ZoomWidget {
+    class UILIB_API MicrocodeEditorWidget : public ZoomWidget {
         Q_OBJECT
     public:
         explicit MicrocodeEditorWidget(Models::MicrocodeModel* microcodeModel, QWidget* parent = nullptr);

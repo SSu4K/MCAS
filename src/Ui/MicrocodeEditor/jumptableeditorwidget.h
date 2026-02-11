@@ -1,6 +1,8 @@
 #ifndef JUMPTABLEEDITORWIDGET_H
 #define JUMPTABLEEDITORWIDGET_H
 
+#include "uiLib_export.h"
+
 #include <QTableView>
 
 #include "MicrocodeEditor/jumptableeditordelegate.h"
@@ -13,7 +15,7 @@ namespace Models {class JumpTableModel;}
 namespace Ui {
     // forward declarations
 
-    class JumpTableEditorWidget : public ZoomWidget {
+    class UILIB_API JumpTableEditorWidget : public ZoomWidget {
         Q_OBJECT
     public:
         explicit JumpTableEditorWidget(Models::JumpTableModel* jumpTableModel, QWidget* parent = nullptr);

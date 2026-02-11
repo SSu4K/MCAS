@@ -1,9 +1,10 @@
 #ifndef ZOOMWIDGET_H
 #define ZOOMWIDGET_H
+#include "uiLib_export.h"
 
 #include <QWidget>
 
-class ZoomWidget : public QWidget {
+class UILIB_API ZoomWidget : public QWidget {
     Q_OBJECT
 
 public:

@@ -1,6 +1,8 @@
 #ifndef INSTRUCTIONEDITORWIDGET_H
 #define INSTRUCTIONEDITORWIDGET_H
 
+#include "uiLib_export.h"
+
 #include <QWidget>
 #include <QTableView>
 #include "Instruction/instructionmodel.h"
@@ -13,7 +15,7 @@ namespace Models {
 
 namespace Ui {
 
-class InstructionEditorWidget : public QWidget {
+class UILIB_API InstructionEditorWidget : public QWidget {
     Q_OBJECT
 public:
     explicit InstructionEditorWidget(Models::InstructionModel *model, QWidget* parent = nullptr);

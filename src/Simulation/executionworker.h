@@ -1,11 +1,13 @@
 #ifndef EXECUTIONWORKER_H
 #define EXECUTIONWORKER_H
 
+#include "simLib_export.h"
+
 #include "executionengine.h"
 
 namespace Sim {
 
-class ExecutionWorker : public QObject
+class SIMLIB_API ExecutionWorker : public QObject
 {
     Q_OBJECT
 

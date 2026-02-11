@@ -1,6 +1,8 @@
 #ifndef INSTRUCTIONSETEDITORWIDGET_H
 #define INSTRUCTIONSETEDITORWIDGET_H
 
+#include "uiLib_export.h"
+
 #include <QTableView>
 #include <Common/zoomwidget.h>
 
@@ -8,8 +10,9 @@ namespace Models {class InstructionSetModel;}
 
 namespace Ui {
 
-class InstructionSetEditorWidget : public ZoomWidget
+class UILIB_API InstructionSetEditorWidget : public ZoomWidget
 {
+    Q_OBJECT
     public:
         explicit InstructionSetEditorWidget(Models::InstructionSetModel* instructionSetModel, QWidget* parent = nullptr);
 

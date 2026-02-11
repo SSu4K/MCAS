@@ -1,6 +1,8 @@
 #ifndef JUMPTABLEMODEL_H
 #define JUMPTABLEMODEL_H
 
+#include "modellib_export.h"
+
 #include "Common/texttablemodel.h"
 
 // forward declarations
@@ -11,7 +13,7 @@ namespace Microcode {
 
 namespace Models{
 
-    class JumpTableModel : public TextTableModel {
+    class MODELLIB_API JumpTableModel : public TextTableModel {
         Q_OBJECT
     public:
         explicit JumpTableModel(Microcode::JumpTableData *jumpTableData, QObject* parent = nullptr);

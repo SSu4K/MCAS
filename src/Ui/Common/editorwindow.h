@@ -1,6 +1,8 @@
 #ifndef EDITORWINDOW_H
 #define EDITORWINDOW_H
 
+#include "uiLib_export.h"
+
 #include <QMainWindow>
 
 static const char* FILE_MENU_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "&File");
@@ -10,7 +12,7 @@ static const char* SAVE_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "&Save");
 static const char* SAVE_AS_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "Save &As...");
 static const char* EXIT_TEXT = QT_TRANSLATE_NOOP("EditorWindow", "E&xit");
 
-class EditorWindow : public QMainWindow
+class UILIB_API EditorWindow : public QMainWindow
 {
     Q_OBJECT
 public:

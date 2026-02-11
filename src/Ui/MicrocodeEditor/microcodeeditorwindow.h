@@ -1,6 +1,8 @@
 #ifndef MICROCODEEDITORWINDOW_H
 #define MICROCODEEDITORWINDOW_H
 
+#include "uiLib_export.h"
+
 #include <QTabWidget>
 
 #include "Common/editorwindow.h"
@@ -18,7 +20,7 @@ namespace Ui{
     class MicrocodeEditorWidget;
     class JumpTableEditorWidget;
 
-    class MicrocodeEditorWindow : public EditorWindow
+    class UILIB_API MicrocodeEditorWindow : public EditorWindow
     {
         Q_OBJECT
     public:

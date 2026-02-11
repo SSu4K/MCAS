@@ -18,7 +18,6 @@ EditorWindow::EditorWindow(QWidget* parent)
 
 void EditorWindow::createMenu()
 {
-    const char* ctx = metaObject()->className();
     QMenu* fileMenu = menuBar()->addMenu(tr(FILE_MENU_TEXT));
 
     fileMenu->addAction(tr(NEW_TEXT), QKeySequence::New, this, &EditorWindow::newFile);

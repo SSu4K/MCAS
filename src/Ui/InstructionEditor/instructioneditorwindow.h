@@ -1,6 +1,8 @@
 #ifndef INSTRUCTIONEDITORWINDOW_H
 #define INSTRUCTIONEDITORWINDOW_H
 
+#include "uiLib_export.h"
+
 #include "Common/editorwindow.h"
 #include "instructioneditorwidget.h"
 
@@ -14,7 +16,7 @@ namespace Ui{
     // forward declarations
     class InstructionEditorWidget;
 
-    class InstructionEditorWindow : public EditorWindow
+    class UILIB_API  InstructionEditorWindow : public EditorWindow
     {
         Q_OBJECT
     public:

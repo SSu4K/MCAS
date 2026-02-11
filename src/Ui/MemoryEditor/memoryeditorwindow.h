@@ -1,6 +1,8 @@
 #ifndef MEMORYEDITORWINDOW_H
 #define MEMORYEDITORWINDOW_H
 
+#include "uiLib_export.h"
+
 #include "Common/editorwindow.h"
 #include "memoryeditorwidget.h"
 
@@ -10,7 +12,7 @@ namespace Models {
 
 namespace Ui{
 
-    class MemoryEditorWindow : public EditorWindow
+    class UILIB_API MemoryEditorWindow : public EditorWindow
     {
         Q_OBJECT
     public:
