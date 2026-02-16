@@ -43,16 +43,15 @@ class ProjectSubsystem : public QObject
     Q_OBJECT
 
 public:
-    explicit ProjectSubsystem(SimulationSubsystem& simulation,
-                              ModelsSubsystem& models,
+    explicit ProjectSubsystem(ModelsSubsystem& models,
                               QObject* parent = nullptr);
-
-    // --- Project lifecycle ---
-    bool loadProject(const QString& projectFilePath);
-    bool saveProject(const QString& projectFilePath);
 
     bool hasOpenProject() const;
     QString currentProjectPath() const;
+
+public slots:
+    bool loadProject(QFile &projectFile);
+    bool saveProject(const QString& projectFilePath);
 
 signals:
     void projectLoaded();
@@ -60,16 +59,15 @@ signals:
     void projectSaved();
 
 private:
-    // --- Core references ---
-    SimulationSubsystem& simulation;
+
     ModelsSubsystem& models;
 
     // --- State ---
-    QString currentProject;
+    QString currentProject = "";
     ProjectManifest manifest;
 
     // --- Load pipeline ---
-    bool parseProjectFile(const QString& path, ProjectManifest& outManifest, QStringList& errors);
+    bool parseProjectFile(QFile &projectFile, QStringList& errors);
     bool stageProject(const ProjectManifest& manifest, ProjectStagingContext& staging);
     bool validateStaging(ProjectStagingContext& staging);
 

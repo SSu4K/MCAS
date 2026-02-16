@@ -8,6 +8,7 @@
 #include "simulationsubsystem.h"
 #include "modelssubsystem.h"
 #include "uisubsystem.h"
+#include "projectsubsystem.h"
 
 // forward declaration
 class AppContext;
@@ -26,6 +27,7 @@ private:
     SettingsSubsystem settings;
     SimulationSubsystem simulation;
     ModelsSubsystem models;
+    ProjectSubsystem project;
     UiSubsystem ui;
 
     QTranslator translator;
@@ -33,6 +35,8 @@ private:
     // App-wide setup
     void initSettingsSubsystem();
     void loadLanguage(const QString& lang);
+
+    void initProjectSubsystem();
 
 public slots:
     void themeChanged(const QString&);

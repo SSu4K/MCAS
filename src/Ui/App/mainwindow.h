@@ -23,6 +23,9 @@ signals:
     void setTheme(QString theme);
     void setLanguage(QString language);
 
+    bool serializeToFile(QFile& filePath) const;
+    bool serializeFromFile(QFile& filePath);
+
 public slots:
     void retranslateUi();
     void open();
@@ -40,6 +43,7 @@ private:
     SimulationView *simView;
 
     QString err;
+
     Sim::ExecutionWorker *worker;
     QString m_currentFilePath;
 
@@ -49,8 +53,7 @@ private:
     void createMenu();
 
     bool maybeSave();
-    bool serializeToFile(QFile& filePath) const;
-    bool serializeFromFile(QFile& filePath);
+
 };
 
 #endif // MAINWINDOW_H

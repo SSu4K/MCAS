@@ -175,14 +175,17 @@ void MainWindow::openFile()
         return;
     }
 
-    bool success = serializeFromFile(file);
+    qDebug() << "Emit serializeFromFile";
+    emit serializeFromFile(file);
 
+    /*
     qDebug() << "Serializing from" << filePath << "Success:" << success;
 
     if (success) {
         m_currentFilePath = filePath;
         setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
     }
+*/
 }
 
 void MainWindow::saveFile()
@@ -200,7 +203,7 @@ void MainWindow::saveFile()
     bool success = true;
     success = serializeToFile(file);
 
-    qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
+    //qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
 }
 
 void MainWindow::saveFileAs()
@@ -225,13 +228,6 @@ void MainWindow::saveFileAs()
         m_currentFilePath = filePath;
         setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
     }
-}
-
-bool MainWindow::serializeToFile(QFile& filePath) const{
-    return true;
-}
-bool MainWindow::serializeFromFile(QFile& filePath){
-    return true;
 }
 
 bool MainWindow::maybeSave()

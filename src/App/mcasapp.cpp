@@ -1,5 +1,6 @@
 #include <QStyleFactory>
 #include <QStyle>
+#include <QFile>
 
 #include "mcasapp.h"
 
@@ -41,7 +42,7 @@ static QPalette getLightPalette(){
 }
 
 MCASApp::MCASApp(int &argc, char **argv)
-    : settings(), simulation(), models(simulation), ui(models),
+    : settings(), simulation(), models(simulation), project(models), ui(models),
     QApplication(argc, argv)
 {
     QFile f(":/icons/appicon.png");
@@ -55,6 +56,7 @@ MCASApp::MCASApp(int &argc, char **argv)
 
     setStyle(QStyleFactory::create("Fusion"));
     initSettingsSubsystem();
+    initProjectSubsystem();
 }
 
 void MCASApp::themeChanged(const QString& theme){
@@ -116,4 +118,8 @@ void MCASApp::initSettingsSubsystem(){
             &ui.memoryEditorWindow, &MemoryEditorWindow::retranslateUi);
     connect(this, &MCASApp::languageChanged,
             &ui.instructionEditorWindow, &InstructionEditorWindow::retranslateUi);
+}
+
+void MCASApp::initProjectSubsystem(){
+    connect(&ui.mainWindow, &MainWindow::serializeFromFile, &project, &ProjectSubsystem::loadProject);
 }
