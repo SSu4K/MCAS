@@ -23,7 +23,8 @@ signals:
     void setTheme(QString theme);
     void setLanguage(QString language);
 
-    bool serializeToFile(QFile& filePath) const;
+    void newProject();
+    bool serializeToFile(QFile& filePath);
     bool serializeFromFile(QFile& filePath);
 
 public slots:
@@ -51,6 +52,8 @@ private:
     void createToolsMenu();
     void createViewMenu();
     void createMenu();
+
+    QString windowTitle() const { return tr("MCAS"); }
 
     bool maybeSave();
 

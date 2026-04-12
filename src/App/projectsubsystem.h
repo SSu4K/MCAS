@@ -50,32 +50,35 @@ public:
     QString currentProjectPath() const;
 
 public slots:
+    void newProject();
     bool loadProject(QFile &projectFile);
-    bool saveProject(const QString& projectFilePath);
+    bool saveProject(QFile &projectFile);
 
 signals:
     void projectLoaded();
     void projectLoadFailed(const QStringList& errors);
     void projectSaved();
 
+    void clearProject();
+
+    bool saveMicrocodeFile(const QString &filePath);
+    bool saveInstructionFile(const QString &filePath);
+    bool saveMemoryFile(const QString &filePath);
+    bool saveConfigFile(const QString &filePath);
+
+    bool loadMicrocodeFile(const QString &filePath);
+    bool loadInstructionFile(const QString &filePath);
+    bool loadMemoryFile(const QString &filePath);
+    bool loadConfigFile(const QString &filePath);
+
 private:
 
     ModelsSubsystem& models;
 
-    // --- State ---
     QString currentProject = "";
     ProjectManifest manifest;
 
-    // --- Load pipeline ---
     bool parseProjectFile(QFile &projectFile, QStringList& errors);
-    bool stageProject(const ProjectManifest& manifest, ProjectStagingContext& staging);
-    bool validateStaging(ProjectStagingContext& staging);
-
-    void commitStaging(ProjectStagingContext&& staging);
-    void rollbackStaging(); // conceptual, usually empty
-
-    // --- Save helpers ---
-    bool writeProjectFile(const QString& path, QStringList& errors);
 };
 
 

@@ -19,6 +19,8 @@ namespace Ui{
         explicit MemoryEditorWindow(Models::MemoryModel* model, QWidget *parent = nullptr);
 
     public slots:
+        bool serializeToFile(QFile& file) const override;
+        bool serializeFromFile(QFile& file) override;
         void open();
 
     protected:
@@ -28,8 +30,6 @@ namespace Ui{
         QString defaultFilename() const override { return "memory.dat"; }
         QString fileFilterString() const override { return "Memory Files (*.dat)"; }
 
-        bool serializeToFile(QFile& file) const override;
-        bool serializeFromFile(QFile& file) override;
         void clearData() override;
 
         void createCustomMenu() override;

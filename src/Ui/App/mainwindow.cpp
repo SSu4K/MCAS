@@ -10,7 +10,7 @@
 MainWindow::MainWindow(Sim::ExecutionWorker *worker, QWidget *parent)
     : worker(worker), QMainWindow(parent)
 {
-    setWindowTitle(tr("MCAS Main Window"));
+    setWindowTitle(windowTitle());
     resize(700, 500);
 
     createMenu();
@@ -155,6 +155,8 @@ void MainWindow::newFile()
 
     m_currentFilePath.clear();
     setWindowTitle(windowTitle() + " - [New]");
+
+    emit newProject();
 }
 
 void MainWindow::openFile()
@@ -175,17 +177,12 @@ void MainWindow::openFile()
         return;
     }
 
-    qDebug() << "Emit serializeFromFile";
+    qDebug() << "Serializing priject from" << filePath;
+
+    m_currentFilePath = filePath;
+    setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
+
     emit serializeFromFile(file);
-
-    /*
-    qDebug() << "Serializing from" << filePath << "Success:" << success;
-
-    if (success) {
-        m_currentFilePath = filePath;
-        setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
-    }
-*/
 }
 
 void MainWindow::saveFile()
@@ -196,14 +193,12 @@ void MainWindow::saveFile()
     }
 
     QFile file(m_currentFilePath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+    if (!file.exists()){
         return;
     }
 
-    bool success = true;
-    success = serializeToFile(file);
-
-    //qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
+    qDebug() << "Serializing to project" << m_currentFilePath;
+    emit serializeToFile(file);
 }
 
 void MainWindow::saveFileAs()

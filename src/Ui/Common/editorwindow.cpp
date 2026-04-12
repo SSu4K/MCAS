@@ -40,39 +40,61 @@ void EditorWindow::retranslateUi(){
 
 void EditorWindow::newFile()
 {
-    if (!maybeSave())
-        return;
+    if (!m_currentFilePath.isEmpty()) saveFile();
 
     clearData();
     m_currentFilePath.clear();
     setWindowTitle(windowTitle() + " - [New]");
 }
 
-void EditorWindow::openFile()
-{
-    if (!maybeSave())
-        return;
-
-    QString filePath = QFileDialog::getOpenFileName(this, openFilePrompt(),
-                                                    "", fileFilterString());
-    if (filePath.isEmpty()){
-        qDebug("Empty path!");
-        return;
-    }
-
-    QFile file(filePath);
+bool EditorWindow::openFileFromPath(const QString &path){
+    QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("Failed to open!");
-        return;
+        return false;
     }
 
     bool success = serializeFromFile(file);
 
-    qDebug() << "Serializing from" << filePath << "Success:" << success;
+    qDebug() << "Serializing from" << path << "Success:" << success;
 
     if (success) {
-        m_currentFilePath = filePath;
-        setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
+        m_currentFilePath = path;
+        setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(path).fileName()));
+        return true;
+    }
+    return false;
+}
+
+void EditorWindow::openFile()
+{
+    saveFile();
+
+    QString path = QFileDialog::getOpenFileName(this, openFilePrompt(),
+                                                    "", fileFilterString());
+    if (path.isEmpty()){
+        qDebug("Empty path!");
+        return;
+    }
+
+    openFileFromPath(path);
+
+}
+
+void EditorWindow::saveFileToPath(const QString &path){
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        return;
+    }
+
+    bool success = true;
+    success = serializeToFile(file);
+
+    qDebug() << "Serializing to" << path << "Success:" << success;
+
+    if (success) {
+        m_currentFilePath = path;
+        setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(path).fileName()));
     }
 }
 
@@ -83,15 +105,7 @@ void EditorWindow::saveFile()
         return;
     }
 
-    QFile file(m_currentFilePath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        return;
-    }
-
-    bool success = true;
-    success = serializeToFile(file);
-
-    qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
+    saveFileToPath(m_currentFilePath);
 }
 
 void EditorWindow::saveFileAs()
@@ -102,30 +116,12 @@ void EditorWindow::saveFileAs()
     if (filePath.isEmpty())
         return;
 
-    QFile file(filePath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        return;
-    }
-
-    bool success = true;
-    success = serializeToFile(file);
-
-    qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
-
-    if (success) {
-        m_currentFilePath = filePath;
-        setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
-    }
+    saveFileToPath(filePath);
 }
 
 void EditorWindow::exitApp()
 {
-    if (maybeSave())
-        close();
-}
-
-bool EditorWindow::maybeSave()
-{
-    return true; // simplify for now
+    saveFile();
+    close();
 }
 

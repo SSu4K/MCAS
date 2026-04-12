@@ -1,4 +1,5 @@
 InstructionSet=config.cfg
 Microcode=microcode.mco
-InstructionMemory=fib.cod
+JumpTable=microcode.mco
+InstructionMemory=stack.cod
 DataMemory=memory.dat

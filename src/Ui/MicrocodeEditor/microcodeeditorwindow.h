@@ -28,6 +28,8 @@ namespace Ui{
 
     public slots:
         void open();
+        bool serializeToFile(QFile& file) const override;
+        bool serializeFromFile(QFile& file) override;
 
     protected:
         QString windowTitle() const override { return tr("Microcode Editor"); }
@@ -36,8 +38,6 @@ namespace Ui{
         QString defaultFilename() const override { return "microcode.mco"; }
         QString fileFilterString() const override { return "Microcode Files (*.mco)"; }
 
-        bool serializeToFile(QFile& file) const override;
-        bool serializeFromFile(QFile& file) override;
         void clearData() override;
 
         void createCustomMenu() override;

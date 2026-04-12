@@ -31,7 +31,7 @@ bool InstructionEditorWindow::serializeFromFile(QFile& file) {
 }
 
 void InstructionEditorWindow::clearData(){
-    // do nothing for now
+    model->clear();
     return;
 }
 

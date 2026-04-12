@@ -11,6 +11,11 @@ bool ProjectSubsystem::parseProjectFile(QFile &projectFile, QStringList& errors)
 {
     QTextStream in(&projectFile);
     QDir baseDir = QFileInfo(projectFile.filesystemFileName()).dir();
+    QString projectFilename = QFileInfo(projectFile.filesystemFileName()).fileName();
+
+    currentProject = projectFilename;
+
+    qDebug() << "Current project: " << currentProject;
 
     while (!in.atEnd()) {
         const QString line = in.readLine().trimmed();
@@ -40,53 +45,38 @@ bool ProjectSubsystem::parseProjectFile(QFile &projectFile, QStringList& errors)
     return true;
 }
 
+void ProjectSubsystem::newProject(){
+
+    manifest = {0};
+    currentProject = "";
+
+    emit clearProject();
+}
+
 bool ProjectSubsystem::loadProject(QFile &projectFile)
 {
     QStringList errors;
     parseProjectFile(projectFile, errors);
 
-    QFile instrFile(manifest.instructionSetPath);
-    if (instrFile.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QTextStream s(&instrFile);
-        models.instructionSetModel.loadFromTextStream(s); // assumes your method exists
-    }
-
-    QFile microFile(manifest.microcodePath);
-    if (microFile.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QTextStream s(&microFile);
-        models.microcodeModel.loadFromTextStream(s);
-    }
-
-    QFile jumpFile(manifest.jumpTablePath);
-    if (jumpFile.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QTextStream s(&jumpFile);
-        models.jumpTableModel.loadFromTextStream(s);
-    }
-
-    QFile instrMemFile(manifest.instructionMemoryPath);
-    if (instrMemFile.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QTextStream s(&instrMemFile);
-        models.instructionModel.loadFromTextStream(s);
-    }
-
-    QFile dataMemFile(manifest.dataMemoryPath);
-    if (dataMemFile.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QTextStream s(&dataMemFile);
-        models.memoryModel.loadFromTextStream(s);
-    }
+    emit loadConfigFile(manifest.instructionSetPath);
+    emit loadMicrocodeFile(manifest.microcodePath);
+    emit loadInstructionFile(manifest.instructionMemoryPath);
+    emit loadMemoryFile(manifest.dataMemoryPath);
 
     emit projectLoaded();
     return true;
 }
 
-bool ProjectSubsystem::saveProject(const QString& projectFilePath)
+bool ProjectSubsystem::saveProject(QFile &projectFile)
 {
-    Q_UNUSED(projectFilePath);
+    QStringList errors;
+    parseProjectFile(projectFile, errors);
+
+    emit saveConfigFile(manifest.instructionSetPath);
+    emit saveMicrocodeFile(manifest.microcodePath);
+    emit saveInstructionFile(manifest.instructionMemoryPath);
+    emit saveMemoryFile(manifest.dataMemoryPath);
+
     emit projectSaved();
     return true;
 }

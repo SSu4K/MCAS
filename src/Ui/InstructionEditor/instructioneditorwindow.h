@@ -24,6 +24,8 @@ namespace Ui{
 
     public slots:
         void open();
+        bool serializeToFile(QFile& file) const override;
+        bool serializeFromFile(QFile& file) override;
 
     protected:
         QString windowTitle() const override { return tr("Instruction Editor"); }
@@ -32,8 +34,6 @@ namespace Ui{
         QString defaultFilename() const override { return "instr.cod"; }
         QString fileFilterString() const override { return "Memory Files (*.cod)"; }
 
-        bool serializeToFile(QFile& file) const override;
-        bool serializeFromFile(QFile& file) override;
         void clearData() override;
 
         void createCustomMenu() override;

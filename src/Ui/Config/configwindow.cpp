@@ -35,6 +35,7 @@ bool ConfigWindow::serializeFromFile(QFile &file){
     bool success = true;
     QTextStream in1(&file);
     success &= instructionSetModel->loadFromTextStream(in1);
+    m_currentFilePath = file.fileName();
 
     return success;
 }

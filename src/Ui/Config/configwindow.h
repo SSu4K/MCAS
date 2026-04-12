@@ -20,6 +20,8 @@ public:
 
 public slots:
     void open();
+    bool serializeToFile(QFile& file) const override;
+    bool serializeFromFile(QFile& file) override;
 
 protected:
     QString windowTitle() const override { return tr("Configuration"); }
@@ -28,8 +30,6 @@ protected:
     QString defaultFilename() const override { return "config.cfg"; }
     QString fileFilterString() const override { return "Config Files (*.cfg)"; }
 
-    bool serializeToFile(QFile& file) const override;
-    bool serializeFromFile(QFile& file) override;
     void clearData() override;
 
     void createCustomMenu() override;

@@ -121,5 +121,22 @@ void MCASApp::initSettingsSubsystem(){
 }
 
 void MCASApp::initProjectSubsystem(){
+    connect(&ui.mainWindow, &MainWindow::newProject, &project, &ProjectSubsystem::newProject);
     connect(&ui.mainWindow, &MainWindow::serializeFromFile, &project, &ProjectSubsystem::loadProject);
+    connect(&ui.mainWindow, &MainWindow::serializeToFile, &project, &ProjectSubsystem::saveProject);
+
+    connect(&project, &ProjectSubsystem::clearProject,          &ui.configWindow, &ConfigWindow::newFile);
+    connect(&project, &ProjectSubsystem::clearProject,          &ui.instructionEditorWindow, &InstructionEditorWindow::newFile);
+    connect(&project, &ProjectSubsystem::clearProject,          &ui.memoryEditorWindow, &MemoryEditorWindow::newFile);
+    connect(&project, &ProjectSubsystem::clearProject,          &ui.microcodeEditorWindow, &MicrocodeEditorWindow::newFile);
+
+    connect(&project, &ProjectSubsystem::loadConfigFile,        &ui.configWindow, &ConfigWindow::openFileFromPath);
+    connect(&project, &ProjectSubsystem::loadInstructionFile,   &ui.instructionEditorWindow, &InstructionEditorWindow::openFileFromPath);
+    connect(&project, &ProjectSubsystem::loadMemoryFile,        &ui.memoryEditorWindow, &MemoryEditorWindow::openFileFromPath);
+    connect(&project, &ProjectSubsystem::loadMicrocodeFile,     &ui.microcodeEditorWindow, &MicrocodeEditorWindow::openFileFromPath);
+
+    connect(&project, &ProjectSubsystem::saveConfigFile,        &ui.configWindow, &ConfigWindow::saveFileToPath);
+    connect(&project, &ProjectSubsystem::saveInstructionFile,   &ui.instructionEditorWindow, &InstructionEditorWindow::saveFileToPath);
+    connect(&project, &ProjectSubsystem::saveMemoryFile,        &ui.memoryEditorWindow, &MemoryEditorWindow::saveFileToPath);
+    connect(&project, &ProjectSubsystem::saveMicrocodeFile,     &ui.microcodeEditorWindow, &MicrocodeEditorWindow::saveFileToPath);
 }

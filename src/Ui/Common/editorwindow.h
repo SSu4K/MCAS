@@ -19,7 +19,6 @@ public:
     explicit EditorWindow(QWidget* parent = nullptr);
 
 private slots:
-    void newFile();
     void openFile();
     void saveFile();
     void saveFileAs();
@@ -27,6 +26,9 @@ private slots:
 
 public slots:
     void retranslateUi();
+    void newFile();
+    bool openFileFromPath(const QString &path);
+    void saveFileToPath(const QString &path);
 
 protected:
     void createMenu();
@@ -38,18 +40,15 @@ protected:
     virtual QString defaultFilename() const { return "type.txt"; }
     virtual QString fileFilterString() const { return "[Type] Files (*.txt *.mc)"; }
 
+    virtual void createCustomMenu() {}
+
+public:
     virtual bool serializeToFile(QFile& filePath) const {return true;}
     virtual bool serializeFromFile(QFile& filePath) {return true;}
     virtual void clearData() {}
 
-    virtual void createCustomMenu() {}
-
-private:
+protected:
     QString m_currentFilePath;
-
-    bool maybeSave();
-    bool saveToFile(const QString& filePath);
-    bool loadFromFile(const QString& filePath);
 };
 
 #endif // EDITORWINDOW_H
