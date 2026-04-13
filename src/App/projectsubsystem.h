@@ -26,7 +26,6 @@ struct ProjectStagingContext
     // Domain-level temporary objects
     Assembly::InstructionSet instructionSet;
     Microcode::MicrocodeData microcode;
-    Microcode::JumpTableData jumpTables;
     LabelData labelData;
 
     Machine::MachineState machineState;
@@ -54,6 +53,11 @@ public slots:
     bool loadProject(QFile &projectFile);
     bool saveProject(QFile &projectFile);
 
+    void microcodeFileChanged(const QString &filePath);
+    void instructionFileChanged(const QString &filePath);
+    void memoryFileChanged(const QString &filePath);
+    void configFileChanged(const QString &filePath);
+
 signals:
     void projectLoaded();
     void projectLoadFailed(const QStringList& errors);
@@ -79,6 +83,7 @@ private:
     ProjectManifest manifest;
 
     bool parseProjectFile(QFile &projectFile, QStringList& errors);
+    bool writeProjectFile(QFile &projectFile);
 };
 
 

@@ -121,22 +121,32 @@ void MCASApp::initSettingsSubsystem(){
 }
 
 void MCASApp::initProjectSubsystem(){
+    // connect main window buttons
     connect(&ui.mainWindow, &MainWindow::newProject, &project, &ProjectSubsystem::newProject);
     connect(&ui.mainWindow, &MainWindow::serializeFromFile, &project, &ProjectSubsystem::loadProject);
     connect(&ui.mainWindow, &MainWindow::serializeToFile, &project, &ProjectSubsystem::saveProject);
 
-    connect(&project, &ProjectSubsystem::clearProject,          &ui.configWindow, &ConfigWindow::newFile);
-    connect(&project, &ProjectSubsystem::clearProject,          &ui.instructionEditorWindow, &InstructionEditorWindow::newFile);
-    connect(&project, &ProjectSubsystem::clearProject,          &ui.memoryEditorWindow, &MemoryEditorWindow::newFile);
-    connect(&project, &ProjectSubsystem::clearProject,          &ui.microcodeEditorWindow, &MicrocodeEditorWindow::newFile);
+    // connect project subsystem clear to editor windows
+    connect(&project, &ProjectSubsystem::clearProject,          &ui.configWindow,               &ConfigWindow::newFile);
+    connect(&project, &ProjectSubsystem::clearProject,          &ui.instructionEditorWindow,    &InstructionEditorWindow::newFile);
+    connect(&project, &ProjectSubsystem::clearProject,          &ui.memoryEditorWindow,         &MemoryEditorWindow::newFile);
+    connect(&project, &ProjectSubsystem::clearProject,          &ui.microcodeEditorWindow,      &MicrocodeEditorWindow::newFile);
 
-    connect(&project, &ProjectSubsystem::loadConfigFile,        &ui.configWindow, &ConfigWindow::openFileFromPath);
-    connect(&project, &ProjectSubsystem::loadInstructionFile,   &ui.instructionEditorWindow, &InstructionEditorWindow::openFileFromPath);
-    connect(&project, &ProjectSubsystem::loadMemoryFile,        &ui.memoryEditorWindow, &MemoryEditorWindow::openFileFromPath);
-    connect(&project, &ProjectSubsystem::loadMicrocodeFile,     &ui.microcodeEditorWindow, &MicrocodeEditorWindow::openFileFromPath);
+    // connect project subsystem load to editor windows
+    connect(&project, &ProjectSubsystem::loadConfigFile,        &ui.configWindow,               &ConfigWindow::openFileFromPath);
+    connect(&project, &ProjectSubsystem::loadInstructionFile,   &ui.instructionEditorWindow,    &InstructionEditorWindow::openFileFromPath);
+    connect(&project, &ProjectSubsystem::loadMemoryFile,        &ui.memoryEditorWindow,         &MemoryEditorWindow::openFileFromPath);
+    connect(&project, &ProjectSubsystem::loadMicrocodeFile,     &ui.microcodeEditorWindow,      &MicrocodeEditorWindow::openFileFromPath);
 
-    connect(&project, &ProjectSubsystem::saveConfigFile,        &ui.configWindow, &ConfigWindow::saveFileToPath);
-    connect(&project, &ProjectSubsystem::saveInstructionFile,   &ui.instructionEditorWindow, &InstructionEditorWindow::saveFileToPath);
-    connect(&project, &ProjectSubsystem::saveMemoryFile,        &ui.memoryEditorWindow, &MemoryEditorWindow::saveFileToPath);
-    connect(&project, &ProjectSubsystem::saveMicrocodeFile,     &ui.microcodeEditorWindow, &MicrocodeEditorWindow::saveFileToPath);
+    // connect project subsystem save to editor windows
+    connect(&project, &ProjectSubsystem::saveConfigFile,        &ui.configWindow,               &ConfigWindow::saveFileToPath);
+    connect(&project, &ProjectSubsystem::saveInstructionFile,   &ui.instructionEditorWindow,    &InstructionEditorWindow::saveFileToPath);
+    connect(&project, &ProjectSubsystem::saveMemoryFile,        &ui.memoryEditorWindow,         &MemoryEditorWindow::saveFileToPath);
+    connect(&project, &ProjectSubsystem::saveMicrocodeFile,     &ui.microcodeEditorWindow,      &MicrocodeEditorWindow::saveFileToPath);
+
+    // connect editor windows file changes to project subsystem
+    connect(&ui.configWindow,               &ConfigWindow::fileChanged,             &project, &ProjectSubsystem::configFileChanged);
+    connect(&ui.instructionEditorWindow,    &InstructionEditorWindow::fileChanged,  &project, &ProjectSubsystem::instructionFileChanged);
+    connect(&ui.memoryEditorWindow,         &MemoryEditorWindow::fileChanged,       &project, &ProjectSubsystem::memoryFileChanged);
+    connect(&ui.microcodeEditorWindow,      &MicrocodeEditorWindow::fileChanged,    &project, &ProjectSubsystem::microcodeFileChanged);
 }

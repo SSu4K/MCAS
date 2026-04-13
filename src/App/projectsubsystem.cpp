@@ -1,5 +1,10 @@
 #include "projectsubsystem.h"
 
+static const QString INSTRUCTION_SET_KEY    = "InstructionSet";
+static const QString MICROCODE_KEY          = "Microcode";
+static const QString MEMORY_KEY             = "DataMemory";
+static const QString INSTRUCTIONS_KEY       = "InstructionMemory";
+
 ProjectSubsystem::ProjectSubsystem(ModelsSubsystem& mod,
                                    QObject* parent)
     : QObject(parent), models(mod), manifest()
@@ -13,6 +18,8 @@ bool ProjectSubsystem::parseProjectFile(QFile &projectFile, QStringList& errors)
     QDir baseDir = QFileInfo(projectFile.filesystemFileName()).dir();
     QString projectFilename = QFileInfo(projectFile.filesystemFileName()).fileName();
 
+
+    newProject();
     currentProject = projectFilename;
 
     qDebug() << "Current project: " << currentProject;
@@ -28,19 +35,32 @@ bool ProjectSubsystem::parseProjectFile(QFile &projectFile, QStringList& errors)
             return false;
         }
 
-        const QString key = parts[0].trimmed();
-        const QString value = baseDir.filePath(parts[1].trimmed());
+        const QString filename = parts[1].trimmed();
+        if(filename.isEmpty()) continue;
 
-        if (key == "InstructionSet")       this->manifest.instructionSetPath = value;
-        else if (key == "Microcode")        this->manifest.microcodePath = value;
-        else if (key == "JumpTable")        this->manifest.jumpTablePath = value;
-        else if (key == "InstructionMemory") this->manifest.instructionMemoryPath = value;
-        else if (key == "DataMemory")       this->manifest.dataMemoryPath = value;
+        const QString key = parts[0].trimmed();
+        const QString value = baseDir.filePath(filename);
+
+        if (key == INSTRUCTION_SET_KEY)     this->manifest.instructionSetPath = value;
+        else if (key == MICROCODE_KEY)      this->manifest.microcodePath = value;
+        else if (key == MEMORY_KEY)         this->manifest.dataMemoryPath = value;
+        else if (key == INSTRUCTIONS_KEY)   this->manifest.instructionMemoryPath = value;
         else {
             errors << "Unknown project key: " + key;
             return false;
         }
     }
+
+    return true;
+}
+
+bool ProjectSubsystem::writeProjectFile(QFile &projectFile){
+    QTextStream out(&projectFile);
+
+    out << INSTRUCTION_SET_KEY  << "=" << manifest.instructionSetPath.split('/').last() << Qt::endl;
+    out << MICROCODE_KEY        << "=" << manifest.microcodePath.split('/').last() << Qt::endl;
+    out << MEMORY_KEY           << "=" << manifest.dataMemoryPath.split('/').last() << Qt::endl;
+    out << INSTRUCTIONS_KEY     << "=" << manifest.instructionMemoryPath.split('/').last() << Qt::endl;
 
     return true;
 }
@@ -60,8 +80,13 @@ bool ProjectSubsystem::loadProject(QFile &projectFile)
 
     emit loadConfigFile(manifest.instructionSetPath);
     emit loadMicrocodeFile(manifest.microcodePath);
-    emit loadInstructionFile(manifest.instructionMemoryPath);
     emit loadMemoryFile(manifest.dataMemoryPath);
+    emit loadInstructionFile(manifest.instructionMemoryPath);
+
+    qDebug() << manifest.instructionSetPath;
+    qDebug() << manifest.microcodePath;
+    qDebug() << manifest.dataMemoryPath;
+    qDebug() << manifest.instructionMemoryPath;
 
     emit projectLoaded();
     return true;
@@ -70,15 +95,42 @@ bool ProjectSubsystem::loadProject(QFile &projectFile)
 bool ProjectSubsystem::saveProject(QFile &projectFile)
 {
     QStringList errors;
-    parseProjectFile(projectFile, errors);
 
     emit saveConfigFile(manifest.instructionSetPath);
     emit saveMicrocodeFile(manifest.microcodePath);
-    emit saveInstructionFile(manifest.instructionMemoryPath);
     emit saveMemoryFile(manifest.dataMemoryPath);
+    emit saveInstructionFile(manifest.instructionMemoryPath);
 
-    emit projectSaved();
+    if(projectFile.open(QIODevice::WriteOnly | QIODevice::Text)){
+        writeProjectFile(projectFile);
+        projectFile.close();
+
+        emit projectSaved();
+        return true;
+    }
+
+    qDebug() << "Project file not found!" << projectFile.fileName();
     return true;
+}
+
+void ProjectSubsystem::microcodeFileChanged(const QString &filePath){
+    manifest.microcodePath = filePath;
+    qDebug() << "manifest changed microcode:" << filePath;
+}
+
+void ProjectSubsystem::instructionFileChanged(const QString &filePath){
+    manifest.instructionMemoryPath = filePath;
+    qDebug() << "manifest changed instruction:" << filePath;
+}
+
+void ProjectSubsystem::memoryFileChanged(const QString &filePath){
+    manifest.dataMemoryPath = filePath;
+    qDebug() << "manifest changed memory:" << filePath;
+}
+
+void ProjectSubsystem::configFileChanged(const QString &filePath){
+    manifest.instructionSetPath = filePath;
+    qDebug() << "manifest changed config:" << filePath;
 }
 
 bool ProjectSubsystem::hasOpenProject() const

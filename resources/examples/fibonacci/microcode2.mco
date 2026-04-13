@@ -1,0 +1,90 @@
+[Microcode]
+;uAR   |Label |ALU  |S1  |S2    |Dest |ExtIR |Const |JCond |Adr |Mem |MAdr |MDest |Regs
+0x0000 |      |     |    |      |     |      |      |      |    |RW  |PC   |IR    |
+0x0001 |      |ADD  |PC  |Const |PC   |      |4     |Jump1 |    |    |     |      |RR
+0x0002 |      |S2   |    |B     |MDR  |      |      |      |    |    |     |      |
+0x0003 |      |ADD  |A   |IR    |MAR  |Word  |      |Jump2 |    |    |     |      |
+0x0004 |      |     |    |      |     |      |      |      |    |RB  |MAR  |MDR   |
+0x0005 |      |S1   |MDR |      |C    |      |      |      |    |    |     |      |
+0x0006 |      |     |    |      |     |      |      |True  |    |    |     |      |WF2
+0x0007 |      |     |    |      |     |      |      |      |    |RH  |MAR  |MDR   |
+0x0008 |      |S1   |MDR |      |C    |      |      |True  |    |    |     |      |
+0x0009 |      |     |    |      |     |      |      |      |    |RW  |MAR  |MDR   |
+0x000A |      |S1   |MDR |      |C    |      |      |True  |    |    |     |      |
+0x000B |      |     |    |      |     |      |      |      |    |WB  |MAR  |      |
+0x000C |      |     |    |      |     |      |      |True  |    |    |     |      |
+0x000D |      |     |    |      |     |      |      |      |    |WH  |MAR  |      |
+0x000E |      |     |    |      |     |      |      |True  |    |    |     |      |
+0x000F |      |     |    |      |     |      |      |      |    |WW  |MAR  |      |
+0x0010 |      |     |    |      |     |      |      |True  |    |    |     |      |
+0x0011 |      |ADD  |A   |B     |C    |      |      |      |    |    |     |      |
+0x0012 |      |     |    |      |     |      |      |True  |    |    |     |      |WF3
+0x0013 |      |SUB  |A   |B     |C    |      |      |True  |    |    |     |      |
+0x0014 |      |MUL  |A   |B     |C    |      |      |True  |    |    |     |      |
+0x0015 |      |DIV  |A   |B     |C    |      |      |True  |    |    |     |      |
+0x0016 |      |AND  |A   |B     |C    |      |      |True  |    |    |     |      |
+0x0017 |      |OR   |A   |B     |C    |      |      |True  |    |    |     |      |
+0x0018 |      |XOR  |A   |B     |C    |      |      |True  |    |    |     |      |
+0x0019 |      |     |A   |B     |C    |      |      |True  |    |    |     |      |
+0x001A |      |     |A   |B     |C    |      |      |True  |    |    |     |      |
+0x001B |      |SRA  |A   |B     |C    |      |      |True  |    |    |     |      |
+0x001C |      |ADD  |A   |IR    |C    |Word  |      |True  |    |    |     |      |
+0x001D |      |SUB  |A   |IR    |C    |Word  |      |True  |    |    |     |      |
+0x001E |      |MUL  |A   |IR    |C    |Word  |      |True  |    |    |     |      |
+0x001F |      |DIV  |A   |IR    |C    |Word  |      |True  |    |    |     |      |
+0x0020 |      |AND  |A   |IR    |C    |Word  |      |True  |    |    |     |      |
+0x0021 |      |OR   |A   |IR    |C    |Word  |      |True  |    |    |     |      |
+0x0022 |      |XOR  |A   |IR    |C    |Word  |      |True  |    |    |     |      |
+0x0023 |      |     |A   |IR    |C    |Word  |      |True  |    |    |     |      |
+0x0024 |      |     |A   |IR    |C    |Word  |      |True  |    |    |     |      |
+0x0025 |      |SRA  |A   |IR    |C    |Word  |      |True  |    |    |     |      |
+0x0026 |      |S2S1 |A   |IR    |C    |Half  |      |      |    |    |     |      |
+0x0027 |      |     |    |      |     |      |      |True  |    |    |     |      |WF1
+0x0028 |      |S2   |    |B     |     |      |      |NE    |    |    |     |      |
+0x0029 |      |ADD  |PC  |IR    |PC   |Word  |      |True  |    |    |     |      |
+0x002A |      |S2   |    |B     |     |      |      |EQ    |    |    |     |      |
+0x002B |      |ADD  |PC  |IR    |PC   |Word  |      |True  |    |    |     |      |
+0x002C |      |S2   |    |B     |     |      |      |LE    |    |    |     |      |
+0x002D |      |ADD  |PC  |IR    |PC   |Word  |      |True  |    |    |     |      |
+0x002E |      |S2   |    |B     |     |      |      |LT    |    |    |     |      |
+0x002F |      |ADD  |PC  |IR    |PC   |Word  |      |True  |    |    |     |      |
+0x0030 |      |S2   |    |B     |     |      |      |GE    |    |    |     |      |
+0x0031 |      |ADD  |PC  |IR    |PC   |Word  |      |True  |    |    |     |      |
+0x0032 |      |S2   |    |B     |     |      |      |GT    |    |    |     |      |
+0x0033 |      |ADD  |PC  |IR    |PC   |Word  |      |True  |    |    |     |      |
+[Jump Tables]
+;Opcode|Jump Table 1 |Jump Table 2
+NOP    |Fetch        |
+LDB    |LD           |LDB
+LDH    |LD           |LDH
+LDW    |LD           |LDW
+STB    |ST           |STB
+STH    |ST           |STH
+STW    |ST           |STW
+ADD    |ADD          |
+SUB    |SUB          |
+MUL    |MUL          |
+DIV    |DIV          |
+AND    |AND          |
+OR     |OR           |
+XOR    |XOR          |
+SLL    |SLL          |
+SRL    |SRL          |
+SRA    |SRA          |
+ADDI   |ADDI         |
+SUBI   |SUBI         |
+MULI   |MULI         |
+DIVI   |DIVI         |
+ANDI   |ANDI         |
+ORI    |ORI          |
+XORI   |XORI         |
+SLLI   |SLLI         |
+SRLI   |SRLI         |
+SRAI   |SRAI         |
+LIH    |LIH          |
+BRZ    |BRZ          |
+BRNZ   |BRNZ         |
+BRGT   |BRGT         |
+BRGE   |BRGE         |
+BRLT   |BRLT         |
+BRLE   |BRLE         |

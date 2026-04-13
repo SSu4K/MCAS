@@ -1,4 +1,4 @@
-InstructionSet=config.cfg
+InstructionSet=
 Microcode=microcode.mco
 DataMemory=
 InstructionMemory=

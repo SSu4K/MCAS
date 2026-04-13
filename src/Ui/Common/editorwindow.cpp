@@ -40,8 +40,6 @@ void EditorWindow::retranslateUi(){
 
 void EditorWindow::newFile()
 {
-    if (!m_currentFilePath.isEmpty()) saveFile();
-
     clearData();
     m_currentFilePath.clear();
     setWindowTitle(windowTitle() + " - [New]");
@@ -59,8 +57,11 @@ bool EditorWindow::openFileFromPath(const QString &path){
     qDebug() << "Serializing from" << path << "Success:" << success;
 
     if (success) {
-        m_currentFilePath = path;
-        setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(path).fileName()));
+        if(path != m_currentFilePath){
+            emit fileChanged(path);
+            m_currentFilePath = path;
+            setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(path).fileName()));
+        }
         return true;
     }
     return false;
@@ -68,8 +69,6 @@ bool EditorWindow::openFileFromPath(const QString &path){
 
 void EditorWindow::openFile()
 {
-    saveFile();
-
     QString path = QFileDialog::getOpenFileName(this, openFilePrompt(),
                                                     "", fileFilterString());
     if (path.isEmpty()){
@@ -93,8 +92,11 @@ void EditorWindow::saveFileToPath(const QString &path){
     qDebug() << "Serializing to" << path << "Success:" << success;
 
     if (success) {
-        m_currentFilePath = path;
-        setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(path).fileName()));
+        if(path != m_currentFilePath){
+            emit fileChanged(path);
+            m_currentFilePath = path;
+            setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(path).fileName()));
+        }
     }
 }
 

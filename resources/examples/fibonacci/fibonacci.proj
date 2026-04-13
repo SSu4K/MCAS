@@ -1,4 +1,4 @@
 InstructionSet=config.cfg
 Microcode=microcode.mco
-InstructionMemory=fib.cod
 DataMemory=memory.dat
+InstructionMemory=fib.cod

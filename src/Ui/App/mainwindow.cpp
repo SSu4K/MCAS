@@ -193,9 +193,6 @@ void MainWindow::saveFile()
     }
 
     QFile file(m_currentFilePath);
-    if (!file.exists()){
-        return;
-    }
 
     qDebug() << "Serializing to project" << m_currentFilePath;
     emit serializeToFile(file);
@@ -210,16 +207,13 @@ void MainWindow::saveFileAs()
         return;
 
     QFile file(filePath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        return;
-    }
 
     bool success = true;
     success = serializeToFile(file);
 
     qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
 
-    if (success) {
+    if (success && m_currentFilePath.isEmpty()) {
         m_currentFilePath = filePath;
         setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
     }

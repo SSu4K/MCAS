@@ -30,6 +30,9 @@ public slots:
     bool openFileFromPath(const QString &path);
     void saveFileToPath(const QString &path);
 
+signals:
+    void fileChanged(const QString &path);
+
 protected:
     void createMenu();
 
