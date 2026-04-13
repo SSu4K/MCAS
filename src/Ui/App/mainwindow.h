@@ -55,7 +55,35 @@ private:
 
     QString windowTitle() const { return tr("MCAS"); }
 
-    bool maybeSave();
+    // Menus
+    QMenu* m_fileMenu;
+    QMenu* m_toolsMenu;
+    QMenu* m_viewMenu;
+    QMenu* m_themeMenu;
+    QMenu* m_languageMenu;
+
+    // File actions
+    QAction* m_newProjectAction;
+    QAction* m_openProjectAction;
+    QAction* m_saveProjectAction;
+    QAction* m_saveAsProjectAction;
+
+    // Tools actions
+    QAction* m_configAction;
+    QAction* m_microcodeEditorAction;
+    QAction* m_memoryEditorAction;
+    QAction* m_instructionEditorAction;
+
+    // Theme actions
+    QAction* m_systemThemeAction;
+    QAction* m_lightThemeAction;
+    QAction* m_darkThemeAction;
+    QActionGroup* m_themeGroup;
+
+    // Language actions
+    QAction* m_enAction;
+    QAction* m_plAction;
+    QActionGroup* m_langGroup;
 
 };
 

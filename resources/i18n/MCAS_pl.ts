@@ -33,33 +33,35 @@
         <source>E&amp;xit</source>
         <translation>Z&amp;amknij</translation>
     </message>
+    <message>
+        <location filename="../../src/Ui/Common/editorwindow.cpp" line="66"/>
+        <location filename="../../src/Ui/Common/editorwindow.cpp" line="69"/>
+        <source>New</source>
+        <translation>Nowy</translation>
+    </message>
 </context>
 <context>
     <name>HaltDialog</name>
     <message>
         <location filename="../../src/Ui/App/haltdialog.ui" line="14"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_haltdialog.h" line="78"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_haltdialog.h" line="78"/>
         <source>Dialog</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/haltdialog.ui" line="22"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_haltdialog.h" line="79"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_haltdialog.h" line="79"/>
         <source>ICON</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/haltdialog.ui" line="32"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_haltdialog.h" line="80"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_haltdialog.h" line="80"/>
         <source>Simulation Halted!</source>
         <translation>Symulacja Zatrzymana!</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/haltdialog.ui" line="42"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_haltdialog.h" line="81"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_haltdialog.h" line="81"/>
         <source>message</source>
         <translation></translation>
@@ -83,7 +85,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="64"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="162"/>
         <source>&amp;Tools</source>
         <translation>&amp;Narzędzia</translation>
     </message>
@@ -92,96 +94,96 @@
         <translation type="vanished">Edytor Mikrokodu</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="133"/>
         <source>MCAS Main Window</source>
-        <translation>MCAS Główne Okno</translation>
+        <translation type="vanished">MCAS Główne Okno</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="70"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="164"/>
         <source>Microcode Editor</source>
         <translation>Edytor Mirokodu</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="53"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="155"/>
         <source>&amp;File</source>
         <translation>&amp;Plik</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="55"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="156"/>
         <source>&amp;New Project</source>
         <translation>&amp;Nowy Projekt</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="56"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="157"/>
         <source>&amp;Open Project</source>
         <translation>&amp;Otworz Projekt</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="59"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="158"/>
         <source>&amp;Save Project</source>
         <translation>&amp;Zapisz Projekt</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="60"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="159"/>
         <source>Save Project &amp;As...</source>
         <translation>Zapisz Projekt &amp;Jako...</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="66"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="163"/>
         <source>Configure</source>
         <translation>Konfiguracja</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="74"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="165"/>
         <source>Memory Editor</source>
         <translation>Edytor Pamięci</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="78"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="166"/>
         <source>Instruction Editor</source>
         <translation>Edytor Instrukcji</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="85"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="169"/>
         <source>&amp;View</source>
         <translation>&amp;Widok</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="86"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="170"/>
         <source>Theme</source>
         <translation>Motyw</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="88"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="172"/>
         <source>System Default</source>
         <translation>Systemowy</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="89"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="173"/>
         <source>Light</source>
         <translation>Jasny</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="90"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="174"/>
         <source>Dark</source>
         <translation>Ciemny</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="108"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="176"/>
         <source>Language</source>
         <translation>Język</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="111"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="177"/>
         <source>English</source>
         <translation>Angielski</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/App/mainwindow.cpp" line="113"/>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="178"/>
         <source>Polish</source>
         <translation>Polski</translation>
     </message>
     <message>
+        <location filename="../../src/Ui/App/mainwindow.cpp" line="152"/>
         <location filename="../../src/Ui/App/mainwindow.h" line="56"/>
         <source>MCAS</source>
         <translation>MCAS</translation>
@@ -304,42 +306,36 @@
     <name>SimulationView</name>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="20"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="307"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="307"/>
         <source>Form</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="39"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="308"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="308"/>
         <source>Special Registers:</source>
         <translation>Rejestry Specjalne:</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="69"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="309"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="309"/>
         <source>General Purpose Registers:</source>
         <translation>Rejestry Ogoólne:</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="102"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="310"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="310"/>
         <source>Simulation:</source>
         <translation>Symulacja:</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="124"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="311"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="311"/>
         <source>Reset</source>
         <translation>Resetuj</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="134"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="312"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="312"/>
         <source>Single micro-instruction execution:</source>
         <translation>Wykonywanie mikroinstrukcji:</translation>
@@ -347,8 +343,6 @@
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="142"/>
         <location filename="../../src/Ui/App/simulationview.ui" line="172"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="313"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="316"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="313"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="316"/>
         <source>Rewind</source>
@@ -356,56 +350,48 @@
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="149"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="314"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="314"/>
         <source>Clock</source>
         <translation>Zegar</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="161"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="315"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="315"/>
         <source>Single assembly instruction execution:</source>
         <translation>Wykonywanie instrukcji assemblera:</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="179"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="317"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="317"/>
         <source>Step</source>
         <translation>Krok</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="191"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="318"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="318"/>
         <source>Continuous execution:</source>
         <translation>Wykonywanie ciągłe:</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="199"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="319"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="319"/>
         <source>Frequency:</source>
         <translation>Częstotliwość:</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="215"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="320"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="320"/>
         <source> Hz</source>
         <translation> Hz</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="244"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="321"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="321"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
         <location filename="../../src/Ui/App/simulationview.ui" line="251"/>
-        <location filename="../../build/Desktop-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="322"/>
         <location filename="../../build/Desktop_Qt_6_8_3_llvm_mingw_64_bit-Debug/src/Ui/UiLib_autogen/include/ui_simulationview.h" line="322"/>
         <source>Run</source>
         <translation>Start</translation>
@@ -463,52 +449,52 @@
 <context>
     <name>Ui::MemoryEditorWindow</name>
     <message>
-        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="47"/>
+        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="102"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edycja</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="49"/>
+        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="104"/>
         <source>&amp;Select All</source>
         <translation>&amp;Zaznacz Wszystko</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="50"/>
+        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="105"/>
         <source>&amp;Clear</source>
         <translation>&amp;Wyczyść</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="51"/>
+        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="106"/>
         <source>&amp;Random</source>
         <translation>&amp;Losuj</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="52"/>
+        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="107"/>
         <source>&amp;Fill...</source>
         <translation>&amp;Wypełnij...</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="54"/>
+        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="109"/>
         <source>&amp;View</source>
         <translation>&amp;Widok</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="56"/>
+        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="110"/>
         <source>&amp;Size</source>
         <translation>&amp;Jednostka</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="58"/>
+        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="112"/>
         <source>&amp;Byte</source>
         <translation>&amp;Bajt</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="59"/>
+        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="113"/>
         <source>&amp;Half</source>
         <translation>&amp;Pół</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="60"/>
+        <location filename="../../src/Ui/MemoryEditor/memoryeditorwindow.cpp" line="114"/>
         <source>&amp;Word</source>
         <translation>&amp;Słowo</translation>
     </message>
@@ -531,19 +517,19 @@
 <context>
     <name>Ui::MicrocodeEditorWindow</name>
     <message>
-        <location filename="../../src/Ui/MicrocodeEditor/microcodeeditorwindow.cpp" line="56"/>
+        <location filename="../../src/Ui/MicrocodeEditor/microcodeeditorwindow.cpp" line="62"/>
         <source>Microcode</source>
         <translation>Mikrokod</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/MicrocodeEditor/microcodeeditorwindow.cpp" line="57"/>
+        <location filename="../../src/Ui/MicrocodeEditor/microcodeeditorwindow.cpp" line="63"/>
         <source>Jump Tables</source>
         <translation>Tablice skoków</translation>
     </message>
     <message>
         <location filename="../../src/Ui/MicrocodeEditor/microcodeeditorwindow.h" line="35"/>
         <source>Microcode Editor</source>
-        <translation></translation>
+        <translation>Edytor Mikrokodu</translation>
     </message>
     <message>
         <location filename="../../src/Ui/MicrocodeEditor/microcodeeditorwindow.h" line="36"/>

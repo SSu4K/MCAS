@@ -37,6 +37,7 @@ namespace Ui{
         void clearData() override;
 
         void createCustomMenu() override;
+        void retranslateCustomMenu() override;
 
         Models::InstructionModel *model;
         InstructionEditorWidget widget;

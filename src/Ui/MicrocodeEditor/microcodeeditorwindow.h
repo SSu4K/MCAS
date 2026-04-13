@@ -41,6 +41,7 @@ namespace Ui{
         void clearData() override;
 
         void createCustomMenu() override;
+        void retranslateCustomMenu() override;
 
     private:
         Models::MicrocodeModel* microcodeModel;
@@ -49,6 +50,9 @@ namespace Ui{
         QTabWidget tabWidget;
         MicrocodeEditorWidget microcodeEditor;
         JumpTableEditorWidget jumpTableEditor;
+
+        int microcodeTabIndex;
+        int jumpTableTabIndex;
     };
 
 }
