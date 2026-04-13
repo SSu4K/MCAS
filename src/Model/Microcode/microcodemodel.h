@@ -30,7 +30,6 @@ class MODELLIB_API MicrocodeModel : public TextTableModel {
         QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
         bool setData(const QModelIndex& index, const QVariant& value, int role) override;
         Qt::ItemFlags flags(const QModelIndex& index) const override;
-        bool insertInstruction(int row, const Microcode::Instruction& instr = Microcode::Instruction{});
         void clear();
 
     private:

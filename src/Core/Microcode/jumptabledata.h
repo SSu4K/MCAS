@@ -15,6 +15,8 @@ class JumpTableData
 public:
     QList<JumpTableEntry> entries;
     JumpTableData();
+
+    void eraseAll();
 };
 
 }

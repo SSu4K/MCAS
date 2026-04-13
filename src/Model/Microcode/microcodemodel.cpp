@@ -69,24 +69,6 @@ QVariant MicrocodeModel::headerData(int section, Qt::Orientation orientation, in
     return {};
 }
 
-bool MicrocodeModel::insertInstruction(int row, const Instruction& instr) {
-    // Clamp row to valid range
-    if (row < 0 || row > microcodeData->instructions.size())
-        row = microcodeData->instructions.size();
-
-    beginInsertRows(QModelIndex(), row, row);
-    microcodeData->instructions.insert(row, instr);
-    endInsertRows();
-
-    // Reassign sequential string addresses after insertion
-    for (int i = 0; i < microcodeData->instructions.size(); ++i) {
-        QString addr = HexInt::intToString(i);
-        microcodeData->instructions[i].setFieldValue(InstructionField::address, addr);
-    }
-
-    return true;
-}
-
 void MicrocodeModel::clear(){
     beginResetModel();
     microcodeData->eraseAll();

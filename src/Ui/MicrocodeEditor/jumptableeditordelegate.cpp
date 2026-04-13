@@ -51,21 +51,5 @@ bool JumpTableEditorDelegate::eventFilter(QObject* watched, QEvent* event)
         }
     };
 
-    const bool shift = keyEvent->modifiers() & Qt::ShiftModifier;
-
-    switch (keyEvent->key()) {
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
-        if (shift) {
-            if (auto* jumpTableModel = qobject_cast<JumpTableModel*>(model)) {
-                jumpTableModel->insertEntry(current.row() + 1, JumpTableEntry());
-                commitCloseAndEdit(model->index(current.row() + 1, current.column()));
-            }
-        } else {
-            commitCloseAndEdit(model->index(current.row() + 1, current.column()));
-        }
-        return true;
-    }
-
     return QStyledItemDelegate::eventFilter(watched, event);
 }

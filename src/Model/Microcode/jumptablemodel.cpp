@@ -90,20 +90,8 @@ QStringList JumpTableModel::headers() const {
 
 void JumpTableModel::clear(){
     beginResetModel();
-    jumpTableData->entries = {JumpTableEntry()};
+    jumpTableData->eraseAll();
     endResetModel();
-}
-
-bool JumpTableModel::insertEntry(int row, const JumpTableEntry& entry) {
-
-    if (row < 0 || row > jumpTableData->entries.size())
-        row = jumpTableData->entries.size();
-
-    beginInsertRows(QModelIndex(), row, row);
-    jumpTableData->entries.insert(row, entry);
-    endInsertRows();
-
-    return true;
 }
 
 void JumpTableModel::populateFromStringMatrix(const QList<QList<QString>> &rows){

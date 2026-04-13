@@ -29,7 +29,6 @@ namespace Models{
         QVector<Microcode::JumpTableEntry> entries() const;
         QStringList headers() const;
         void clear();
-        bool insertEntry(int row, const Microcode::JumpTableEntry& entry);
 
     private:
         Microcode::JumpTableData *jumpTableData;

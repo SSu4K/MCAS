@@ -91,17 +91,6 @@ bool MicrocodeEditorDelegate::eventFilter(QObject* watched, QEvent* event)
 
     switch (keyEvent->key()) {
     case Qt::Key_Return:
-    case Qt::Key_Enter:
-        if (shift) {
-            if (auto* microModel = qobject_cast<MicrocodeModel*>(model)) {
-                microModel->insertInstruction(current.row() + 1);
-                commitCloseAndEdit(model->index(current.row() + 1, current.column()));
-            }
-        } else {
-            commitCloseAndEdit(model->index(current.row() + 1, current.column()));
-        }
-        return true;
-
     case Qt::Key_Tab:
     case Qt::Key_Right:
         commitCloseAndEdit(model->index(current.row(), current.column() + 1));
