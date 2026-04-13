@@ -1,6 +1,8 @@
 #ifndef BREAKPOINTWIDGET_H
 #define BREAKPOINTWIDGET_H
 
+#include "uiLib_export.h"
+
 #include <QWidget>
 #include <QTableView>
 #include <QPushButton>
@@ -10,7 +12,7 @@
 
 namespace Ui {
 
-class BreakpointWidget : public QWidget
+class UILIB_API BreakpointWidget : public QWidget
 {
     Q_OBJECT
 public:

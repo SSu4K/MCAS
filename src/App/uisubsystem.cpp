@@ -9,7 +9,7 @@ UiSubsystem::UiSubsystem(ModelsSubsystem &modelsSubsystem, QObject *parent)
     microcodeEditorWindow(&modelsSubsystem.microcodeModel, &modelsSubsystem.jumpTableModel, &mainWindow),
     memoryEditorWindow(&modelsSubsystem.memoryModel, &mainWindow),
     configWindow(&modelsSubsystem.instructionSetModel, &mainWindow),
-    instructionEditorWindow(&modelsSubsystem.instructionModel, &mainWindow)
+    instructionEditorWindow(&modelsSubsystem.instructionModel, &modelsSubsystem.breakpointsModel, &mainWindow)
 {
     connect(&mainWindow, &MainWindow::openConfigWindow,
             &configWindow, &ConfigWindow::open);

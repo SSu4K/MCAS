@@ -1,4 +1,4 @@
-#include "BreakpointDelegate.h"
+#include "breakpointdelegate.h"
 
 #include <QComboBox>
 #include <QLineEdit>
