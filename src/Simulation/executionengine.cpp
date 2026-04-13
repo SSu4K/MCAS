@@ -287,12 +287,20 @@ bool ExecutionEngine::performMemoryOp(const Microcode::Instruction &mi, Effects 
         return false;
     }
 
-    if(memOp[0] == 'R'){
-        QString memDest = mi.mdest.trimmed().toUpper();
-        return performMemoryRead(addr, memOp, memDest, effects, err);
+    try{
+
+        if(memOp[0] == 'R'){
+            QString memDest = mi.mdest.trimmed().toUpper();
+            return performMemoryRead(addr, memOp, memDest, effects, err);
+        }
+        else if(memOp[0] == 'W'){
+            return performMemoryWrite(addr, memOp, effects, err);
+        }
     }
-    else if(memOp[0] == 'W'){
-        return performMemoryWrite(addr, memOp, effects, err);
+    catch(std::out_of_range &e){
+        err = e.what();
+        qDebug() << "Memory out_of_range access";
+        return false;
     }
 
     err = "Unsupported memory op " + mi.mem;

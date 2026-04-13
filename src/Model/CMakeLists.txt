@@ -1,6 +1,7 @@
 file(GLOB_RECURSE MODEL_SOURCES
     Common/texttablemodel.cpp
     Instruction/instructionmodel.cpp
+    Instruction/breakpointmodel.cpp
     Instruction/instructionsetmodel.cpp
     Memory/memorymodel.cpp
     Microcode/jumptablemodel.cpp
@@ -9,6 +10,7 @@ file(GLOB_RECURSE MODEL_SOURCES
 file(GLOB_RECURSE MODEL_HEADERS
     Common/texttablemodel.h
     Instruction/instructionmodel.h
+    Instruction/breakpointmodel.h
     Instruction/instructionsetmodel.h
     Memory/memorymodel.h
     Microcode/jumptablemodel.h

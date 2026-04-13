@@ -4,7 +4,8 @@ using namespace Models;
 
 ModelsSubsystem::ModelsSubsystem(SimulationSubsystem &simulationSubsystem):
     simulation(simulationSubsystem),
-    instructions(this, (int)simulationSubsystem.machineConfig.instructionMemorySize, 0),
+    instructions(this, (int)simulationSubsystem.machineConfig.instructionMemorySize/4, 0),
+    breakpoints(this, (int)simulationSubsystem.machineConfig.instructionMemorySize/4),
     memoryModel(&simulationSubsystem.editorMachineState),
     instructionSetModel(&simulationSubsystem.instructionSet),
     instructionModel(&simulationSubsystem.editorMachineState,
@@ -12,6 +13,7 @@ ModelsSubsystem::ModelsSubsystem(SimulationSubsystem &simulationSubsystem):
                      &simulationSubsystem.instructionSet,
                      &instructions,
                      nullptr),
+    breakpointsModel(&breakpoints, this),
     microcodeModel(&simulationSubsystem.microcode),
     jumpTableModel(&simulationSubsystem.jumptable)
 {

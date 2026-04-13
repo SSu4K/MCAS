@@ -23,8 +23,6 @@ public:
     const int maxLines;
     quint32 baseAddress;
     explicit InstructionData(QObject *parent = nullptr, int maxLines = 0, quint32 baseAddress = 0);
-
-signals:
 };
 
 } // namespace InstructionEditor
