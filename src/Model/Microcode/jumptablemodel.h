@@ -25,7 +25,6 @@ namespace Models{
         QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
         Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-        void setEntries(const QVector<Microcode::JumpTableEntry>& entries);
         QVector<Microcode::JumpTableEntry> entries() const;
         QStringList headers() const;
         void clear();

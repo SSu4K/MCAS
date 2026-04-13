@@ -118,6 +118,15 @@ void MCASApp::initSettingsSubsystem(){
             &ui.memoryEditorWindow, &MemoryEditorWindow::retranslateUi);
     connect(this, &MCASApp::languageChanged,
             &ui.instructionEditorWindow, &InstructionEditorWindow::retranslateUi);
+    connect(this, &MCASApp::languageChanged,
+            &ui.configWindow, &ConfigWindow::retranslateUi);
+
+    // ensure initial language is correct
+    //settings.setLanguage(settings.language());
+    //emit languageChanged();
+    auto initLanguage = settings.language();
+    qDebug() << "Setting init language:" << initLanguage;
+    loadLanguage(initLanguage);
 }
 
 void MCASApp::initProjectSubsystem(){

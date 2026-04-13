@@ -7,7 +7,6 @@ using namespace Models;
 InstructionEditorWindow::InstructionEditorWindow(InstructionModel *model, QWidget *parent)
     : model(model), widget(model), EditorWindow{parent}
 {
-    // setWindowTitle(windowTitle());
     menuBar()->clear();
     createMenu();
 
@@ -36,6 +35,9 @@ void InstructionEditorWindow::clearData(){
 }
 
 void InstructionEditorWindow::createCustomMenu() {
-    setWindowTitle(windowTitle());
-    return;
+    updateWindowTitle();
+}
+
+void InstructionEditorWindow::retranslateCustomMenu(){
+
 }

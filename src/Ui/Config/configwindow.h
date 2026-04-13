@@ -33,6 +33,7 @@ protected:
     void clearData() override;
 
     void createCustomMenu() override;
+    void retranslateCustomMenu() override;
 
 private:
     Models::InstructionSetModel* instructionSetModel;

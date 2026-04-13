@@ -17,6 +17,7 @@ class SimulationView : public QWidget
 public:
     explicit SimulationView(QWidget *parent = nullptr);
     ~SimulationView();
+    void retranslateUI();
 
 signals:
     void clockClicked();

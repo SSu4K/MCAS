@@ -33,10 +33,27 @@ namespace Ui{
         void clearData() override;
 
         void createCustomMenu() override;
+        void retranslateCustomMenu() override;
 
     private:
         Models::MemoryModel* model;
         MemoryEditorWidget widget;
+
+        // custom menus
+        QMenu* m_editMenu;
+        QMenu* m_viewMenu;
+        QMenu* m_unitSizeMenu;
+
+        QAction* m_selectAllAction;
+        QAction* m_clearAction;
+        QAction* m_randomAction;
+        QAction* m_fillAction;
+
+        QAction* m_byteAction;
+        QAction* m_halfAction;
+        QAction* m_wordAction;
+
+        QActionGroup* m_unitSizeGroup;
     };
 }
 #endif // MEMORYEDITORWINDOW_H

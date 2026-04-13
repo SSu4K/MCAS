@@ -11,7 +11,7 @@ using namespace Models;
 MemoryEditorWindow::MemoryEditorWindow(MemoryModel* model, QWidget *parent)
     : model(model), widget(model), EditorWindow{parent}
 {
-    setWindowTitle(windowTitle());
+    updateWindowTitle();
 
     setCentralWidget(&widget);
 
@@ -41,45 +41,75 @@ void MemoryEditorWindow::clearData(){
     widget.clearData();
 }
 
-void MemoryEditorWindow::createCustomMenu(){
+void MemoryEditorWindow::createCustomMenu()
+{
+    // --- Edit menu ---
+    m_editMenu = menuBar()->addMenu("");
 
-    setWindowTitle(windowTitle());
-    QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
+    m_selectAllAction = m_editMenu->addAction("");
+    m_selectAllAction->setShortcut(QKeySequence("Ctrl+A"));
+    connect(m_selectAllAction, &QAction::triggered, &widget, &MemoryEditorWidget::selectAll);
 
-    editMenu->addAction(tr("&Select All"), QKeySequence("Ctrl+A"), &widget, &MemoryEditorWidget::selectAll);
-    editMenu->addAction(tr("&Clear"), QKeySequence("Ctrl+Del"), &widget, &MemoryEditorWidget::clearSelected);
-    editMenu->addAction(tr("&Random"), QKeySequence("Ctrl+R"), &widget, &MemoryEditorWidget::randomSelected);
-    editMenu->addAction(tr("&Fill..."), QKeySequence("Ctrl+F"), &widget, &MemoryEditorWidget::fillSelected);
+    m_clearAction = m_editMenu->addAction("");
+    m_clearAction->setShortcut(QKeySequence("Ctrl+Del"));
+    connect(m_clearAction, &QAction::triggered, &widget, &MemoryEditorWidget::clearSelected);
 
-    QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
+    m_randomAction = m_editMenu->addAction("");
+    m_randomAction->setShortcut(QKeySequence("Ctrl+R"));
+    connect(m_randomAction, &QAction::triggered, &widget, &MemoryEditorWidget::randomSelected);
 
-    auto unitSizeMenu = viewMenu->addMenu(tr("&Size"));
+    m_fillAction = m_editMenu->addAction("");
+    m_fillAction->setShortcut(QKeySequence("Ctrl+F"));
+    connect(m_fillAction, &QAction::triggered, &widget, &MemoryEditorWidget::fillSelected);
 
-    QAction *byteAction = unitSizeMenu->addAction(tr("&Byte"));
-    QAction *halfAction  = unitSizeMenu->addAction(tr("&Half"));
-    QAction *wordAction   = unitSizeMenu->addAction(tr("&Word"));
+    // --- View menu ---
+    m_viewMenu = menuBar()->addMenu("");
 
-    byteAction->setCheckable(true);
-    halfAction->setCheckable(true);
-    wordAction->setCheckable(true);
+    m_unitSizeMenu = m_viewMenu->addMenu("");
 
-    QActionGroup *group = new QActionGroup(this);
-    group->addAction(byteAction);
-    group->addAction(halfAction);
-    group->addAction(wordAction);
-    group->setExclusive(true);
+    m_byteAction = m_unitSizeMenu->addAction("");
+    m_halfAction = m_unitSizeMenu->addAction("");
+    m_wordAction = m_unitSizeMenu->addAction("");
 
-    connect(viewMenu, &QMenu::aboutToShow, this, [=]() {
+    m_byteAction->setCheckable(true);
+    m_halfAction->setCheckable(true);
+    m_wordAction->setCheckable(true);
+
+    m_unitSizeGroup = new QActionGroup(this);
+    m_unitSizeGroup->addAction(m_byteAction);
+    m_unitSizeGroup->addAction(m_halfAction);
+    m_unitSizeGroup->addAction(m_wordAction);
+    m_unitSizeGroup->setExclusive(true);
+
+    // --- State sync ---
+    connect(m_viewMenu, &QMenu::aboutToShow, this, [this]() {
         switch (model->getUnitSize()) {
-            case MemoryUnitSize::Byte:  byteAction->setChecked(true); break;
-            case MemoryUnitSize::Half:  halfAction->setChecked(true); break;
-            case MemoryUnitSize::Word:  wordAction->setChecked(true); break;
+        case MemoryUnitSize::Byte:  m_byteAction->setChecked(true); break;
+        case MemoryUnitSize::Half:  m_halfAction->setChecked(true); break;
+        case MemoryUnitSize::Word:  m_wordAction->setChecked(true); break;
         }
     });
 
-    connect(group, &QActionGroup::triggered, this, [=](QAction *action) {
-        if (action == byteAction) widget.setUnitSize(MemoryUnitSize::Byte);
-        if (action == halfAction) widget.setUnitSize(MemoryUnitSize::Half);
-        if (action == wordAction) widget.setUnitSize(MemoryUnitSize::Word);
+    connect(m_unitSizeGroup, &QActionGroup::triggered, this, [this](QAction *action) {
+        if (action == m_byteAction) widget.setUnitSize(MemoryUnitSize::Byte);
+        if (action == m_halfAction) widget.setUnitSize(MemoryUnitSize::Half);
+        if (action == m_wordAction) widget.setUnitSize(MemoryUnitSize::Word);
     });
+}
+
+void MemoryEditorWindow::retranslateCustomMenu()
+{
+    m_editMenu->setTitle(tr("&Edit"));
+
+    m_selectAllAction->setText(tr("&Select All"));
+    m_clearAction->setText(tr("&Clear"));
+    m_randomAction->setText(tr("&Random"));
+    m_fillAction->setText(tr("&Fill..."));
+
+    m_viewMenu->setTitle(tr("&View"));
+    m_unitSizeMenu->setTitle(tr("&Size"));
+
+    m_byteAction->setText(tr("&Byte"));
+    m_halfAction->setText(tr("&Half"));
+    m_wordAction->setText(tr("&Word"));
 }

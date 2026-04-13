@@ -14,7 +14,7 @@ MicrocodeEditorWindow::MicrocodeEditorWindow(MicrocodeModel* microcodeModel, Jum
     jumpTableEditor(jumpTableModel),
     EditorWindow(parent)
 {
-    setWindowTitle(windowTitle());
+    updateWindowTitle();
     resize(1000, 600);
 
     menuBar()->clear();
@@ -52,8 +52,13 @@ void MicrocodeEditorWindow::clearData(){
 }
 
 void MicrocodeEditorWindow::createCustomMenu(){
-    setWindowTitle(windowTitle());
-    tabWidget.addTab(&microcodeEditor, tr("Microcode"));
-    tabWidget.addTab(&jumpTableEditor, tr("Jump Tables"));
+    updateWindowTitle();
+    microcodeTabIndex = tabWidget.addTab(&microcodeEditor, "");
+    jumpTableTabIndex = tabWidget.addTab(&jumpTableEditor, "");
     setCentralWidget(&tabWidget);
+}
+
+void MicrocodeEditorWindow::retranslateCustomMenu(){
+    tabWidget.setTabText(microcodeTabIndex, tr("Microcode"));
+    tabWidget.setTabText(jumpTableTabIndex, tr("Jump Tables"));
 }

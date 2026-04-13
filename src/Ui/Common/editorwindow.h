@@ -44,6 +44,17 @@ protected:
     virtual QString fileFilterString() const { return "[Type] Files (*.txt *.mc)"; }
 
     virtual void createCustomMenu() {}
+    virtual void retranslateCustomMenu() {}
+
+    void updateWindowTitle();
+
+    QMenu* m_fileMenu;
+
+    QAction* m_newAction;
+    QAction* m_openAction;
+    QAction* m_saveAction;
+    QAction* m_saveAsAction;
+    QAction* m_exitAction;
 
 public:
     virtual bool serializeToFile(QFile& filePath) const {return true;}
@@ -51,7 +62,7 @@ public:
     virtual void clearData() {}
 
 protected:
-    QString m_currentFilePath;
+    QString m_currentFilePath = "";
 };
 
 #endif // EDITORWINDOW_H

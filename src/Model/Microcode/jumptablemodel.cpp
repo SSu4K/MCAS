@@ -74,12 +74,6 @@ Qt::ItemFlags JumpTableModel::flags(const QModelIndex& index) const {
     return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
 }
 
-void JumpTableModel::setEntries(const QVector<JumpTableEntry>& entries) {
-    beginResetModel();
-    jumpTableData->entries = entries;
-    endResetModel();
-}
-
 QVector<JumpTableEntry> JumpTableModel::entries() const {
     return jumpTableData->entries;
 }
@@ -95,18 +89,24 @@ void JumpTableModel::clear(){
 }
 
 void JumpTableModel::populateFromStringMatrix(const QList<QList<QString>> &rows){
+    beginResetModel();
     clear();
     QList<JumpTableEntry> entries = {};
-    for(auto row: rows){
+    for(size_t row = 0; row < rows.size(); row++){
         JumpTableEntry entry;
         entry.targets = {};
-        entry.opcode = row[0];
+        entry.opcode = rows[row][0];
         for(qsizetype i = 1; i < columnCount(); i++){
-            entry.targets.append(row[i]);
+            entry.targets.append(rows[row][i]);
         }
-        entries.append(entry);
+        jumpTableData->entries[row] = entry;
     }
-    setEntries(entries);
+
+    for(size_t row = 0; row < jumpTableData->entries.size(); row++){
+        qDebug() << jumpTableData->entries[row].opcode;
+    }
+
+    endResetModel();
 }
 
 bool JumpTableModel::isRowEmpty(const qsizetype row) const{

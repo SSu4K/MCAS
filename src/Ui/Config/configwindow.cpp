@@ -11,7 +11,6 @@ ConfigWindow::ConfigWindow(InstructionSetModel* instructionSetModel, QWidget* pa
     instructionSetEditorWidget(instructionSetModel, this),
     EditorWindow(parent)
 {
-    setWindowTitle(windowTitle());
     resize(1000, 600);
 
     menuBar()->clear();
@@ -44,7 +43,10 @@ void ConfigWindow::clearData(){
 }
 
 void ConfigWindow::createCustomMenu(){
-    setWindowTitle(windowTitle());
+    updateWindowTitle();
     setCentralWidget(&instructionSetEditorWidget);
-    // widget here
+}
+
+void ConfigWindow::retranslateCustomMenu(){
+   // pass
 }

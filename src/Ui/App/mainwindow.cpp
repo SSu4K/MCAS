@@ -49,77 +49,95 @@ void MainWindow::open()
     this->activateWindow();
 }
 
-void MainWindow::createFileMenu(){
-    QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
+void MainWindow::createFileMenu()
+{
+    m_fileMenu = menuBar()->addMenu("");
 
-    fileMenu->addAction(tr("&New Project"), QKeySequence::New, this, &MainWindow::newFile);
-    fileMenu->addAction(tr("&Open Project"), QKeySequence::Open, this, &MainWindow::openFile);
+    m_newProjectAction = m_fileMenu->addAction("");
+    m_newProjectAction->setShortcut(QKeySequence::New);
+    connect(m_newProjectAction, &QAction::triggered, this, &MainWindow::newFile);
 
-    fileMenu->addSeparator();
-    fileMenu->addAction(tr("&Save Project"), QKeySequence::Save, this, &MainWindow::saveFile);
-    fileMenu->addAction(tr("Save Project &As..."), QKeySequence::SaveAs, this, &MainWindow::saveFileAs);
+    m_openProjectAction = m_fileMenu->addAction("");
+    m_openProjectAction->setShortcut(QKeySequence::Open);
+    connect(m_openProjectAction, &QAction::triggered, this, &MainWindow::openFile);
+
+    m_fileMenu->addSeparator();
+
+    m_saveProjectAction = m_fileMenu->addAction("");
+    m_saveProjectAction->setShortcut(QKeySequence::Save);
+    connect(m_saveProjectAction, &QAction::triggered, this, &MainWindow::saveFile);
+
+    m_saveAsProjectAction = m_fileMenu->addAction("");
+    m_saveAsProjectAction->setShortcut(QKeySequence::SaveAs);
+    connect(m_saveAsProjectAction, &QAction::triggered, this, &MainWindow::saveFileAs);
 }
 
-void MainWindow::createToolsMenu(){
-    QMenu *toolsMenu = menuBar()->addMenu(tr("&Tools"));
+void MainWindow::createToolsMenu()
+{
+    m_toolsMenu = menuBar()->addMenu("");
 
-    QAction *openConfigWindowAction = new QAction(tr("Configure"), this);
-    toolsMenu->addAction(openConfigWindowAction);
-    connect(openConfigWindowAction, &QAction::triggered, this, &MainWindow::openConfigWindow);
+    m_configAction = m_toolsMenu->addAction("");
+    connect(m_configAction, &QAction::triggered, this, &MainWindow::openConfigWindow);
 
-    QAction *openMicrocodeEditorAction = new QAction(tr("Microcode Editor"), this);
-    toolsMenu->addAction(openMicrocodeEditorAction);
-    connect(openMicrocodeEditorAction, &QAction::triggered, this, &MainWindow::openMicrocodeEditorWindow);
+    m_microcodeEditorAction = m_toolsMenu->addAction("");
+    connect(m_microcodeEditorAction, &QAction::triggered, this, &MainWindow::openMicrocodeEditorWindow);
 
-    QAction *openMemoryEditorAction = new QAction(tr("Memory Editor"), this);
-    toolsMenu->addAction(openMemoryEditorAction);
-    connect(openMemoryEditorAction, &QAction::triggered, this, &MainWindow::openMemoryEditorWindow);
+    m_memoryEditorAction = m_toolsMenu->addAction("");
+    connect(m_memoryEditorAction, &QAction::triggered, this, &MainWindow::openMemoryEditorWindow);
 
-    QAction *openInstructionEditorAction = new QAction(tr("Instruction Editor"), this);
-    toolsMenu->addAction(openInstructionEditorAction);
-    connect(openInstructionEditorAction, &QAction::triggered, this, &MainWindow::openInstructionEditorWindow);
+    m_instructionEditorAction = m_toolsMenu->addAction("");
+    connect(m_instructionEditorAction, &QAction::triggered, this, &MainWindow::openInstructionEditorWindow);
 }
 
 void MainWindow::createViewMenu()
 {
-    auto viewMenu = menuBar()->addMenu(tr("&View"));
-    auto themeMenu = viewMenu->addMenu(tr("Theme"));
+    m_viewMenu = menuBar()->addMenu("");
+    m_themeMenu = m_viewMenu->addMenu("");
 
-    QAction *systemAct = themeMenu->addAction(tr("System Default"));
-    QAction *lightAct  = themeMenu->addAction(tr("Light"));
-    QAction *darkAct   = themeMenu->addAction(tr("Dark"));
+    m_systemThemeAction = m_themeMenu->addAction("");
+    m_lightThemeAction  = m_themeMenu->addAction("");
+    m_darkThemeAction   = m_themeMenu->addAction("");
 
-    systemAct->setCheckable(true);
-    lightAct->setCheckable(true);
-    darkAct->setCheckable(true);
+    m_systemThemeAction->setCheckable(true);
+    m_lightThemeAction->setCheckable(true);
+    m_darkThemeAction->setCheckable(true);
 
-    QActionGroup *group = new QActionGroup(this);
-    group->addAction(systemAct);
-    group->addAction(lightAct);
-    group->addAction(darkAct);
-    group->setExclusive(true);
+    m_themeGroup = new QActionGroup(this);
+    m_themeGroup->addAction(m_systemThemeAction);
+    m_themeGroup->addAction(m_lightThemeAction);
+    m_themeGroup->addAction(m_darkThemeAction);
+    m_themeGroup->setExclusive(true);
 
-    connect(group, &QActionGroup::triggered, this, [=](QAction *action) {
-        if (action == systemAct)    emit setTheme("System");
-        if (action == lightAct)     emit setTheme("Light");
-        if (action == darkAct)      emit setTheme("Dark");
+    connect(m_themeGroup, &QActionGroup::triggered, this, [this](QAction *action) {
+        if (action == m_systemThemeAction) emit setTheme("System");
+        if (action == m_lightThemeAction)  emit setTheme("Light");
+        if (action == m_darkThemeAction)   emit setTheme("Dark");
     });
 
-    QMenu* langMenu = viewMenu->addMenu(tr("Language"));
+    // --- Language ---
+    m_languageMenu = m_viewMenu->addMenu("");
 
-    QActionGroup* langGroup = new QActionGroup(this);
-    QAction* enAction = langMenu->addAction(tr("English"));
-    enAction->setCheckable(true);
-    QAction* plAction = langMenu->addAction(tr("Polish"));
-    plAction->setCheckable(true);
+    m_langGroup = new QActionGroup(this);
 
-    langGroup->addAction(enAction);
-    langGroup->addAction(plAction);
-    langGroup->setExclusive(true);
+    m_enAction = m_languageMenu->addAction("");
+    m_enAction->setCheckable(true);
 
-    connect(langGroup, &QActionGroup::triggered, this, [=](QAction *action) {
-        if (action == enAction)    emit setLanguage("en");
-        if (action == plAction)     emit setLanguage("pl");
+    m_plAction = m_languageMenu->addAction("");
+    m_plAction->setCheckable(true);
+
+    m_langGroup->addAction(m_enAction);
+    m_langGroup->addAction(m_plAction);
+    m_langGroup->setExclusive(true);
+
+    connect(m_langGroup, &QActionGroup::triggered, this, [this](QAction *action) {
+        if (action == m_enAction){
+            qDebug() << "Emited setLanguage: en";
+            emit setLanguage("en");
+        }
+        if (action == m_plAction){
+            qDebug() << "Emited setLanguage: pl";
+            emit setLanguage("pl");
+        }
     });
 }
 
@@ -129,10 +147,38 @@ void MainWindow::createMenu(){
     createViewMenu();
 }
 
-void MainWindow::retranslateUi(){
-    setWindowTitle(tr("MCAS Main Window"));
-    menuBar()->clear();
-    createMenu();
+void MainWindow::retranslateUi()
+{
+    setWindowTitle(tr("MCAS")); // or whatever is correct
+
+    // --- File ---
+    m_fileMenu->setTitle(tr("&File"));
+    m_newProjectAction->setText(tr("&New Project"));
+    m_openProjectAction->setText(tr("&Open Project"));
+    m_saveProjectAction->setText(tr("&Save Project"));
+    m_saveAsProjectAction->setText(tr("Save Project &As..."));
+
+    // --- Tools ---
+    m_toolsMenu->setTitle(tr("&Tools"));
+    m_configAction->setText(tr("Configure"));
+    m_microcodeEditorAction->setText(tr("Microcode Editor"));
+    m_memoryEditorAction->setText(tr("Memory Editor"));
+    m_instructionEditorAction->setText(tr("Instruction Editor"));
+
+    // --- View ---
+    m_viewMenu->setTitle(tr("&View"));
+    m_themeMenu->setTitle(tr("Theme"));
+
+    m_systemThemeAction->setText(tr("System Default"));
+    m_lightThemeAction->setText(tr("Light"));
+    m_darkThemeAction->setText(tr("Dark"));
+
+    m_languageMenu->setTitle(tr("Language"));
+    m_enAction->setText(tr("English"));
+    m_plAction->setText(tr("Polish"));
+
+    // propagate
+    simView->retranslateUI();
 }
 
 void MainWindow::onSimulationHalted(const QString &reason)
@@ -150,9 +196,6 @@ void MainWindow::onSimulationHalted(const QString &reason)
 
 void MainWindow::newFile()
 {
-    if (!maybeSave())
-        return;
-
     m_currentFilePath.clear();
     setWindowTitle(windowTitle() + " - [New]");
 
@@ -161,8 +204,6 @@ void MainWindow::newFile()
 
 void MainWindow::openFile()
 {
-    if (!maybeSave())
-        return;
 
     QString filePath = QFileDialog::getOpenFileName(this, "Open Project File",
                                                     "", "*.txt *.proj");
@@ -217,10 +258,5 @@ void MainWindow::saveFileAs()
         m_currentFilePath = filePath;
         setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
     }
-}
-
-bool MainWindow::maybeSave()
-{
-    return true; // simplify for now
 }
 

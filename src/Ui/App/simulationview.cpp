@@ -64,6 +64,10 @@ SimulationView::SimulationView(QWidget *parent) :
             this, &SimulationView::stopClicked);
 }
 
+void SimulationView::retranslateUI(){
+    ui->retranslateUi(this);
+}
+
 SimulationView::~SimulationView()
 {
     delete ui;

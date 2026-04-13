@@ -7,42 +7,77 @@ EditorWindow::EditorWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     resize(1000, 600);
+    m_currentFilePath = "";
 
     // connect(AppContext::instance(), &AppContext::languageChanged,
     //         this, &EditorWindow::retranslateUi);
 
     // Move to chidren
     createMenu();
-    setWindowTitle(windowTitle());
+    updateWindowTitle();
 }
 
 void EditorWindow::createMenu()
 {
-    QMenu* fileMenu = menuBar()->addMenu(tr(FILE_MENU_TEXT));
+    m_fileMenu = menuBar()->addMenu("");
 
-    fileMenu->addAction(tr(NEW_TEXT), QKeySequence::New, this, &EditorWindow::newFile);
-    fileMenu->addAction(tr(OPEN_TEXT), QKeySequence::Open, this, &EditorWindow::openFile);
+    m_newAction = m_fileMenu->addAction("");
+    m_newAction->setShortcut(QKeySequence::New);
+    connect(m_newAction, &QAction::triggered, this, &EditorWindow::newFile);
 
-    fileMenu->addSeparator();
-    fileMenu->addAction(tr(SAVE_TEXT), QKeySequence::Save, this, &EditorWindow::saveFile);
-    fileMenu->addAction(tr(SAVE_AS_TEXT), QKeySequence::SaveAs, this, &EditorWindow::saveFileAs);
+    m_openAction = m_fileMenu->addAction("");
+    m_openAction->setShortcut(QKeySequence::Open);
+    connect(m_openAction, &QAction::triggered, this, &EditorWindow::openFile);
 
-    fileMenu->addSeparator();
-    fileMenu->addAction(tr(EXIT_TEXT), QKeySequence::Quit, this, &EditorWindow::exitApp);
+    m_fileMenu->addSeparator();
+
+    m_saveAction = m_fileMenu->addAction("");
+    m_saveAction->setShortcut(QKeySequence::Save);
+    connect(m_saveAction, &QAction::triggered, this, &EditorWindow::saveFile);
+
+    m_saveAsAction = m_fileMenu->addAction("");
+    m_saveAsAction->setShortcut(QKeySequence::SaveAs);
+    connect(m_saveAsAction, &QAction::triggered, this, &EditorWindow::saveFileAs);
+
+    m_fileMenu->addSeparator();
+
+    m_exitAction = m_fileMenu->addAction("");
+    m_exitAction->setShortcut(QKeySequence::Quit);
+    connect(m_exitAction, &QAction::triggered, this, &EditorWindow::exitApp);
 
     createCustomMenu();
 }
 
 void EditorWindow::retranslateUi(){
-    menuBar()->clear();
-    createMenu();
+    updateWindowTitle();
+
+    m_fileMenu->setTitle(tr(FILE_MENU_TEXT));
+
+    m_newAction->setText(tr(NEW_TEXT));
+    m_openAction->setText(tr(OPEN_TEXT));
+    m_saveAction->setText(tr(SAVE_TEXT));
+    m_saveAsAction->setText(tr(SAVE_AS_TEXT));
+    m_exitAction->setText(tr(EXIT_TEXT));
+    retranslateCustomMenu();
+}
+
+void EditorWindow::updateWindowTitle(){
+    if(m_currentFilePath.isEmpty()){
+        setWindowTitle(windowTitle() + " - [" + tr("New") + "]");
+    }
+    else if(!QFileInfo::exists(m_currentFilePath)){
+        setWindowTitle(windowTitle() + " - [" + tr("New") + "]");
+    }
+    else{
+        setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(m_currentFilePath).fileName()));
+    }
 }
 
 void EditorWindow::newFile()
 {
     clearData();
     m_currentFilePath.clear();
-    setWindowTitle(windowTitle() + " - [New]");
+    updateWindowTitle();
 }
 
 bool EditorWindow::openFileFromPath(const QString &path){
@@ -60,7 +95,7 @@ bool EditorWindow::openFileFromPath(const QString &path){
         if(path != m_currentFilePath){
             emit fileChanged(path);
             m_currentFilePath = path;
-            setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(path).fileName()));
+            updateWindowTitle();
         }
         return true;
     }
@@ -123,7 +158,6 @@ void EditorWindow::saveFileAs()
 
 void EditorWindow::exitApp()
 {
-    saveFile();
     close();
 }
 
