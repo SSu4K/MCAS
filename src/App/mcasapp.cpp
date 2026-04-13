@@ -118,6 +118,8 @@ void MCASApp::initSettingsSubsystem(){
             &ui.memoryEditorWindow, &MemoryEditorWindow::retranslateUi);
     connect(this, &MCASApp::languageChanged,
             &ui.instructionEditorWindow, &InstructionEditorWindow::retranslateUi);
+    connect(this, &MCASApp::languageChanged,
+            &ui.configWindow, &ConfigWindow::retranslateUi);
 }
 
 void MCASApp::initProjectSubsystem(){

@@ -123,7 +123,6 @@ void EditorWindow::saveFileAs()
 
 void EditorWindow::exitApp()
 {
-    saveFile();
     close();
 }
 

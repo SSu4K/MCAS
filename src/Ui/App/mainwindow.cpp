@@ -133,6 +133,7 @@ void MainWindow::retranslateUi(){
     setWindowTitle(tr("MCAS Main Window"));
     menuBar()->clear();
     createMenu();
+    simView->retranslateUI();
 }
 
 void MainWindow::onSimulationHalted(const QString &reason)
