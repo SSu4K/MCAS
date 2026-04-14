@@ -62,7 +62,7 @@ void TestInstructions::JTypeEncode(){
 }
 
 void TestInstructions::cleanupTestCase() {
-    qDebug() << "Finished tests.";
+    qDebug() << "Finished Instruction tests.";
 }
 
 //QTEST_MAIN(TestInstructions)

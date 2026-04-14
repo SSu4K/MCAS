@@ -29,7 +29,6 @@ void HexIntDelegate::setEditorData(QWidget* editor, const QModelIndex& index) co
 
     if (data.typeId() == QMetaType::UInt) {
         quint32 v = data.toUInt();
-        qDebug() << "Editor data as int:" << v;
         QString s = HexInt::intToString(v, false, m_precision);
 
         line->setText(s);

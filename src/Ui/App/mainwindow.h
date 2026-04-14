@@ -78,6 +78,7 @@ private:
     QAction* m_systemThemeAction;
     QAction* m_lightThemeAction;
     QAction* m_darkThemeAction;
+    QAction* m_pinkThemeAction;
     QActionGroup* m_themeGroup;
 
     // Language actions

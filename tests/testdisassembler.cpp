@@ -25,7 +25,7 @@ TestDisassembler::TestDisassembler(QObject* parent)
 {}
 
 void TestDisassembler::initTestCase() {
-    qDebug() << "Starting Instruction disassembler tests...";
+    qDebug() << "Starting Disassembler tests...";
 }
 
 void TestDisassembler::RType_Done() {
@@ -201,7 +201,7 @@ void TestDisassembler::JType_Done() {
 }
 
 void TestDisassembler::cleanupTestCase() {
-    qDebug() << "Finished Instruction disassembler tests.";
+    qDebug() << "Finished Disassembler tests.";
 }
 
 #include "testdisassembler.moc"

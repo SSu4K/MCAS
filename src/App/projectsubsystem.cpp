@@ -7,10 +7,7 @@ static const QString INSTRUCTIONS_KEY       = "InstructionMemory";
 
 ProjectSubsystem::ProjectSubsystem(ModelsSubsystem& mod,
                                    QObject* parent)
-    : QObject(parent), models(mod), manifest()
-{
-    qDebug() << "Init project subsystem!";
-}
+    : QObject(parent), models(mod), manifest(){}
 
 bool ProjectSubsystem::parseProjectFile(QFile &projectFile, QStringList& errors)
 {
@@ -21,8 +18,6 @@ bool ProjectSubsystem::parseProjectFile(QFile &projectFile, QStringList& errors)
 
     newProject();
     currentProject = projectFilename;
-
-    qDebug() << "Current project: " << currentProject;
 
     while (!in.atEnd()) {
         const QString line = in.readLine().trimmed();
@@ -82,11 +77,6 @@ bool ProjectSubsystem::loadProject(QFile &projectFile)
     emit loadMicrocodeFile(manifest.microcodePath);
     emit loadMemoryFile(manifest.dataMemoryPath);
     emit loadInstructionFile(manifest.instructionMemoryPath);
-
-    qDebug() << manifest.instructionSetPath;
-    qDebug() << manifest.microcodePath;
-    qDebug() << manifest.dataMemoryPath;
-    qDebug() << manifest.instructionMemoryPath;
 
     emit projectLoaded();
     return true;

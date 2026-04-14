@@ -542,7 +542,6 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
     for(size_t i = 0; i < m_breakpoints.breakpoints.size(); i++){
         const auto &breakpoint =  m_breakpoints.breakpoints[i];
         if(!breakpoint.enabled) continue;
-        qDebug() << (int)breakpoint.type << breakpoint.value;
         if(breakpoint.type == BreakpointEditor::BreakpointType::PC){
             if(m_state.getPC() == breakpoint.value){
                 err = QString("Reached breakpoint #%1").arg(i+1);

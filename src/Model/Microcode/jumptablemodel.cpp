@@ -102,10 +102,6 @@ void JumpTableModel::populateFromStringMatrix(const QList<QList<QString>> &rows)
         jumpTableData->entries[row] = entry;
     }
 
-    for(size_t row = 0; row < jumpTableData->entries.size(); row++){
-        qDebug() << jumpTableData->entries[row].opcode;
-    }
-
     endResetModel();
 }
 

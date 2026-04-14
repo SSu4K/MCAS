@@ -22,7 +22,7 @@ TestAssembler::TestAssembler(QObject* parent)
 {}
 
 void TestAssembler::initTestCase() {
-    qDebug() << "Starting Instruction assembler tests...";
+    qDebug() << "Starting Assembler tests...";
 }
 
 void successAssemblyStatusCase(QString instr, Assembler &assembler){
@@ -342,7 +342,7 @@ void TestAssembler::JType_Jumps(){
 }
 
 void TestAssembler::cleanupTestCase() {
-    qDebug() << "Finished Instruction assembler tests.";
+    qDebug() << "Finished Assembler tests.";
 }
 
 //QTEST_MAIN(TestInstructions)
