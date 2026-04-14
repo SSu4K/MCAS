@@ -97,6 +97,7 @@ void MainWindow::createViewMenu()
     m_systemThemeAction = m_themeMenu->addAction("");
     m_lightThemeAction  = m_themeMenu->addAction("");
     m_darkThemeAction   = m_themeMenu->addAction("");
+    m_pinkThemeAction   = m_themeMenu->addAction("");
 
     m_systemThemeAction->setCheckable(true);
     m_lightThemeAction->setCheckable(true);
@@ -106,12 +107,14 @@ void MainWindow::createViewMenu()
     m_themeGroup->addAction(m_systemThemeAction);
     m_themeGroup->addAction(m_lightThemeAction);
     m_themeGroup->addAction(m_darkThemeAction);
+    m_themeGroup->addAction(m_pinkThemeAction);
     m_themeGroup->setExclusive(true);
 
     connect(m_themeGroup, &QActionGroup::triggered, this, [this](QAction *action) {
         if (action == m_systemThemeAction) emit setTheme("System");
         if (action == m_lightThemeAction)  emit setTheme("Light");
         if (action == m_darkThemeAction)   emit setTheme("Dark");
+        if (action == m_pinkThemeAction)   emit setTheme("Pink");
     });
 
     // --- Language ---
@@ -170,6 +173,7 @@ void MainWindow::retranslateUi()
     m_systemThemeAction->setText(tr("System Default"));
     m_lightThemeAction->setText(tr("Light"));
     m_darkThemeAction->setText(tr("Dark"));
+    m_pinkThemeAction->setText(tr("Pink"));
 
     m_languageMenu->setTitle(tr("Language"));
     m_enAction->setText(tr("English"));

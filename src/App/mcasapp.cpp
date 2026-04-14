@@ -41,6 +41,25 @@ static QPalette getLightPalette(){
     return palette;
 }
 
+static QPalette getPinkPalette(){
+    QPalette palette;
+
+    palette.setColor(QPalette::Window, QColor(255, 245, 248));
+    palette.setColor(QPalette::Base, QColor(255, 250, 252));
+    palette.setColor(QPalette::AlternateBase, QColor(252, 235, 240));
+    palette.setColor(QPalette::WindowText, QColor(60, 60, 60));
+    palette.setColor(QPalette::Text, QColor(50, 50, 50));
+    palette.setColor(QPalette::ButtonText, QColor(60, 60, 60));
+    palette.setColor(QPalette::Button, QColor(255, 228, 235));
+    palette.setColor(QPalette::BrightText, QColor(220, 80, 120));
+    palette.setColor(QPalette::ToolTipBase, QColor(255, 240, 245));
+    palette.setColor(QPalette::ToolTipText, QColor(60, 60, 60));
+    palette.setColor(QPalette::Highlight, QColor(255, 150, 190));
+    palette.setColor(QPalette::Button, QColor(255, 210, 225));
+
+    return palette;
+}
+
 MCASApp::MCASApp(int &argc, char **argv)
     : settings(), simulation(), models(simulation), project(models), ui(models),
     QApplication(argc, argv)
@@ -59,6 +78,9 @@ void MCASApp::themeChanged(const QString& theme){
     }
     else if (theme == "Dark"){
         setPalette(getDarkPalette());
+    }
+    else if (theme == "Pink"){
+        setPalette(getPinkPalette());
     }
 }
 
