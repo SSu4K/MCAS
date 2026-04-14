@@ -18,6 +18,7 @@ class UILIB_API BreakpointWidget : public QWidget
 public:
     explicit BreakpointWidget(Models::BreakpointModel* model,
                               QWidget* parent = nullptr);
+    void retranslateUi();
 
 private:
     Models::BreakpointModel* model;
@@ -31,6 +32,7 @@ private:
 
     void setupUi();
     void setupConnections();
+
 };
 
 } // namespace Ui

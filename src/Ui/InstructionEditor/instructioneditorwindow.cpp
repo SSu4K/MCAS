@@ -55,4 +55,6 @@ void InstructionEditorWindow::createCustomMenu() {
 void InstructionEditorWindow::retranslateCustomMenu(){
     tabWidget.setTabText(instructionTabIndex, tr("Instructions"));
     tabWidget.setTabText(breakpointTabIndex, tr("Breakpoints"));
+
+    breakpointEditor.retranslateUi();
 }

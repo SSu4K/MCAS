@@ -38,10 +38,6 @@ void BreakpointWidget::setupUi()
     tableView.setItemDelegateForColumn(1, enumDelegate);
     tableView.setItemDelegateForColumn(2, hexDelegate);
 
-    addButton.setText(tr("Add"));
-    removeButton.setText(tr("Remove"));
-    clearButton.setText(tr("Clear"));
-
     auto* buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(&addButton);
     buttonLayout->addWidget(&removeButton);
@@ -53,6 +49,12 @@ void BreakpointWidget::setupUi()
     layout->addLayout(buttonLayout);
 
     setLayout(layout);
+}
+
+void BreakpointWidget::retranslateUi(){
+    addButton.setText(tr("Add"));
+    removeButton.setText(tr("Remove"));
+    clearButton.setText(tr("Clear"));
 }
 
 void BreakpointWidget::setupConnections()

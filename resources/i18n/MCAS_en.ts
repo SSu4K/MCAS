@@ -410,6 +410,24 @@
     </message>
 </context>
 <context>
+    <name>Ui::BreakpointWidget</name>
+    <message>
+        <location filename="../../src/Ui/InstructionEditor/breakpointwidget.cpp" line="41"/>
+        <source>Add</source>
+        <translation>Add</translation>
+    </message>
+    <message>
+        <location filename="../../src/Ui/InstructionEditor/breakpointwidget.cpp" line="42"/>
+        <source>Remove</source>
+        <translation>Remove</translation>
+    </message>
+    <message>
+        <location filename="../../src/Ui/InstructionEditor/breakpointwidget.cpp" line="43"/>
+        <source>Clear</source>
+        <translation>Clear</translation>
+    </message>
+</context>
+<context>
     <name>Ui::ConfigWindow</name>
     <message>
         <location filename="../../src/Ui/Config/configwindow.h" line="27"/>
@@ -443,19 +461,29 @@
 <context>
     <name>Ui::InstructionEditorWindow</name>
     <message>
-        <location filename="../../src/Ui/InstructionEditor/instructioneditorwindow.h" line="31"/>
+        <location filename="../../src/Ui/InstructionEditor/instructioneditorwindow.h" line="33"/>
         <source>Instruction Editor</source>
         <translation>Instruction Editor</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/InstructionEditor/instructioneditorwindow.h" line="32"/>
+        <location filename="../../src/Ui/InstructionEditor/instructioneditorwindow.h" line="34"/>
         <source>Open Instruction File</source>
         <translation>Open Instruction File</translation>
     </message>
     <message>
-        <location filename="../../src/Ui/InstructionEditor/instructioneditorwindow.h" line="33"/>
+        <location filename="../../src/Ui/InstructionEditor/instructioneditorwindow.h" line="35"/>
         <source>Save Instruction File As</source>
         <translation>Save Instruction File As</translation>
+    </message>
+    <message>
+        <location filename="../../src/Ui/InstructionEditor/instructioneditorwindow.cpp" line="56"/>
+        <source>Instructions</source>
+        <translation>Instructions</translation>
+    </message>
+    <message>
+        <location filename="../../src/Ui/InstructionEditor/instructioneditorwindow.cpp" line="57"/>
+        <source>Breakpoints</source>
+        <translation>Breakpoints</translation>
     </message>
 </context>
 <context>

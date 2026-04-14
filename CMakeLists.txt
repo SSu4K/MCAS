@@ -14,7 +14,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets LinguistTools Test)
 add_library(project_pch INTERFACE)
 target_precompile_headers(project_pch INTERFACE src/pch.h)
 
-set(APP_VERSION "v0.1.0-prealpha")
+set(APP_VERSION "v1.0.0-beta")
 add_compile_definitions(
     APP_VERSION="${APP_VERSION}"
     BUILD_TYPE="$<CONFIG>"
