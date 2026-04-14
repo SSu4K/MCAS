@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(MCAS VERSION 0.1 LANGUAGES CXX)
+project(MCAS VERSION 1.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,7 +14,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets LinguistTools Test)
 add_library(project_pch INTERFACE)
 target_precompile_headers(project_pch INTERFACE src/pch.h)
 
-set(APP_VERSION "v1.0.0-beta")
+set(APP_VERSION "v1.0.1-beta")
 add_compile_definitions(
     APP_VERSION="${APP_VERSION}"
     BUILD_TYPE="$<CONFIG>"

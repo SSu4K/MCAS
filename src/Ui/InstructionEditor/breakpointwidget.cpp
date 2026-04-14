@@ -1,7 +1,5 @@
 #include "breakpointwidget.h"
 
-#include "BreakpointWidget.h"
-
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
