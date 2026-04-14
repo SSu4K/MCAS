@@ -1,4 +1,0 @@
-InstructionSet=config.cfg
-Microcode=microcode.mco
-DataMemory=memory.dat
-InstructionMemory=fib.cod

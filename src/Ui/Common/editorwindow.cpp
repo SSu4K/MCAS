@@ -89,7 +89,7 @@ bool EditorWindow::openFileFromPath(const QString &path){
 
     bool success = serializeFromFile(file);
 
-    qDebug() << "Serializing from" << path << "Success:" << success;
+    qDebug() << "Serializing from:" << path << "Success:" << success;
 
     if (success) {
         if(path != m_currentFilePath){
@@ -124,7 +124,7 @@ void EditorWindow::saveFileToPath(const QString &path){
     bool success = true;
     success = serializeToFile(file);
 
-    qDebug() << "Serializing to" << path << "Success:" << success;
+    qDebug() << "Serializing to:" << path << "Success:" << success;
 
     if (success) {
         if(path != m_currentFilePath){

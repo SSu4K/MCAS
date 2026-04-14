@@ -131,11 +131,9 @@ void MainWindow::createViewMenu()
 
     connect(m_langGroup, &QActionGroup::triggered, this, [this](QAction *action) {
         if (action == m_enAction){
-            qDebug() << "Emited setLanguage: en";
             emit setLanguage("en");
         }
         if (action == m_plAction){
-            qDebug() << "Emited setLanguage: pl";
             emit setLanguage("pl");
         }
     });
@@ -218,7 +216,7 @@ void MainWindow::openFile()
         return;
     }
 
-    qDebug() << "Serializing priject from" << filePath;
+    qDebug() << "Serializing project from:" << filePath;
 
     m_currentFilePath = filePath;
     setWindowTitle(QString(windowTitle() + " - [%1]").arg(QFileInfo(filePath).fileName()));
@@ -235,7 +233,7 @@ void MainWindow::saveFile()
 
     QFile file(m_currentFilePath);
 
-    qDebug() << "Serializing to project" << m_currentFilePath;
+    qDebug() << "Serializing to project:" << m_currentFilePath;
     emit serializeToFile(file);
 }
 
@@ -252,7 +250,7 @@ void MainWindow::saveFileAs()
     bool success = true;
     success = serializeToFile(file);
 
-    qDebug() << "Serializing to" << m_currentFilePath << "Success:" << success;
+    qDebug() << "Serializing to:" << m_currentFilePath << "Success:" << success;
 
     if (success && m_currentFilePath.isEmpty()) {
         m_currentFilePath = filePath;

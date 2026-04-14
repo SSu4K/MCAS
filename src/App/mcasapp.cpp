@@ -45,22 +45,12 @@ MCASApp::MCASApp(int &argc, char **argv)
     : settings(), simulation(), models(simulation), project(models), ui(models),
     QApplication(argc, argv)
 {
-    QFile f(":/icons/appicon.png");
-    if(f.exists()){
-        setWindowIcon(QIcon(":/icons/appicon.png"));
-        qDebug() << "Loading icon success!";
-    }
-    else{
-        qDebug() << "Loading icon failed!";
-    }
-
     setStyle(QStyleFactory::create("Fusion"));
     initSettingsSubsystem();
     initProjectSubsystem();
 }
 
 void MCASApp::themeChanged(const QString& theme){
-    qDebug() << "app: themeChanged:" << theme;
     if(theme == "System"){
         setPalette(style()->standardPalette());
     }
@@ -70,8 +60,6 @@ void MCASApp::themeChanged(const QString& theme){
     else if (theme == "Dark"){
         setPalette(getDarkPalette());
     }
-
-    qDebug() << "Is dark theme?" << qApp->palette().color(QPalette::Window).value();
 }
 
 
@@ -121,11 +109,7 @@ void MCASApp::initSettingsSubsystem(){
     connect(this, &MCASApp::languageChanged,
             &ui.configWindow, &ConfigWindow::retranslateUi);
 
-    // ensure initial language is correct
-    //settings.setLanguage(settings.language());
-    //emit languageChanged();
     auto initLanguage = settings.language();
-    qDebug() << "Setting init language:" << initLanguage;
     loadLanguage(initLanguage);
 }
 

@@ -18,7 +18,6 @@ QString SettingsSubsystem::language() const
 
 void SettingsSubsystem::setTheme(const QString& theme)
 {
-    qDebug() << "settings: setTheme:" << theme;
     if (theme == currentTheme())
         return;
 
