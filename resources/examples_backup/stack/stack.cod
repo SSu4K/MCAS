@@ -1,0 +1,15 @@
+[Instructions]
+;Address|Encoded  |Label |Instruction      |Status
+0X0000  |44050400 |      |ADDI R0 0x400 R5 |OK
+0X0004  |4401000A |      |ADDI R0 0xA R1   |OK
+0X0008  |4402000B |      |ADDI R0 0xB R2   |OK
+0X000C  |4403000C |      |ADDI R0 0xC R3   |OK
+0X0010  |4404000D |      |ADDI R0 0xD R4   |OK
+0X0014  |88A10000 |      |PUSH R5 R1       |OK
+0X0018  |88A20000 |      |PUSH R5 R2       |OK
+0X001C  |88A30000 |      |PUSH R5 R3       |OK
+0X0020  |88A40000 |      |PUSH R5 R4       |OK
+0X0024  |8CA10000 |      |POP R5 R1        |OK
+0X0028  |8CA20000 |      |POP R5 R2        |OK
+0X002C  |8CA30000 |      |POP R5 R3        |OK
+0X0030  |8CA40000 |      |POP R5 R4        |OK
