@@ -17,14 +17,14 @@ QWidget* BreakpointDelegate::createEditor(QWidget* parent,
 {
     switch (index.column()) {
 
-    case 0: { // Type
+    case 1: { // Type
         auto* combo = new QComboBox(parent);
         combo->addItem("PC");
         combo->addItem("uAR");
         return combo;
     }
 
-    case 1: { // Value
+    case 2: { // Value
         auto* edit = new QLineEdit(parent);
         edit->setPlaceholderText("0x...");
         return edit;
@@ -38,11 +38,11 @@ QWidget* BreakpointDelegate::createEditor(QWidget* parent,
 void BreakpointDelegate::setEditorData(QWidget* editor,
                                        const QModelIndex& index) const
 {
-    if (index.column() == 0) {
+    if (index.column() == 1) {
         auto* combo = qobject_cast<QComboBox*>(editor);
         combo->setCurrentIndex(index.data(Qt::EditRole).toInt());
     }
-    else if (index.column() == 1) {
+    else if (index.column() == 2) {
         auto* edit = qobject_cast<QLineEdit*>(editor);
         quint32 value = index.data(Qt::EditRole).toUInt();
         edit->setText(QString("0x%1").arg(value, 8, 16, QChar('0')).toUpper());
@@ -53,11 +53,11 @@ void BreakpointDelegate::setModelData(QWidget* editor,
                                       QAbstractItemModel* model,
                                       const QModelIndex& index) const
 {
-    if (index.column() == 0) {
+    if (index.column() == 1) {
         auto* combo = qobject_cast<QComboBox*>(editor);
         model->setData(index, combo->currentIndex(), Qt::EditRole);
     }
-    else if (index.column() == 1) {
+    else if (index.column() == 2) {
         auto* edit = qobject_cast<QLineEdit*>(editor);
 
         bool ok = false;

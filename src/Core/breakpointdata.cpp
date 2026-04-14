@@ -2,9 +2,8 @@
 
 namespace BreakpointEditor {
 
-BreakpointData::BreakpointData(QObject *parent, int maxBreakpoints)
-    : QObject(parent),
-      maxBreakpoints(maxBreakpoints)
+BreakpointData::BreakpointData(int maxBreakpoints)
+    : maxBreakpoints(maxBreakpoints)
 {
 }
 
@@ -14,7 +13,6 @@ void BreakpointData::clear()
         return;
 
     breakpoints.clear();
-    emit dataChanged();
 }
 
 } // namespace BreakpointEditor

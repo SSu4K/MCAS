@@ -6,6 +6,9 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 
+#include "Common/enumdelegate.h"
+#include "Common/hexintdelegate.h"
+
 using namespace Ui;
 
 BreakpointWidget::BreakpointWidget(Models::BreakpointModel* model,
@@ -19,15 +22,25 @@ BreakpointWidget::BreakpointWidget(Models::BreakpointModel* model,
 
 void BreakpointWidget::setupUi()
 {
+
+    auto* enumDelegate = new EnumDelegate(this);
+    enumDelegate->setItems({"PC", "uAR"});
+
+    auto* hexDelegate = new HexIntDelegate(this);
+    hexDelegate->setPrecision(8);
+
     tableView.setModel(model);
-    tableView.setItemDelegate(&delegate);
+    //tableView.setItemDelegate(&delegate);
     tableView.setSelectionBehavior(QAbstractItemView::SelectRows);
     tableView.setSelectionMode(QAbstractItemView::SingleSelection);
     tableView.horizontalHeader()->setStretchLastSection(true);
 
-    addButton.setText("Add");
-    removeButton.setText("Remove");
-    clearButton.setText("Clear");
+    tableView.setItemDelegateForColumn(1, enumDelegate);
+    tableView.setItemDelegateForColumn(2, hexDelegate);
+
+    addButton.setText(tr("Add"));
+    removeButton.setText(tr("Remove"));
+    clearButton.setText(tr("Clear"));
 
     auto* buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(&addButton);

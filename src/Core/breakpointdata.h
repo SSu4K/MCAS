@@ -16,17 +16,13 @@ struct BreakpointEntry {
 
 class BreakpointData : public QObject
 {
-    Q_OBJECT
 public:
-    explicit BreakpointData(QObject *parent = nullptr, int maxBreakpoints = 0);
+    explicit BreakpointData(int maxBreakpoints = 0);
 
     QList<BreakpointEntry> breakpoints;
     const int maxBreakpoints;
 
     void clear();
-
-signals:
-    void dataChanged();
 };
 
 } // namespace BreakpointEditor

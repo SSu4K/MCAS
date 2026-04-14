@@ -1,6 +1,7 @@
 #ifndef EXECUTIONENGINE_H
 #define EXECUTIONENGINE_H
 
+#include "breakpointdata.h"
 #include "simLib_export.h"
 
 #include "Machine/machinestate.h"
@@ -31,7 +32,16 @@ public:
     ExecutionEngine(Machine::MachineState &state,
                     Microcode::MicrocodeData const &microcode,
                     Microcode::JumpTableData const &jumpTable,
-                    Assembly::InstructionSet const &instructionSet);
+                    Assembly::InstructionSet const &instructionSet,
+                    BreakpointEditor::BreakpointData const &breakpoints
+
+                    );
+
+    ExecutionEngine(Machine::MachineState &state,
+                    Microcode::MicrocodeData const &microcode,
+                    Microcode::JumpTableData const &jumpTable,
+                    Assembly::InstructionSet const &instructionSet
+                    );
 
     uint32_t currentMicroAddress() const;
     void setMicroAddress(uint32_t uar);
@@ -39,6 +49,7 @@ public:
     HaltStatus getHaltStatus() const;
 
     bool stepMicro(Effects &effects, QString &err);
+    void unhalt();
     bool reset();
 
 private:
@@ -46,6 +57,7 @@ private:
     const Microcode::MicrocodeData &m_microcode;
     const Microcode::JumpTableData &m_jumpTable;
     const Assembly::InstructionSet &m_instructionSet;
+    const BreakpointEditor::BreakpointData &m_breakpoints;
 
     uint32_t m_microAddress = 0;
     HaltStatus haltStatus;

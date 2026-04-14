@@ -24,15 +24,24 @@ void InstructionEditorWindow::open()
 
 bool InstructionEditorWindow::serializeToFile(QFile& file) const {
     QTextStream out(&file);
-    return instructionModel->saveToTextStream(out);
+    instructionModel->saveToTextStream(out);
+    breakpointModel->saveToTextStream(out);
+    return true;
 }
 bool InstructionEditorWindow::serializeFromFile(QFile& file) {
-    QTextStream in(&file);
-    return instructionModel->loadFromTextStream(in);
+    bool success = true;
+    QTextStream in1(&file);
+    success &= instructionModel->loadFromTextStream(in1);
+    file.seek(0);
+    QTextStream in2(&file);
+    success &= breakpointModel->loadFromTextStream(in2);
+
+    return success;
 }
 
 void InstructionEditorWindow::clearData(){
     instructionModel->clear();
+    breakpointModel->clear();
     return;
 }
 

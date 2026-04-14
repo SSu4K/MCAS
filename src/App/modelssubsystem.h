@@ -20,7 +20,6 @@ public:
 
     SimulationSubsystem &simulation;
     InstructionEditor::InstructionData instructions;
-    BreakpointEditor::BreakpointData breakpoints;
 
     Models::MemoryModel memoryModel;
     Models::InstructionSetModel instructionSetModel;

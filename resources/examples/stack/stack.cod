@@ -13,3 +13,6 @@
 0X0028  |8CA20000 |      |POP R5 R2        |OK
 0X002C  |8CA30000 |      |POP R5 R3        |OK
 0X0030  |8CA40000 |      |POP R5 R4        |OK
+[Breakpoints]
+;#|Type |Value      |Enabled
+1 |PC   |0X00000038 |

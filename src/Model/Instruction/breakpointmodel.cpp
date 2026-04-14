@@ -25,8 +25,9 @@ int BreakpointModel::rowCount(const QModelIndex& parent) const {
 
 int BreakpointModel::columnCount(const QModelIndex& parent) const {
     Q_UNUSED(parent);
-    return 3;
-    // 0: Type
+    return 4;
+    // 0: Index
+    // 1: Type
     // 1: Value
     // 2: Enabled
 }
@@ -40,19 +41,25 @@ QVariant BreakpointModel::data(const QModelIndex& index, int role) const {
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
         case 0:
-            return (bp.type == BreakpointType::PC) ? "PC" : "uAR";
+            return index.row()+1;
         case 1:
-            return QString("0x%1").arg(bp.value, 8, 16, QChar('0')).toUpper();
+            return (bp.type == BreakpointType::PC) ? "PC" : "uAR";
         case 2:
-            return bp.enabled ? "1" : "0";
+            return QString("0x%1").arg(bp.value, 8, 16, QChar('0')).toUpper();
+        case 3:
+            return "";
         }
+    }
+
+    if (index.column() == 3 && role == Qt::CheckStateRole) {
+        return bp.enabled ? Qt::Checked : Qt::Unchecked;
     }
 
     if (role == Qt::EditRole) {
         switch (index.column()) {
-        case 0: return static_cast<int>(bp.type);
-        case 1: return bp.value;
-        case 2: return bp.enabled;
+        case 1: return (bp.type == BreakpointType::PC) ? "PC" : "uAR";
+        case 2: return bp.value;
+        case 3: return bp.enabled ? Qt::Checked : Qt::Unchecked;;
         }
     }
 
@@ -64,43 +71,66 @@ QVariant BreakpointModel::headerData(int section, Qt::Orientation orientation, i
         return {};
 
     switch (section) {
-    case 0: return "Type";
-    case 1: return "Value";
-    case 2: return "Enabled";
+    case 0: return "#";
+    case 1: return "Type";
+    case 2: return "Value";
+    case 3: return "Enabled";
     default: return {};
     }
 }
 
 Qt::ItemFlags BreakpointModel::flags(const QModelIndex& index) const {
-    if (!index.isValid())
-        return Qt::NoItemFlags;
+    switch (index.column()) {
 
-    return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    default:
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+
+    case 1: // type
+    case 2: // value
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+
+    case 3: // enabled checkbox
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    }
 }
 
 bool BreakpointModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+
+    auto& bp = m_data->breakpoints[index.row()];
+
+    if (index.column() == 3 && role == Qt::CheckStateRole) {
+        bp.enabled = (value.toInt() == Qt::Checked);
+        emit dataChanged(index, index);
+        return true;
+    }
+
     if (role != Qt::EditRole || !index.isValid())
         return false;
 
     if (index.row() >= m_data->breakpoints.size())
         return false;
 
-    auto& bp = m_data->breakpoints[index.row()];
-
     switch (index.column()) {
-    case 0: { // Type
-        bp.type = static_cast<BreakpointType>(value.toInt());
+    case 1: { // Type
+        const QString text = value.toString();
+
+        if(!text.compare("PC", Qt::CaseInsensitive)){
+            bp.type = BreakpointEditor::BreakpointType::PC;
+        }
+        else if(!text.compare("uAR", Qt::CaseInsensitive)){
+            bp.type = BreakpointEditor::BreakpointType::uAR;
+        }
         break;
     }
-    case 1: { // Value
+    case 2: { // Value
         bool ok = false;
         quint32 val = value.toUInt(&ok);
         if (!ok) return false;
         bp.value = val;
         break;
     }
-    case 2: { // Enabled
-        bp.enabled = value.toBool();
+    case 3: { // Enabled
+        bp.enabled = (value.toInt() == Qt::Checked);
         break;
     }
     default:
@@ -168,18 +198,18 @@ void BreakpointModel::populateFromStringMatrix(const QList<QList<QString>> &rows
         BreakpointEntry entry;
 
         // Type
-        if (row[0] == "PC")
+        if (row[1] == "PC")
             entry.type = BreakpointType::PC;
         else
             entry.type = BreakpointType::uAR;
 
         // Value
         bool ok = false;
-        entry.value = row[1].toUInt(&ok, 0); // auto-detect base (0x supported)
+        entry.value = row[2].toUInt(&ok, 0); // auto-detect base (0x supported)
         if (!ok) entry.value = 0;
 
         // Enabled
-        entry.enabled = (row[2] == "1" || row[2].toLower() == "true");
+        entry.enabled = (row[3] == "1" || row[3].toLower() == "true");
 
         m_data->breakpoints.append(entry);
     }

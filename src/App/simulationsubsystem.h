@@ -6,6 +6,7 @@
 #include "Microcode/jumptabledata.h"
 #include "Microcode/microcodedata.h"
 #include "Machine/machinestate.h"
+#include "breakpointdata.h"
 
 #include "executionworker.h"
 
@@ -22,6 +23,8 @@ public:
 
     Machine::MachineConfig machineConfig;
     Machine::MachineState editorMachineState;
+
+    BreakpointEditor::BreakpointData breakpoints;
 
     Sim::ExecutionEngine engine;
     Sim::ExecutionWorker worker;

@@ -47,15 +47,15 @@ bool ExecutionWorker::executeOneMicro(QString &err)
     auto haltStatus = engine->getHaltStatus();
     if(haltStatus.isHalted){
         mode = Mode::Stopped;
-        emit halted(haltStatus.reason);
-        return false;
+        engine->unhalt();
+        return true;
     }
+
 
     Effects fx;
 
     if (!engine->stepMicro(fx, err)) {
         emit halted(err);
-        return false;
     }
 
     history.push_back(fx);
