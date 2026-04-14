@@ -4,13 +4,15 @@
 using namespace Ui;
 using namespace Models;
 
-InstructionEditorWindow::InstructionEditorWindow(InstructionModel *model, QWidget *parent)
-    : model(model), widget(model), EditorWindow{parent}
+InstructionEditorWindow::InstructionEditorWindow(InstructionModel *instructionModel, Models::BreakpointModel *breakpointModel, QWidget *parent)
+    : instructionModel(instructionModel), breakpointModel(breakpointModel),
+    instructionEditor(instructionModel), breakpointEditor(breakpointModel), EditorWindow{parent}
 {
+    updateWindowTitle();
+    resize(1000, 600);
+
     menuBar()->clear();
     createMenu();
-
-    setCentralWidget(&widget);
 }
 
 void InstructionEditorWindow::open()
@@ -22,22 +24,35 @@ void InstructionEditorWindow::open()
 
 bool InstructionEditorWindow::serializeToFile(QFile& file) const {
     QTextStream out(&file);
-    return model->saveToTextStream(out);
+    instructionModel->saveToTextStream(out);
+    breakpointModel->saveToTextStream(out);
+    return true;
 }
 bool InstructionEditorWindow::serializeFromFile(QFile& file) {
-    QTextStream in(&file);
-    return model->loadFromTextStream(in);
+    bool success = true;
+    QTextStream in1(&file);
+    success &= instructionModel->loadFromTextStream(in1);
+    file.seek(0);
+    QTextStream in2(&file);
+    success &= breakpointModel->loadFromTextStream(in2);
+
+    return success;
 }
 
 void InstructionEditorWindow::clearData(){
-    model->clear();
+    instructionModel->clear();
+    breakpointModel->clear();
     return;
 }
 
 void InstructionEditorWindow::createCustomMenu() {
     updateWindowTitle();
+    instructionTabIndex = tabWidget.addTab(&instructionEditor, "");
+    breakpointTabIndex = tabWidget.addTab(&breakpointEditor, "");
+    setCentralWidget(&tabWidget);
 }
 
 void InstructionEditorWindow::retranslateCustomMenu(){
-
+    tabWidget.setTabText(instructionTabIndex, tr("Instructions"));
+    tabWidget.setTabText(breakpointTabIndex, tr("Breakpoints"));
 }

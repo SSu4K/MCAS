@@ -5,10 +5,12 @@
 
 #include "Common/editorwindow.h"
 #include "instructioneditorwidget.h"
+#include "breakpointwidget.h"
 
 // forward declarations
 namespace Models {
     class InstructionModel;
+    class BreakpointModel;
 }
 
 namespace Ui{
@@ -20,7 +22,7 @@ namespace Ui{
     {
         Q_OBJECT
     public:
-        explicit InstructionEditorWindow(Models::InstructionModel *model, QWidget *parent = nullptr);
+        explicit InstructionEditorWindow(Models::InstructionModel *instructionModel, Models::BreakpointModel *breakpointModel, QWidget *parent = nullptr);
 
     public slots:
         void open();
@@ -39,8 +41,15 @@ namespace Ui{
         void createCustomMenu() override;
         void retranslateCustomMenu() override;
 
-        Models::InstructionModel *model;
-        InstructionEditorWidget widget;
+        Models::InstructionModel *instructionModel;
+        Models::BreakpointModel *breakpointModel;
+
+        QTabWidget tabWidget;
+        InstructionEditorWidget instructionEditor;
+        BreakpointWidget breakpointEditor;
+
+        int instructionTabIndex;
+        int breakpointTabIndex;
 
     signals:
     };

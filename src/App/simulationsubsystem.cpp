@@ -9,8 +9,9 @@ SimulationSubsystem::SimulationSubsystem():
     labelData(),
     instructionSet(),
     machineConfig(),
+    breakpoints(machineConfig.instructionMemorySize/4),
     editorMachineState(machineConfig),
-    engine(editorMachineState, microcode, jumptable, instructionSet)
+    engine(editorMachineState, microcode, jumptable, instructionSet, breakpoints)
 {
     worker.setMachineState(&editorMachineState);
     worker.setExecutionEngine(&engine);

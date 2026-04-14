@@ -7,3 +7,7 @@
 0X0010  |1C020800 |      |ADD R0 R2 R1      |OK
 0X0014  |1C031000 |      |ADD R0 R3 R2      |OK
 0X0018  |7000FFF0 |      |BRZ R0 loop       |OK
+[Breakpoints]
+;#|Type |Value      |Enabled
+0 |PC   |0X000000FF |1
+1 |uAR  |0X000000AB |1

@@ -14,11 +14,18 @@ namespace Sim {
 ExecutionEngine::ExecutionEngine(Machine::MachineState &state,
                                  Microcode::MicrocodeData const &microcode,
                                  Microcode::JumpTableData const &jumpTable,
-                                 Assembly::InstructionSet const &instructionSet)
-    : m_state(state), m_microcode(microcode), m_jumpTable(jumpTable), m_instructionSet(instructionSet)
+                                 Assembly::InstructionSet const &instructionSet,
+                                 BreakpointEditor::BreakpointData const &breakpoints)
+    : m_state(state), m_microcode(microcode), m_jumpTable(jumpTable), m_instructionSet(instructionSet), m_breakpoints(breakpoints)
 {
     m_microAddress = 0;
 }
+
+ExecutionEngine::ExecutionEngine(Machine::MachineState &state,
+                Microcode::MicrocodeData const &microcode,
+                Microcode::JumpTableData const &jumpTable,
+                Assembly::InstructionSet const &instructionSet
+                                 ): ExecutionEngine(state, microcode, jumpTable, instructionSet, BreakpointEditor::BreakpointData()){}
 
 uint32_t ExecutionEngine::currentMicroAddress() const {
     return m_microAddress;
@@ -32,13 +39,18 @@ HaltStatus ExecutionEngine::getHaltStatus() const{
     return haltStatus;
 }
 
-bool ExecutionEngine::reset(){
-    m_microAddress = 0;
+void ExecutionEngine::unhalt(){
     haltStatus.isHalted = false;
     haltStatus.reason = "";
+}
+
+bool ExecutionEngine::reset(){
+    m_microAddress = 0;
+    unhalt();
     m_state.reset();
     return true;
 }
+
 
 void ExecutionEngine::halt(const QString &reason){
     haltStatus.isHalted = true;
@@ -287,12 +299,20 @@ bool ExecutionEngine::performMemoryOp(const Microcode::Instruction &mi, Effects 
         return false;
     }
 
-    if(memOp[0] == 'R'){
-        QString memDest = mi.mdest.trimmed().toUpper();
-        return performMemoryRead(addr, memOp, memDest, effects, err);
+    try{
+
+        if(memOp[0] == 'R'){
+            QString memDest = mi.mdest.trimmed().toUpper();
+            return performMemoryRead(addr, memOp, memDest, effects, err);
+        }
+        else if(memOp[0] == 'W'){
+            return performMemoryWrite(addr, memOp, effects, err);
+        }
     }
-    else if(memOp[0] == 'W'){
-        return performMemoryWrite(addr, memOp, effects, err);
+    catch(std::out_of_range &e){
+        err = e.what();
+        qDebug() << "Memory out_of_range access";
+        return false;
     }
 
     err = "Unsupported memory op " + mi.mem;
@@ -515,12 +535,29 @@ bool ExecutionEngine::stepMicro(Effects &effects, QString &err)
         return false;
     }
 
-    // TODO: Add breakpoint halting
-
     advanceMicroAddress(mi, jumpTaken, err);
     effects.newUAR = m_microAddress;
-
     m_state.incrementClock();
+
+    for(size_t i = 0; i < m_breakpoints.breakpoints.size(); i++){
+        const auto &breakpoint =  m_breakpoints.breakpoints[i];
+        if(!breakpoint.enabled) continue;
+        qDebug() << (int)breakpoint.type << breakpoint.value;
+        if(breakpoint.type == BreakpointEditor::BreakpointType::PC){
+            if(m_state.getPC() == breakpoint.value){
+                err = QString("Reached breakpoint #%1").arg(i+1);
+                halt(err);
+                return false;
+            }
+        }
+        else if(breakpoint.type == BreakpointEditor::BreakpointType::uAR){
+            if(m_microAddress == breakpoint.value){
+                err = QString("Reached breakpoint #%1").arg(i+1);
+                halt(err);
+                return false;
+            }
+        }
+    }
 
     return true;
 }
